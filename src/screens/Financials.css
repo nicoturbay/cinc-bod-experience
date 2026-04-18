@@ -1,0 +1,169 @@
+/* Reserve card */
+.reserve-card {
+  padding: 18px 16px;
+  background: var(--green-dark);
+}
+.reserve-card__top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+.reserve-card__label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--green-light);
+  margin-bottom: 4px;
+}
+.reserve-card__value {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--white);
+  letter-spacing: -0.02em;
+}
+.reserve-card__sub {
+  font-size: 11px;
+  color: var(--green-light);
+  margin-top: 3px;
+}
+.reserve-card__ring {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  flex-shrink: 0;
+}
+.reserve-card__ring-pct {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--white);
+}
+.reserve-card__pills {
+  display: flex;
+  gap: 10px;
+}
+.reserve-pill {
+  flex: 1;
+  border-radius: var(--radius-md);
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.reserve-pill--green { background: rgba(154,201,60,0.18); }
+.reserve-pill--amber { background: rgba(232,153,62,0.18); }
+.reserve-pill span { font-size: 10px; font-weight: 600; color: var(--green-light); }
+.reserve-pill strong { font-size: 15px; font-weight: 800; color: var(--white); }
+
+/* Tabs (reuse from Meetings) */
+.seg-tabs {
+  display: flex;
+  background: var(--gray-light);
+  border-radius: var(--radius-md);
+  padding: 3px;
+  gap: 2px;
+}
+.seg-tabs__btn {
+  flex: 1;
+  padding: 8px 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  border-radius: calc(var(--radius-md) - 3px);
+  transition: all 0.15s;
+}
+.seg-tabs__btn--active {
+  background: var(--white);
+  color: var(--green-dark);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Budget */
+.budget-summary {
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.budget-summary__row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.budget-summary__label { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+.budget-summary__pct   { font-size: 18px; font-weight: 800; color: var(--green-mid); }
+.budget-summary__totals {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.budget-bar {
+  height: 6px;
+  background: var(--gray-light);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+.budget-bar__fill {
+  height: 100%;
+  border-radius: var(--radius-full);
+  transition: width 0.4s ease;
+}
+
+.budget-item {
+  padding: 12px 16px;
+}
+.budget-item__top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2px;
+}
+.budget-item__name { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+.budget-item__pct  { font-size: 12px; font-weight: 700; }
+.budget-item__amounts {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+/* Invoices */
+.invoice-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  gap: 12px;
+}
+.invoice-row__left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  overflow: hidden;
+}
+.invoice-row__vendor {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.invoice-row__meta { font-size: 11px; color: var(--text-muted); }
+.invoice-row__right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  flex-shrink: 0;
+}
+.invoice-row__amount { font-size: 14px; font-weight: 800; color: var(--green-dark); }
