@@ -90,34 +90,39 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 3px;
-  padding: 6px 10px 4px;
-  color: rgba(255,255,255,0.35);
-  transition: color 0.15s;
+  gap: 5px;
+  padding: 4px 8px;
   -webkit-tap-highlight-color: transparent;
 }
 
-.nav-item--active {
-  color: var(--text);
-}
-
+/* Inactive: plain circle slot, cream color */
 .nav-item__icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: background 0.15s, color 0.15s;
+  color: #FFF8EA;
 }
 
-.nav-item--active .nav-item__icon svg {
-  stroke: var(--lime);
+/* Active: lime circle, dark icon */
+.nav-item--active .nav-item__icon {
+  background: #B2DE61;
+  color: #112719;
 }
 
+/* Label — hidden by default, shown only when active */
 .nav-item__label {
   font-size: 9px;
-  font-weight: 500;
+  font-weight: 600;
   letter-spacing: 0.02em;
   white-space: nowrap;
+  color: #FFF8EA;
+  display: none;
 }
 
 .nav-item--active .nav-item__label {
-  color: white;
+  display: block;
 }
