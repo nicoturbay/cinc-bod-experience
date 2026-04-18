@@ -45,6 +45,17 @@
   --phone-h:      844px;
 }
 
+/* ── Resident mode palette ──────────────────────────── */
+.resident-mode {
+  --bg-page:      #2d4730;
+  --bg-card:      #1e3320;
+  --bg-card-alt:  #1e3320;
+  --bg-header:    #2d4730;
+  --bg-nav:       #2d4730;
+  --text-muted:   rgba(255,248,234,0.45);
+  --border:       rgba(255,255,255,0.10);
+}
+
 /* ── Reset ──────────────────────────────────────────── */
 *, *::before, *::after {
   box-sizing: border-box;

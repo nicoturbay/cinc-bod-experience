@@ -59,75 +59,63 @@
   gap: 10px;
 }
 
-/* Board/Resident Toggle */
-.board-toggle {
+/* Mode Toggle pill */
+.mode-toggle {
+  position: relative;
+  width: 64px;
+  height: 34px;
+  border-radius: 17px;
   cursor: pointer;
   padding: 0;
-}
-
-/* Board mode: pill with text */
-.board-toggle__track {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  background: var(--lime-dim);
-  border-radius: var(--radius-full);
-  padding: 4px 10px 4px 4px;
-  height: 33px;
-}
-.board-toggle__thumb {
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  background: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--text-dark);
+  transition: background 0.2s;
   flex-shrink: 0;
 }
-.board-toggle__label {
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--text-dark);
-  letter-spacing: 0.02em;
-  white-space: nowrap;
+
+/* Resident state: lime bg, thumb left, icon right */
+.mode-toggle--resident {
+  background: #B2DE61;
+}
+.mode-toggle--resident .mode-toggle__thumb {
+  left: 3px;
+}
+.mode-toggle--resident .mode-toggle__icon {
+  right: 9px;
+  left: auto;
 }
 
-/* Resident mode: iOS-style switch + person icon */
-.board-toggle__switch {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  height: 33px;
+/* Board state: mint bg, thumb right, icon left */
+.mode-toggle--board {
+  background: #aedbbe;
 }
-.board-toggle__switch-track {
-  width: 46px;
-  height: 26px;
-  border-radius: 13px;
-  background: var(--lime);
-  position: relative;
-  flex-shrink: 0;
+.mode-toggle--board .mode-toggle__thumb {
+  left: 31px;
 }
-.board-toggle__switch-thumb {
+.mode-toggle--board .mode-toggle__icon {
+  left: 7px;
+  right: auto;
+}
+
+/* Shared thumb */
+.mode-toggle__thumb {
   position: absolute;
   top: 3px;
-  right: 3px;
-  width: 20px;
-  height: 20px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
-  background: white;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+  background: #1e3320;
+  transition: left 0.2s;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.3);
 }
-.board-toggle__switch-icon {
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.15);
+
+/* Shared icon */
+.mode-toggle__icon {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--text);
+  pointer-events: none;
 }
 
 /* Notification Bell */
