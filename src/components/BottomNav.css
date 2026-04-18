@@ -85,6 +85,51 @@
   z-index: 1;
 }
 
+/* ── Resident flat nav ──────────────────────────────── */
+.resident-nav {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: var(--nav-h);
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 0 8px 8px;
+}
+
+.resident-nav__bg {
+  position: absolute;
+  inset: 0;
+  background: var(--bg-nav);
+  border-radius: 20px 20px 0 0;
+}
+
+.resident-nav__item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  z-index: 1;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.resident-nav__icon {
+  color: #FFF8EA;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.resident-nav__label {
+  font-size: 8px;
+  font-weight: 500;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
 /* ── Nav items ──────────────────────────────────────── */
 .nav-item {
   display: flex;

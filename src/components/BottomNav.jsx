@@ -1,4 +1,5 @@
 import { NavLink } from 'react-router-dom'
+import { useMode } from '../ModeContext'
 import './BottomNav.css'
 
 const CEPHAI_LOGO = 'https://www.figma.com/api/mcp/asset/83bdb008-2873-425f-88f0-b4290762d291'
@@ -13,6 +14,8 @@ const RIGHT_NAV = [
 ]
 
 export default function BottomNav() {
+  const { isBoard } = useMode()
+  if (!isBoard) return <ResidentNav />
   return (
     <nav className="bottom-nav">
       {/* Arch background shape */}
@@ -62,6 +65,31 @@ export default function BottomNav() {
 }
 
 
+/* ── Resident Nav ────────────────────────────────────── */
+const RESIDENT_NAV = [
+  { label: 'Feed',      icon: FeedIcon },
+  { label: 'Tasks',     icon: TasksIcon },
+  { label: 'Services',  icon: ServicesIcon },
+  { label: 'Payments',  icon: PaymentsIcon },
+  { label: 'Requests',  icon: RequestsIcon },
+  { label: 'Chat',      icon: ChatIcon },
+  { label: 'More',      icon: MoreIcon },
+]
+
+function ResidentNav() {
+  return (
+    <nav className="resident-nav">
+      <div className="resident-nav__bg" />
+      {RESIDENT_NAV.map(({ label, icon: Icon }) => (
+        <button key={label} className="resident-nav__item">
+          <span className="resident-nav__icon"><Icon /></span>
+          <span className="resident-nav__label">{label}</span>
+        </button>
+      ))}
+    </nav>
+  )
+}
+
 /* ── Nav Icons (from Figma) ───────────────────────── */
 function FeedIcon() {
   // Feed.svg — vertical bars equalizer
@@ -95,6 +123,40 @@ function MoreIcon() {
       <path d="M1.07776 9.65151L12.6418 15.3068C13.3793 15.6668 14.1897 15.8489 15 15.8489C15.8104 15.8489 16.6207 15.6668 17.3582 15.3068L28.9222 9.65151C29.5867 9.32384 30 8.66446 30 7.92417C30 7.18389 29.5867 6.52046 28.9222 6.19684L17.3582 0.541561C15.8833 -0.182542 14.1167 -0.178496 12.6418 0.541561L1.07776 6.19684C0.413256 6.5245 0 7.18389 0 7.92417C0 8.66446 0.413256 9.32789 1.07776 9.65151ZM13.5292 2.35383C14.4489 1.90481 15.5429 1.90481 16.4627 2.35383L27.8445 7.92417L16.4627 13.4945C15.5429 13.9435 14.4489 13.9435 13.5292 13.4945L2.14741 7.92417L13.5292 2.35383Z" fill="currentColor"/>
       <path d="M28.432 20.784L16.4709 26.6376C15.5309 27.0906 14.4571 27.0947 13.5292 26.6376L1.56403 20.78C1.06159 20.5333 0.453873 20.7436 0.206708 21.2412C-0.0404561 21.7428 0.166146 22.3496 0.668579 22.5963L12.6338 28.4539C13.3793 28.818 14.1816 29 14.9879 29C15.7943 29 16.6005 28.818 17.3542 28.4539L29.3194 22.5963C29.8218 22.3496 30.0285 21.7428 29.7813 21.2412C29.5342 20.7395 28.9304 20.5333 28.4239 20.78L28.432 20.784Z" fill="currentColor"/>
       <path d="M28.432 14.2106L16.4709 20.0641C15.5309 20.5171 14.4571 20.5212 13.5292 20.0641L1.56403 14.2065C1.06159 13.9598 0.453873 14.1661 0.206708 14.6677C-0.0404561 15.1693 0.166146 15.7761 0.668579 16.0229L12.6338 21.8804C13.3793 22.2445 14.1816 22.4265 14.9879 22.4265C15.7943 22.4265 16.6005 22.2445 17.3542 21.8804L29.3194 16.0229C29.8218 15.7761 30.0285 15.1693 29.7813 14.6677C29.5342 14.1661 28.9304 13.9598 28.4239 14.2065L28.432 14.2106Z" fill="currentColor"/>
+    </svg>
+  )
+}
+
+/* ── Resident-only icons ─────────────────────────────── */
+function ServicesIcon() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M18 8h1a4 4 0 010 8h-1"/><path d="M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/>
+      <line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/>
+    </svg>
+  )
+}
+function PaymentsIcon() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="2" y="5" width="20" height="14" rx="2"/>
+      <line x1="2" y1="10" x2="22" y2="10"/>
+    </svg>
+  )
+}
+function RequestsIcon() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+      <polyline points="14 2 14 8 20 8"/>
+      <line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/>
+    </svg>
+  )
+}
+function ChatIcon() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
     </svg>
   )
 }

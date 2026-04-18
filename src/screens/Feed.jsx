@@ -114,24 +114,18 @@ function BoardFeed() {
 }
 
 /* ── Resident Experience Feed ───────────────────────── */
-const RESIDENT_ANNOUNCEMENTS = [
-  { id: 'a1', emoji: '📅', text: 'Board Meeting — May 6 at 5:30 PM via Zoom' },
-  { id: 'a2', emoji: '💧', text: 'Pool reopens May 1 — new hours 8 AM–9 PM' },
-  { id: 'a3', emoji: '🚛', text: 'Bulk trash pickup on April 25 — place items by 7 AM' },
-]
-
 const RESIDENT_POSTS = [
   {
     id: 'r1',
-    name: 'Darren Wilson',
-    initials: 'DW',
+    name: 'Dalton Thomson',
+    initials: 'DT',
     time: '5 minutes ago',
     isBoardMember: true,
-    title: 'Important Decisions Ahead for Our Next Board Meeting',
-    body: 'As we prepare for our upcoming board meeting, there are several important decisions on the table that will shape the direction of our community. Your input and awareness are key.',
-    image: null,
-    likes: 5,
-    comments: 11,
+    title: 'Board Of Directors Election',
+    body: 'The deadline to cast your vote is February 12. Just click in the button below and cast your vote.',
+    image: RV_PHOTO,
+    likes: 8,
+    comments: 14,
     avatarImg: AVATAR_1,
   },
   {
@@ -140,9 +134,9 @@ const RESIDENT_POSTS = [
     initials: 'LT',
     time: '1 Day Ago',
     isBoardMember: true,
-    title: 'RV Parked on Sidewalk Under Review',
-    body: 'An RV parked on the sidewalk has been identified and is currently under review. Updates will follow as needed.',
-    image: RV_PHOTO,
+    title: 'Community Pool Opening Soon',
+    body: 'The pool will reopen May 1st with new hours: 8 AM – 9 PM daily. Please review the updated pool rules before your first visit.',
+    image: null,
     likes: 5,
     comments: 11,
     avatarImg: AVATAR_2,
@@ -150,57 +144,49 @@ const RESIDENT_POSTS = [
 ]
 
 function ResidentFeed() {
-  const [digestDismissed, setDigestDismissed] = useState(false)
-
   return (
     <div className="screen">
       <div className="screen-inner">
 
+        {/* Engage bar */}
         <div className="engage-bar">
-          <span className="engage-bar__text">Engage with Your Community</span>
-          <div className="engage-bar__icons"><FilterIcon /><SortIcon /></div>
+          <span className="engage-bar__text">Engage With Your Neighbors</span>
+          <div className="engage-bar__icons">
+            <button className="engage-bar__icon-btn"><EditIcon /></button>
+            <button className="engage-bar__icon-btn engage-bar__icon-btn--filled"><SlidersIcon /></button>
+          </div>
         </div>
 
-        {/* Announcements strip */}
-        <div className="announcements-strip">
-          {RESIDENT_ANNOUNCEMENTS.map(a => (
-            <div key={a.id} className="announcement-item">
-              <span className="announcement-item__emoji">{a.emoji}</span>
-              <span className="announcement-item__text">{a.text}</span>
+        {/* Account balance card */}
+        <div className="acct-card">
+          <div className="acct-card__top">
+            <div className="acct-card__acct-row">
+              <span className="acct-card__acct-label"><strong>Acct:</strong> 1588:6523</span>
               <ChevronRightSmallIcon />
             </div>
-          ))}
+            <p className="acct-card__address">12346 Washington Avenue</p>
+            <div className="acct-card__balance-row">
+              <span className="acct-card__balance-label">Current Balance</span>
+              <span className="acct-card__balance-dots" />
+              <span className="acct-card__balance-amount">$750.41</span>
+            </div>
+          </div>
+          <div className="acct-card__divider" />
+          <div className="acct-card__autopay-row">
+            <AutopayIcon />
+            <span className="acct-card__autopay-text">Autopay scheduled for 03/01/2026</span>
+            <ChevronRightSmallIcon />
+          </div>
+          <button className="acct-card__cta">MAKE A PAYMENT</button>
+          <p className="acct-card__private">Only you can see this</p>
+          <div className="acct-card__dots">
+            <span className="acct-card__dot acct-card__dot--active" />
+            <span className="acct-card__dot" />
+            <span className="acct-card__dot" />
+          </div>
         </div>
 
-        {/* CephAI resident digest */}
-        {!digestDismissed && (
-          <div className="digest-card">
-            <div className="digest-card__header">
-              <div className="digest-card__author">
-                <img src={CEPHAI_LOGO} alt="CephAI" className="digest-card__logo" />
-                <div>
-                  <p className="digest-card__name">CephAi</p>
-                  <p className="digest-card__time">Now</p>
-                </div>
-              </div>
-              <button className="digest-card__close" onClick={() => setDigestDismissed(true)} aria-label="Dismiss">✕</button>
-            </div>
-            <p className="digest-card__title">Hello Sarah, here's what's happening in Cardinal Hills</p>
-            <div className="digest-card__body">
-              <p>Your community has new announcements and upcoming events to keep you informed.</p>
-              <p className="digest-card__bold">Quick updates for you:</p>
-              <ul className="digest-card__list">
-                <li>Your April dues are paid — next due May 1</li>
-                <li>ACC request for patio cover approved</li>
-                <li>3 new community announcements</li>
-                <li>Board meeting agenda now available</li>
-              </ul>
-            </div>
-            <button className="cta-btn">LET'S DO THIS</button>
-          </div>
-        )}
-
-        {/* Post feed */}
+        {/* Community posts */}
         {RESIDENT_POSTS.map(post => <PostCard key={post.id} post={post} />)}
 
       </div>
@@ -310,6 +296,31 @@ function ChevronRightSmallIcon() {
   return (
     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" style={{flexShrink:0}}>
       <path d="M9 18l6-6-6-6"/>
+    </svg>
+  )
+}
+function EditIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
+      <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
+    </svg>
+  )
+}
+function SlidersIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+      <line x1="4" y1="6" x2="20" y2="6"/><circle cx="8" cy="6" r="2" fill="currentColor" stroke="none"/>
+      <line x1="4" y1="12" x2="20" y2="12"/><circle cx="16" cy="12" r="2" fill="currentColor" stroke="none"/>
+      <line x1="4" y1="18" x2="20" y2="18"/><circle cx="10" cy="18" r="2" fill="currentColor" stroke="none"/>
+    </svg>
+  )
+}
+function AutopayIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{flexShrink:0}}>
+      <path d="M23 4v6h-6"/><path d="M1 20v-6h6"/>
+      <path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/>
     </svg>
   )
 }

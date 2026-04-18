@@ -34,12 +34,19 @@ export default function Header() {
             onClick={() => setIsBoard(b => !b)}
             aria-label="Switch mode"
           >
-            <div className="board-toggle__track">
-              <div className="board-toggle__thumb">
-                {isBoard ? <BoardIcon /> : <ResidentIcon />}
+            {isBoard ? (
+              <div className="board-toggle__track">
+                <div className="board-toggle__thumb"><BoardIcon /></div>
+                <span className="board-toggle__label">Board</span>
               </div>
-              <span className="board-toggle__label">{isBoard ? 'Board' : 'Resident'}</span>
-            </div>
+            ) : (
+              <div className="board-toggle__switch">
+                <div className="board-toggle__switch-track">
+                  <div className="board-toggle__switch-thumb" />
+                </div>
+                <div className="board-toggle__switch-icon"><ResidentIcon /></div>
+              </div>
+            )}
           </button>
 
           <button className="notif-btn" aria-label="Notifications">
