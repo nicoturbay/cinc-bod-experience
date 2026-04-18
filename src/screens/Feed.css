@@ -128,6 +128,42 @@
   line-height: 1.55;
 }
 
+/* ── Announcements strip (Resident) ────────────────── */
+.announcements-strip {
+  background: var(--bg-card);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.announcement-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 14px;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+.announcement-item:last-child { border-bottom: none; }
+.announcement-item:active { opacity: 0.7; }
+
+.announcement-item__emoji {
+  font-size: 16px;
+  flex-shrink: 0;
+  width: 24px;
+  text-align: center;
+}
+.announcement-item__text {
+  flex: 1;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+  line-height: 1.4;
+}
+.announcement-item svg {
+  color: var(--text-muted);
+}
+
 /* ── Post card ──────────────────────────────────────── */
 .post-card {
   overflow: hidden;

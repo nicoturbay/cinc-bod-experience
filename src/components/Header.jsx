@@ -1,12 +1,11 @@
-import { useState } from 'react'
 import { useLocation } from 'react-router-dom'
+import { useMode } from '../ModeContext'
 import './Header.css'
 
-// CINC east app icon (from Figma)
 const CINC_ICON = 'https://www.figma.com/api/mcp/asset/866d98ff-311b-47f8-88af-f2fb6077ab28'
 
 export default function Header() {
-  const [isBoard, setIsBoard] = useState(true)
+  const { isBoard, setIsBoard } = useMode()
   const { pathname } = useLocation()
 
   const screenTitle = {

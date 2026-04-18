@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useMode } from '../ModeContext'
 import './Feed.css'
 
 // Figma assets (valid 7 days from extraction)
@@ -10,7 +11,7 @@ const AVATAR_3      = 'https://www.figma.com/api/mcp/asset/a1ed2bc3-e9f8-405a-83
 const AVATAR_4      = 'https://www.figma.com/api/mcp/asset/8f1df21e-40fd-4fb8-9840-df282e425f0d'
 const LINKEDIN_AVT  = 'https://www.figma.com/api/mcp/asset/0bca9ca1-1bee-402d-b063-f060ebe66095'
 
-const POSTS = [
+const BOARD_POSTS = [
   {
     id: 1,
     name: 'Darren Wilson',
@@ -53,22 +54,23 @@ const POSTS = [
 ]
 
 export default function Feed() {
+  const { isBoard } = useMode()
+  return isBoard ? <BoardFeed /> : <ResidentFeed />
+}
+
+/* ── Board Experience Feed ──────────────────────────── */
+function BoardFeed() {
   const [digestDismissed, setDigestDismissed] = useState(false)
 
   return (
     <div className="screen">
       <div className="screen-inner">
 
-        {/* Engage bar */}
         <div className="engage-bar">
           <span className="engage-bar__text">Engage with Fellow Board Members</span>
-          <div className="engage-bar__icons">
-            <FilterIcon />
-            <SortIcon />
-          </div>
+          <div className="engage-bar__icons"><FilterIcon /><SortIcon /></div>
         </div>
 
-        {/* Alert banner */}
         <div className="alert-banner">
           <BellAlertIcon />
           <p className="alert-banner__text">
@@ -77,7 +79,6 @@ export default function Feed() {
           <ChevronRightIcon />
         </div>
 
-        {/* CephAI Digest */}
         {!digestDismissed && (
           <div className="digest-card">
             <div className="digest-card__header">
@@ -88,17 +89,9 @@ export default function Feed() {
                   <p className="digest-card__time">Now</p>
                 </div>
               </div>
-              <button
-                className="digest-card__close"
-                onClick={() => setDigestDismissed(true)}
-                aria-label="Dismiss"
-              >
-                ✕
-              </button>
+              <button className="digest-card__close" onClick={() => setDigestDismissed(true)} aria-label="Dismiss">✕</button>
             </div>
-
             <p className="digest-card__title">Hello John, Your Daily Digest is ready</p>
-
             <div className="digest-card__body">
               <p>Since your last login, new invoices, ACC requests, and compliance updates have been processed and are ready for your review.</p>
               <p className="digest-card__bold">Today, your attention is needed for the following:</p>
@@ -110,15 +103,105 @@ export default function Feed() {
                 <li>Review the board meeting agenda</li>
               </ul>
             </div>
+            <button className="cta-btn">LET'S DO THIS</button>
+          </div>
+        )}
 
-            <button className="cta-btn">Let's Do This</button>
+        {BOARD_POSTS.map(post => <PostCard key={post.id} post={post} />)}
+      </div>
+    </div>
+  )
+}
+
+/* ── Resident Experience Feed ───────────────────────── */
+const RESIDENT_ANNOUNCEMENTS = [
+  { id: 'a1', emoji: '📅', text: 'Board Meeting — May 6 at 5:30 PM via Zoom' },
+  { id: 'a2', emoji: '💧', text: 'Pool reopens May 1 — new hours 8 AM–9 PM' },
+  { id: 'a3', emoji: '🚛', text: 'Bulk trash pickup on April 25 — place items by 7 AM' },
+]
+
+const RESIDENT_POSTS = [
+  {
+    id: 'r1',
+    name: 'Darren Wilson',
+    initials: 'DW',
+    time: '5 minutes ago',
+    isBoardMember: true,
+    title: 'Important Decisions Ahead for Our Next Board Meeting',
+    body: 'As we prepare for our upcoming board meeting, there are several important decisions on the table that will shape the direction of our community. Your input and awareness are key.',
+    image: null,
+    likes: 5,
+    comments: 11,
+    avatarImg: AVATAR_1,
+  },
+  {
+    id: 'r2',
+    name: 'Lisa Thomas',
+    initials: 'LT',
+    time: '1 Day Ago',
+    isBoardMember: true,
+    title: 'RV Parked on Sidewalk Under Review',
+    body: 'An RV parked on the sidewalk has been identified and is currently under review. Updates will follow as needed.',
+    image: RV_PHOTO,
+    likes: 5,
+    comments: 11,
+    avatarImg: AVATAR_2,
+  },
+]
+
+function ResidentFeed() {
+  const [digestDismissed, setDigestDismissed] = useState(false)
+
+  return (
+    <div className="screen">
+      <div className="screen-inner">
+
+        <div className="engage-bar">
+          <span className="engage-bar__text">Engage with Your Community</span>
+          <div className="engage-bar__icons"><FilterIcon /><SortIcon /></div>
+        </div>
+
+        {/* Announcements strip */}
+        <div className="announcements-strip">
+          {RESIDENT_ANNOUNCEMENTS.map(a => (
+            <div key={a.id} className="announcement-item">
+              <span className="announcement-item__emoji">{a.emoji}</span>
+              <span className="announcement-item__text">{a.text}</span>
+              <ChevronRightSmallIcon />
+            </div>
+          ))}
+        </div>
+
+        {/* CephAI resident digest */}
+        {!digestDismissed && (
+          <div className="digest-card">
+            <div className="digest-card__header">
+              <div className="digest-card__author">
+                <img src={CEPHAI_LOGO} alt="CephAI" className="digest-card__logo" />
+                <div>
+                  <p className="digest-card__name">CephAi</p>
+                  <p className="digest-card__time">Now</p>
+                </div>
+              </div>
+              <button className="digest-card__close" onClick={() => setDigestDismissed(true)} aria-label="Dismiss">✕</button>
+            </div>
+            <p className="digest-card__title">Hello Sarah, here's what's happening in Cardinal Hills</p>
+            <div className="digest-card__body">
+              <p>Your community has new announcements and upcoming events to keep you informed.</p>
+              <p className="digest-card__bold">Quick updates for you:</p>
+              <ul className="digest-card__list">
+                <li>Your April dues are paid — next due May 1</li>
+                <li>ACC request for patio cover approved</li>
+                <li>3 new community announcements</li>
+                <li>Board meeting agenda now available</li>
+              </ul>
+            </div>
+            <button className="cta-btn">LET'S DO THIS</button>
           </div>
         )}
 
         {/* Post feed */}
-        {POSTS.map(post => (
-          <PostCard key={post.id} post={post} />
-        ))}
+        {RESIDENT_POSTS.map(post => <PostCard key={post.id} post={post} />)}
 
       </div>
     </div>
@@ -219,6 +302,13 @@ function BellAlertIcon() {
 function ChevronRightIcon() {
   return (
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#112719" strokeWidth="2.5" strokeLinecap="round" style={{flexShrink:0}}>
+      <path d="M9 18l6-6-6-6"/>
+    </svg>
+  )
+}
+function ChevronRightSmallIcon() {
+  return (
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" style={{flexShrink:0}}>
       <path d="M9 18l6-6-6-6"/>
     </svg>
   )
