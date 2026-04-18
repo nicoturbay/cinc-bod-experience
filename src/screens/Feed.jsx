@@ -2,14 +2,13 @@ import { useState } from 'react'
 import { useMode } from '../ModeContext'
 import './Feed.css'
 
-// Figma assets (valid 7 days from extraction)
-const CEPHAI_LOGO   = 'https://www.figma.com/api/mcp/asset/83bdb008-2873-425f-88f0-b4290762d291'
-const RV_PHOTO      = 'https://www.figma.com/api/mcp/asset/76b3a23d-8da3-4de0-93b8-66aa165a49c1'
-const AVATAR_1      = 'https://www.figma.com/api/mcp/asset/e728bdce-9abf-4948-8906-4a0005fe0ffd'
-const AVATAR_2      = 'https://www.figma.com/api/mcp/asset/88bea4a5-b071-44f4-a690-1f7507b235d7'
-const AVATAR_3      = 'https://www.figma.com/api/mcp/asset/a1ed2bc3-e9f8-405a-8322-64131508072c'
-const AVATAR_4      = 'https://www.figma.com/api/mcp/asset/8f1df21e-40fd-4fb8-9840-df282e425f0d'
-const LINKEDIN_AVT  = 'https://www.figma.com/api/mcp/asset/0bca9ca1-1bee-402d-b063-f060ebe66095'
+const CEPHAI_LOGO   = '/images/cephai-logo.svg'
+const RV_PHOTO      = '/images/rv-photo.jpg'
+const AVATAR_1      = '/images/avatar-1.jpg'
+const AVATAR_2      = '/images/avatar-2.jpg'
+const AVATAR_3      = '/images/avatar-3.jpg'
+const AVATAR_4      = '/images/avatar-4.jpg'
+const LINKEDIN_AVT  = '/images/avatar-linkedin.jpg'
 
 const BOARD_POSTS = [
   {

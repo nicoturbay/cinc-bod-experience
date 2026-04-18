@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { useMode } from '../ModeContext'
 import './BottomNav.css'
 
-const CEPHAI_LOGO = 'https://www.figma.com/api/mcp/asset/83bdb008-2873-425f-88f0-b4290762d291'
+const CEPHAI_LOGO = '/images/cephai-logo.svg'
 
 const LEFT_NAV  = [
   { to: '/',      label: 'Board Feed', icon: FeedIcon },

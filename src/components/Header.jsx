@@ -1,12 +1,19 @@
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { useMode } from '../ModeContext'
 import './Header.css'
 
-const CINC_ICON = 'https://www.figma.com/api/mcp/asset/866d98ff-311b-47f8-88af-f2fb6077ab28'
+const CINC_ICON = '/images/cinc-icon.png'
 
 export default function Header() {
   const { isBoard, setIsBoard } = useMode()
   const { pathname } = useLocation()
+  const navigate = useNavigate()
+
+  function handleLogoReset() {
+    setIsBoard(false)
+    localStorage.removeItem('boardWelcomeDismissed')
+    navigate('/')
+  }
 
   const screenTitle = {
     '/':       null,
@@ -19,9 +26,9 @@ export default function Header() {
     <header className="app-header">
       <div className="app-header__inner">
         <div className="app-header__left">
-          <div className="app-header__logo">
+          <button className="app-header__logo" onClick={handleLogoReset} aria-label="Reset app">
             <img src={CINC_ICON} alt="CINC" />
-          </div>
+          </button>
           <div className="app-header__hoa">
             <span className="app-header__hoa-name">Cardinal Hills HOA</span>
             {screenTitle && <span className="app-header__screen">{screenTitle}</span>}

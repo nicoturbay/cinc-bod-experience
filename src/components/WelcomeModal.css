@@ -1,0 +1,135 @@
+/* ── Overlay ─────────────────────────────────────────── */
+.welcome-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 200;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+/* ── Modal card ──────────────────────────────────────── */
+.welcome-modal {
+  background: #1d1d1d;
+  border-radius: 20px;
+  padding: 32px 24px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+  max-width: 340px;
+}
+
+/* ── Title ───────────────────────────────────────────── */
+.welcome-modal__title {
+  font-size: 26px;
+  font-weight: 800;
+  color: #b2de61;
+  text-align: center;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+}
+
+/* ── Subtitle ────────────────────────────────────────── */
+.welcome-modal__subtitle {
+  font-size: 13px;
+  font-weight: 400;
+  color: #fff8ea;
+  text-align: center;
+  line-height: 1.55;
+  opacity: 0.85;
+}
+
+/* ── Feature list ────────────────────────────────────── */
+.welcome-modal__features {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
+.welcome-modal__feature {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.welcome-modal__feature-icon {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1px;
+  color: #b2de61;
+}
+
+.welcome-modal__cephai-logo {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+
+.welcome-modal__feature-text {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.welcome-modal__feature-text strong {
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff8ea;
+}
+
+.welcome-modal__feature-text span {
+  font-size: 12px;
+  font-weight: 400;
+  color: rgba(255, 248, 234, 0.65);
+  line-height: 1.5;
+}
+
+/* ── CTA button ──────────────────────────────────────── */
+.welcome-modal__cta {
+  width: 100%;
+  padding: 16px;
+  border-radius: 10px;
+  background: #b2de61;
+  color: #112719;
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-align: center;
+  transition: opacity 0.15s;
+  margin-top: 4px;
+}
+.welcome-modal__cta:active {
+  opacity: 0.85;
+}
+
+/* ── Don't show checkbox ─────────────────────────────── */
+.welcome-modal__dont-show {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.welcome-modal__dont-show input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: #b2de61;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.welcome-modal__dont-show span {
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255, 248, 234, 0.6);
+}
