@@ -1,17 +1,21 @@
 .app-header {
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  z-index: 100;
-  height: var(--header-height);
-  background: var(--white);
-  border-bottom: 1px solid var(--gray-light);
+  z-index: 50;
+  background: var(--bg-header);
+  height: var(--header-h);
+  display: flex;
+  flex-direction: column;
+}
+
+.app-header__inner {
+  flex: 1;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 16px;
-  box-shadow: var(--shadow-sm);
 }
 
 .app-header__left {
@@ -21,84 +25,111 @@
 }
 
 .app-header__logo {
-  display: flex;
-  align-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.app-header__logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
-.app-header__title {
+.app-header__hoa {
   display: flex;
   flex-direction: column;
-  line-height: 1.2;
+  gap: 2px;
 }
-
-.app-header__greeting {
+.app-header__hoa-name {
+  font-size: 15px;
+  font-weight: 400;
+  color: var(--text);
+  white-space: nowrap;
+}
+.app-header__screen {
   font-size: 11px;
-  font-weight: 500;
-  color: var(--text-muted);
-  letter-spacing: 0.02em;
-}
-
-.app-header__name {
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--green-dark);
-  letter-spacing: -0.01em;
-}
-
-.app-header__page {
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--green-dark);
-  letter-spacing: -0.01em;
-}
-
-.app-header__sub {
-  font-size: 11px;
-  font-weight: 500;
   color: var(--text-muted);
 }
 
 .app-header__right {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
 }
 
-.app-header__icon-btn {
+/* Board/Resident Toggle */
+.board-toggle {
+  cursor: pointer;
+  padding: 0;
+}
+.board-toggle__track {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--lime-dim);
+  border-radius: var(--radius-full);
+  padding: 4px 10px 4px 4px;
+  height: 33px;
+}
+.board-toggle--resident .board-toggle__track {
+  background: #4a4a4a;
+}
+.board-toggle__thumb {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-dark);
+  flex-shrink: 0;
+  transition: background 0.2s;
+}
+.board-toggle--board .board-toggle__thumb { color: var(--text-dark); }
+.board-toggle--resident .board-toggle__thumb { color: #555; }
+
+.board-toggle__label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-dark);
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+.board-toggle--resident .board-toggle__label { color: var(--text); }
+
+/* Notification Bell */
+.notif-btn {
   position: relative;
   width: 36px;
   height: 36px;
-  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--text-secondary);
-  background: var(--gray-bg);
-  transition: background 0.15s;
+  color: var(--text);
 }
-.app-header__icon-btn:active { background: var(--gray-light); }
-
-.app-header__dot {
+.notif-btn__badge {
   position: absolute;
-  top: 7px;
-  right: 7px;
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--red);
-  border: 2px solid var(--white);
-}
-
-.app-header__avatar {
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  background: var(--green-dark);
-  color: var(--white);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.04em;
+  top: 2px;
+  right: 2px;
+  min-width: 16px;
+  height: 16px;
+  border-radius: 8px;
+  background: #e53e3e;
+  color: white;
+  font-size: 9px;
+  font-weight: 800;
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 0 3px;
+  border: 1.5px solid var(--bg-header);
+}
+
+.app-header__divider {
+  height: 1px;
+  background: rgba(255,255,255,0.12);
+  margin: 0;
 }

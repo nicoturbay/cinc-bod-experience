@@ -1,0 +1,121 @@
+.tasks-summary {
+  display: flex;
+  align-items: center;
+  padding: 16px 0;
+}
+.tasks-summary__stat {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+.tasks-summary__num {
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 1;
+}
+.tasks-summary__lbl {
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+.tasks-summary__div {
+  width: 1px;
+  height: 40px;
+  background: var(--border);
+}
+
+/* Filter tabs */
+.tasks-tabs {
+  display: flex;
+  background: rgba(255,255,255,0.06);
+  border-radius: var(--radius-md);
+  padding: 3px;
+  gap: 2px;
+}
+.tasks-tab {
+  flex: 1;
+  padding: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  border-radius: calc(var(--radius-md) - 3px);
+  transition: all 0.15s;
+}
+.tasks-tab--active {
+  background: var(--bg-card);
+  color: var(--text);
+}
+
+/* Task rows */
+.task-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 13px 16px;
+  transition: opacity 0.2s;
+}
+.task-row--done {
+  opacity: 0.45;
+}
+
+.task-check {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 1.5px solid var(--text-muted);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2px;
+  transition: all 0.15s;
+  color: var(--text-dark);
+}
+.task-check--done {
+  background: var(--lime);
+  border-color: var(--lime);
+}
+
+.task-row__info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.task-row__type-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.task-row__emoji { font-size: 13px; }
+.task-row__type {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.task-row__amount {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--lime);
+}
+.task-row__title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.4;
+}
+.task-row__due {
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.tasks-empty {
+  padding: 32px 16px;
+  text-align: center;
+  font-size: 14px;
+  color: var(--text-muted);
+}

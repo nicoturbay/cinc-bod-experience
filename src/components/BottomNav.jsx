@@ -1,74 +1,113 @@
-import { NavLink } from 'react-router-dom'
+import { NavLink, useLocation } from 'react-router-dom'
 import './BottomNav.css'
 
-const NAV = [
-  { to: '/',           label: 'Home',       icon: HomeIcon },
-  { to: '/meetings',   label: 'Meetings',   icon: MeetingsIcon },
-  { to: '/financials', label: 'Financials', icon: FinancialsIcon },
-  { to: '/approvals',  label: 'Approvals',  icon: ApprovalsIcon },
-  { to: '/documents',  label: 'Documents',  icon: DocumentsIcon },
+const LEFT_NAV  = [
+  { to: '/',      label: 'Board Feed', icon: FeedIcon },
+  { to: '/pulse', label: 'Pulse',      icon: PulseIcon },
+]
+const RIGHT_NAV = [
+  { to: '/tasks', label: 'Tasks', icon: TasksIcon },
+  { to: '/more',  label: 'More',  icon: MoreIcon },
 ]
 
 export default function BottomNav() {
+  const { pathname } = useLocation()
+  const isCenter = false // center button never "active" by route
+
   return (
     <nav className="bottom-nav">
-      {NAV.map(({ to, label, icon: Icon }) => (
-        <NavLink
-          key={to}
-          to={to}
-          end={to === '/'}
-          className={({ isActive }) => `bottom-nav__item${isActive ? ' bottom-nav__item--active' : ''}`}
-        >
-          <span className="bottom-nav__icon"><Icon /></span>
-          <span className="bottom-nav__label">{label}</span>
-        </NavLink>
-      ))}
+      {/* Arch background shape */}
+      <div className="bottom-nav__bg" />
+
+      {/* Left items */}
+      <div className="bottom-nav__side">
+        {LEFT_NAV.map(({ to, label, icon: Icon }) => (
+          <NavLink
+            key={to}
+            to={to}
+            end={to === '/'}
+            className={({ isActive }) =>
+              `nav-item${isActive ? ' nav-item--active' : ''}`
+            }
+          >
+            <span className="nav-item__icon"><Icon /></span>
+            <span className="nav-item__label">{label}</span>
+          </NavLink>
+        ))}
+      </div>
+
+      {/* Center CINC button */}
+      <div className="bottom-nav__center-slot">
+        <button className="center-btn" aria-label="CINC">
+          <CincLogo />
+        </button>
+      </div>
+
+      {/* Right items */}
+      <div className="bottom-nav__side">
+        {RIGHT_NAV.map(({ to, label, icon: Icon }) => (
+          <NavLink
+            key={to}
+            to={to}
+            className={({ isActive }) =>
+              `nav-item${isActive ? ' nav-item--active' : ''}`
+            }
+          >
+            <span className="nav-item__icon"><Icon /></span>
+            <span className="nav-item__label">{label}</span>
+          </NavLink>
+        ))}
+      </div>
     </nav>
   )
 }
 
-function HomeIcon() {
+/* ── CINC Logo ────────────────────────────────────── */
+function CincLogo() {
   return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-      <polyline points="9 22 9 12 15 12 15 22"/>
+    <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+      <path d="M20 4 L34 14 L34 28 L20 36 L6 28 L6 14 Z" fill="none" stroke="#b2de61" strokeWidth="1.5"/>
+      <path d="M20 8 L20 32 M12 12 L28 12 M12 28 L28 28" stroke="#b2de61" strokeWidth="1.5" strokeLinecap="round"/>
+      <circle cx="20" cy="20" r="4" fill="#b2de61"/>
+      <path d="M20 16 L24 20 L20 24 L16 20 Z" fill="#1a1a1a"/>
     </svg>
   )
 }
-function MeetingsIcon() {
+
+/* ── Nav Icons ────────────────────────────────────── */
+function FeedIcon() {
   return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-      <line x1="16" y1="2" x2="16" y2="6"/>
-      <line x1="8" y1="2" x2="8" y2="6"/>
-      <line x1="3" y1="10" x2="21" y2="10"/>
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+      <path d="M3 12h3M3 6h3M3 18h3"/>
+      <path d="M9 12h3M9 6h3M9 18h3"/>
+      <path d="M15 8v8M18 5v14M21 9v6"/>
     </svg>
   )
 }
-function FinancialsIcon() {
+
+function PulseIcon() {
   return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <line x1="12" y1="1" x2="12" y2="23"/>
-      <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="2" y="3" width="4" height="18" rx="1"/>
+      <rect x="10" y="8" width="4" height="13" rx="1"/>
+      <rect x="18" y="13" width="4" height="8" rx="1"/>
     </svg>
   )
 }
-function ApprovalsIcon() {
+
+function TasksIcon() {
   return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
       <path d="M9 11l3 3L22 4"/>
-      <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+      <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
     </svg>
   )
 }
-function DocumentsIcon() {
+
+function MoreIcon() {
   return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-      <polyline points="14 2 14 8 20 8"/>
-      <line x1="16" y1="13" x2="8" y2="13"/>
-      <line x1="16" y1="17" x2="8" y2="17"/>
-      <polyline points="10 9 9 9 8 9"/>
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+      <path d="M4 6h16M4 12h16M4 18h16"/>
     </svg>
   )
 }

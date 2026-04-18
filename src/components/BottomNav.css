@@ -1,53 +1,123 @@
 .bottom-nav {
-  position: fixed;
+  position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
-  z-index: 100;
-  height: var(--nav-height);
-  background: var(--white);
-  border-top: 1px solid var(--gray-light);
+  height: var(--nav-h);
+  z-index: 50;
   display: flex;
-  align-items: stretch;
-  box-shadow: 0 -4px 16px rgba(25,57,39,0.08);
-
-  /* Safe area for iPhone home indicator */
+  align-items: flex-end;
   padding-bottom: env(safe-area-inset-bottom, 0);
 }
 
-.bottom-nav__item {
+/* ── Arch background ────────────────────────────────── */
+.bottom-nav__bg {
+  position: absolute;
+  inset: 0;
+  /* Arch shape using radial gradient to cut out center */
+  background:
+    radial-gradient(ellipse 72px 52px at 50% 0%, transparent 98%, var(--bg-nav) 100%)
+    center top / 100% 100% no-repeat,
+    var(--bg-nav);
+  border-radius: 20px 20px 0 0;
+}
+
+/* ── Sides (2 items each) ───────────────────────────── */
+.bottom-nav__side {
+  position: relative;
   flex: 1;
   display: flex;
-  flex-direction: column;
   align-items: center;
+  height: 72px;
+  z-index: 1;
+}
+
+.bottom-nav__side:first-of-type {
+  justify-content: space-around;
+  padding-left: 8px;
+  padding-right: 4px;
+}
+
+.bottom-nav__side:last-of-type {
+  justify-content: space-around;
+  padding-left: 4px;
+  padding-right: 8px;
+}
+
+/* ── Center slot ────────────────────────────────────── */
+.bottom-nav__center-slot {
+  position: relative;
+  width: 100px;
+  height: 72px;
+  display: flex;
+  align-items: flex-start;
   justify-content: center;
-  gap: 3px;
-  color: var(--gray-dark);
-  transition: color 0.15s;
-  padding-top: 6px;
+  padding-top: 0px;
+  flex-shrink: 0;
+  z-index: 2;
 }
 
-.bottom-nav__item:active {
-  background: var(--gray-bg);
-}
-
-.bottom-nav__item--active {
-  color: var(--green-lime);
-}
-
-.bottom-nav__icon {
+/* ── Center CINC button ─────────────────────────────── */
+.center-btn {
+  position: absolute;
+  top: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  background: var(--bg-page);
   display: flex;
   align-items: center;
   justify-content: center;
   transition: transform 0.15s;
 }
-
-.bottom-nav__item--active .bottom-nav__icon {
-  transform: translateY(-1px);
+.center-btn:active {
+  transform: translateX(-50%) scale(0.95);
 }
 
-.bottom-nav__label {
-  font-size: 10px;
-  font-weight: 600;
+.center-btn::after {
+  content: '';
+  position: absolute;
+  inset: 5px;
+  border-radius: 50%;
+  background: #1a1a1a;
+  z-index: -1;
+}
+
+/* ── Nav items ──────────────────────────────────────── */
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 6px 10px 4px;
+  color: rgba(255,255,255,0.35);
+  transition: color 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.nav-item--active {
+  color: var(--text);
+}
+
+.nav-item__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-item--active .nav-item__icon svg {
+  stroke: var(--lime);
+}
+
+.nav-item__label {
+  font-size: 9px;
+  font-weight: 500;
   letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.nav-item--active .nav-item__label {
+  color: white;
 }

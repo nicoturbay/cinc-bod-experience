@@ -1,0 +1,116 @@
+.pulse-title-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+.pulse-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--lime);
+  line-height: 1.3;
+}
+.pulse-sub {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+.pulse-filter-btn {
+  color: var(--text-muted);
+  padding: 6px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+/* Stats grid */
+.pulse-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.pulse-stat {
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.pulse-stat__label {
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--text);
+  line-height: 1.4;
+  margin-bottom: 4px;
+}
+.pulse-stat__value {
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 1.1;
+}
+.pulse-stat__value--red    { color: var(--red); }
+.pulse-stat__value--green  { color: var(--green); }
+.pulse-stat__value--white  { color: var(--text); }
+.pulse-stat__value--amber  { color: var(--amber); }
+
+.pulse-stat__sub {
+  font-size: 9px;
+  font-weight: 300;
+  line-height: 1.4;
+  margin-top: 3px;
+}
+.pulse-stat__sub--red    { color: var(--red); }
+.pulse-stat__sub--green  { color: var(--green-cure); }
+.pulse-stat__sub--amber  { color: var(--amber); }
+.pulse-stat__sub--muted  { color: var(--text); }
+.pulse-stat__sub--white  { color: var(--text); }
+
+/* Violations chart */
+.violations-card {
+  overflow: hidden;
+}
+
+.violations-chart {
+  padding: 10px 16px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.violations-chart__row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 0;
+}
+
+.violations-chart__month {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-muted);
+  width: 28px;
+  flex-shrink: 0;
+}
+
+.violations-chart__bar-wrap {
+  flex: 1;
+  height: 10px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.violations-chart__bar {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.6s ease;
+}
+
+.violations-chart__count {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-muted);
+  width: 24px;
+  text-align: right;
+  flex-shrink: 0;
+}

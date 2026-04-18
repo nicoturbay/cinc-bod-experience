@@ -1,0 +1,285 @@
+/* ── Engage bar ─────────────────────────────────────── */
+.engage-bar {
+  display: flex;
+  align-items: center;
+  background: var(--bg-card);
+  border-radius: var(--radius-sm);
+  padding: 0 12px;
+  height: 48px;
+  gap: 8px;
+}
+.engage-bar__text {
+  flex: 1;
+  font-size: 14px;
+  font-weight: 500;
+  color: rgba(255,248,234,0.5);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.engage-bar__icons {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--text-muted);
+}
+
+/* ── Alert banner ───────────────────────────────────── */
+.alert-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--amber);
+  border-radius: var(--radius-md);
+  padding: 14px 12px;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+.alert-banner:active { opacity: 0.85; }
+
+.alert-banner__text {
+  flex: 1;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-dark);
+  line-height: 1.4;
+}
+
+/* ── CephAI Digest card ─────────────────────────────── */
+.digest-card {
+  background: var(--bg-card-alt);
+  border: 0.5px solid var(--lime-border);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-shadow: var(--shadow);
+}
+
+.digest-card__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+.digest-card__author {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.digest-card__logo {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  object-fit: contain;
+  background: transparent;
+}
+.digest-card__name {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--lime);
+  text-transform: capitalize;
+}
+.digest-card__time {
+  font-size: 10px;
+  font-weight: 400;
+  color: var(--text);
+  margin-top: 2px;
+}
+.digest-card__close {
+  color: var(--text-muted);
+  font-size: 14px;
+  padding: 4px 6px;
+  line-height: 1;
+}
+
+.digest-card__title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--lime);
+  line-height: 1.4;
+}
+
+.digest-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.digest-card__body p {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  line-height: 1.55;
+}
+.digest-card__bold {
+  font-weight: 700 !important;
+}
+.digest-card__list {
+  list-style: disc;
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.digest-card__list li {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  line-height: 1.55;
+}
+
+/* ── Post card ──────────────────────────────────────── */
+.post-card {
+  overflow: hidden;
+}
+
+.post-card__header {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 14px 14px 0;
+}
+
+.post-avatar-wrap {
+  position: relative;
+  flex-shrink: 0;
+  width: 50px;
+  height: 50px;
+}
+.post-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 12px;
+  object-fit: cover;
+}
+.post-bm-badge {
+  position: absolute;
+  bottom: -4px;
+  right: -6px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--lime);
+  color: var(--text-dark);
+  font-size: 8px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--bg-card);
+}
+
+.post-card__meta {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.post-card__name {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--lime);
+  text-transform: capitalize;
+}
+.post-card__time {
+  font-size: 10px;
+  font-weight: 400;
+  color: var(--text);
+}
+.post-card__menu {
+  color: var(--text-muted);
+  padding: 4px;
+}
+
+.post-card__content {
+  padding: 10px 14px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.post-card__title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.4;
+}
+.post-card__body {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  line-height: 1.6;
+}
+
+.post-card__image {
+  width: 100%;
+  max-height: 220px;
+  overflow: hidden;
+}
+.post-card__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ── Social row ─────────────────────────────────────── */
+.post-social {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px 12px;
+  gap: 8px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+.post-social__left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  flex: 1;
+}
+
+.post-social__avatars {
+  display: flex;
+  flex-shrink: 0;
+}
+.post-social__av {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1.5px solid var(--bg-card);
+  margin-left: -6px;
+}
+.post-social__av:first-child { margin-left: 0; }
+
+.post-social__liked-by {
+  font-size: 10px;
+  font-weight: 300;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.post-social__liked-by strong {
+  font-weight: 700;
+}
+
+.post-social__actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+.post-social__btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--lime);
+  font-size: 13px;
+  font-weight: 300;
+  padding: 4px 0;
+}
+.post-social__btn--liked {
+  color: #df434f;
+}
