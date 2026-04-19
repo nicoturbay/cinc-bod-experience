@@ -17,10 +17,11 @@
   inset: 0;
   /* Arch shape using radial gradient to cut out center */
   background:
-    radial-gradient(ellipse 80px 58px at 50% 0%, transparent 98%, var(--bg-nav) 100%)
+    radial-gradient(ellipse 96px 62px at 50% 0%, transparent 98%, var(--bg-nav) 100%)
     center top / 100% 100% no-repeat,
     var(--bg-nav);
   border-radius: 20px 20px 0 0;
+  box-shadow: 0 -12px 32px rgba(0, 0, 0, 0.35);
 }
 
 /* ── Sides (2 items each) ───────────────────────────── */
@@ -51,11 +52,11 @@
 /* ── Center CINC button ─────────────────────────────── */
 .center-btn {
   position: absolute;
-  top: -34px;
+  top: -20px;
   left: 50%;
   transform: translateX(-50%);
-  width: 76px;
-  height: 76px;
+  width: 88px;
+  height: 88px;
   border-radius: 50%;
   background: var(--bg-page);
   display: flex;
@@ -77,8 +78,8 @@
 }
 
 .center-btn__logo {
-  width: 48px;
-  height: 48px;
+  width: 58px;
+  height: 58px;
   object-fit: contain;
   border-radius: 50%;
   position: relative;
@@ -104,6 +105,7 @@
   inset: 0;
   background: var(--bg-nav);
   border-radius: 20px 20px 0 0;
+  box-shadow: 0 -12px 32px rgba(0, 0, 0, 0.35);
 }
 
 .resident-nav__item {
@@ -153,7 +155,7 @@
   -webkit-tap-highlight-color: transparent;
 }
 
-/* Inactive: plain circle slot, cream color */
+/* Inactive: larger slot, cream color, no background */
 .nav-item__icon {
   width: 42px;
   height: 42px;
@@ -161,26 +163,72 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.15s, color 0.15s;
+  transition: background 0.15s, color 0.15s, width 0.15s, height 0.15s;
   color: #FFF8EA;
 }
 
-/* Active: lime circle, dark icon */
+/* Active: lime circle, dark icon — same size as inactive */
 .nav-item--active .nav-item__icon {
   background: #B2DE61;
   color: #112719;
+  width: 42px;
+  height: 42px;
 }
 
-/* Label — hidden by default, shown only when active */
+/* Label — always reserves space, only visible when active */
 .nav-item__label {
   font-size: 9px;
   font-weight: 600;
   letter-spacing: 0.02em;
   white-space: nowrap;
   color: #FFF8EA;
-  display: none;
+  visibility: hidden;
+  line-height: 1;
 }
 
 .nav-item--active .nav-item__label {
-  display: block;
+  visibility: visible;
+}
+
+/* ── CephAI ring-trace overlay ──────────────────────── */
+.center-btn-ring {
+  position: absolute;
+  top: -24px;          /* button top: -20px, minus 4px for ring clearance */
+  left: 50%;
+  transform: translateX(-50%);
+  pointer-events: none;
+  z-index: 3;
+}
+
+.ring-circle {
+  stroke-dasharray: 276.46;
+  stroke-dashoffset: 276.46;
+  animation: ring-draw 1.5s ease-in-out forwards;
+}
+
+.ring-circle--long {
+  animation-duration: 6.3s;
+}
+
+@keyframes ring-draw {
+  0% {
+    stroke-dashoffset: 276.46;
+    opacity: 1;
+    filter: none;
+  }
+  65% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+    filter: none;
+  }
+  82% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+    filter: drop-shadow(0 0 6px rgba(178, 222, 97, 0.95));
+  }
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 0;
+    filter: drop-shadow(0 0 2px rgba(178, 222, 97, 0));
+  }
 }

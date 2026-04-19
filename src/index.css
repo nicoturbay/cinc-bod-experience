@@ -96,9 +96,19 @@ p { margin: 0; }
   height: min(100dvh, var(--phone-h));
   background: var(--bg-page);
   overflow: hidden;
-  /* On desktop show as phone */
-  border-radius: clamp(0px, calc((100vw - var(--phone-w)) * 100), 44px);
+  /* On desktop show as phone emulator */
+  border-radius: 44px;
   box-shadow: 0 32px 80px rgba(0,0,0,0.6);
+}
+
+/* ── Mobile: full screen, no frame ─────────────────── */
+@media (max-width: 500px) {
+  .phone-frame {
+    width: 100vw;
+    height: 100dvh;
+    border-radius: 0;
+    box-shadow: none;
+  }
 }
 
 /* ── Screen layout ──────────────────────────────────── */

@@ -38,7 +38,10 @@ export default function Header() {
         <div className="app-header__right">
           <button
             className={`mode-toggle ${isBoard ? 'mode-toggle--board' : 'mode-toggle--resident'}`}
-            onClick={() => setIsBoard(b => !b)}
+            onClick={() => {
+              if (isBoard) navigate('/')
+              setIsBoard(b => !b)
+            }}
             aria-label="Switch mode"
           >
             <div className="mode-toggle__thumb" />

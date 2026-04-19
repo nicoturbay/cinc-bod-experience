@@ -1,3 +1,72 @@
+/* ── Period dropdown ─────────────────────────────────── */
+.period-dropdown {
+  position: relative;
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+
+.period-trigger {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 10px;
+  border-radius: 20px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  transition: border-color 0.15s;
+}
+.period-trigger--open {
+  border-color: var(--lime);
+  color: var(--lime);
+}
+
+.period-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 50;
+  min-width: 160px;
+  background: #1a2b1d;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+  padding: 6px 0;
+}
+
+.period-menu__group {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding: 8px 14px 3px;
+}
+
+.period-menu__item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+  transition: background 0.1s;
+}
+.period-menu__item:active {
+  background: rgba(255,255,255,0.05);
+}
+.period-menu__item--active {
+  color: var(--lime);
+  font-weight: 700;
+}
+
+/* ── Page header ─────────────────────────────────────── */
 .pulse-title-row {
   display: flex;
   align-items: flex-start;
@@ -23,7 +92,54 @@
   margin-top: 2px;
 }
 
-/* Stats grid */
+/* ── Section label ───────────────────────────────────── */
+.section-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+}
+
+/* ── Card footer CTA ─────────────────────────────────── */
+.card-cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  width: 100%;
+  padding: 11px 16px;
+  border-top: 1px solid var(--border);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--lime);
+  letter-spacing: 0.02em;
+}
+
+/* ── KPI card tap indicator ──────────────────────────── */
+.pulse-stat__arrow {
+  align-self: flex-end;
+  color: var(--text-muted);
+  margin-top: 4px;
+  opacity: 0.55;
+}
+
+/* ── Section header (label only, no See all) ─────────── */
+.pulse-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.pulse-see-all {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--lime);
+  letter-spacing: 0.02em;
+}
+
+/* ── KPI stat grid ───────────────────────────────────── */
 .pulse-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -31,47 +147,285 @@
 }
 
 .pulse-stat {
-  padding: 12px 14px;
+  padding: 14px 14px 12px;
   display: flex;
   flex-direction: column;
   gap: 2px;
+  text-align: left;
 }
 .pulse-stat__label {
   font-size: 10px;
   font-weight: 500;
-  color: var(--text);
+  color: var(--text-muted);
   line-height: 1.4;
-  margin-bottom: 4px;
+  margin-bottom: 2px;
 }
 .pulse-stat__value {
-  font-size: 24px;
+  font-size: 26px;
   font-weight: 400;
+  color: var(--text);
   line-height: 1.1;
 }
-.pulse-stat__value--red    { color: var(--red); }
-.pulse-stat__value--green  { color: var(--green); }
-.pulse-stat__value--white  { color: var(--text); }
-.pulse-stat__value--amber  { color: var(--amber); }
-
-.pulse-stat__sub {
-  font-size: 9px;
-  font-weight: 300;
-  line-height: 1.4;
-  margin-top: 3px;
+.pulse-stat__delta {
+  font-size: 10px;
+  font-weight: 500;
+  margin-top: 4px;
+  line-height: 1.3;
 }
-.pulse-stat__sub--red    { color: var(--red); }
-.pulse-stat__sub--green  { color: var(--green-cure); }
-.pulse-stat__sub--amber  { color: var(--amber); }
-.pulse-stat__sub--muted  { color: var(--text); }
-.pulse-stat__sub--white  { color: var(--text); }
+.pulse-stat__delta--red   { color: #e05c5c; }
+.pulse-stat__delta--green { color: #6bcb77; }
+.pulse-stat__delta--amber { color: var(--amber); }
 
-/* Violations chart */
-.violations-card {
+/* ── Expenses vs Budget ──────────────────────────────── */
+.expenses-card {
+  overflow: hidden;
+  padding: 14px 16px 0;
+}
+
+.expenses-card .card-cta,
+.invoices-card .card-cta {
+  margin: 0 -16px;
+}
+
+.expenses-list {
+  display: flex;
+  flex-direction: column;
+  margin-top: 10px;
+}
+
+.expenses-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 0;
+}
+.expenses-row--border {
+  border-bottom: 1px solid var(--border);
+}
+
+.expenses-row__left {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.expenses-row__name {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.expenses-row__proj {
+  font-size: 10px;
+  font-weight: 400;
+  line-height: 1.4;
+}
+.expenses-row__proj--red   { color: #e05c5c; }
+.expenses-row__proj--amber { color: #ffb74d; }
+
+.expenses-row__actual {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+  flex-shrink: 0;
+  min-width: 64px;
+  text-align: right;
+}
+
+.expenses-row__pill {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  border-radius: 5px;
+  padding: 3px 8px;
+  flex-shrink: 0;
+  min-width: 72px;
+  text-align: center;
+}
+.expenses-row__pill--red   { background: rgba(224,92,92,0.18);   color: #e05c5c; }
+.expenses-row__pill--amber { background: rgba(255,183,77,0.18);  color: #ffb74d; }
+.expenses-row__pill--green { background: rgba(107,203,119,0.18); color: #6bcb77; }
+.expenses-row__pill--muted { background: rgba(255,255,255,0.07); color: var(--text-muted); font-weight: 500; }
+
+/* ── Approved Invoices ───────────────────────────────── */
+.invoices-card {
+  overflow: hidden;
+  padding: 14px 16px 0;
+}
+
+.invoices-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.invoices-count {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--lime);
+  letter-spacing: 0.02em;
+}
+
+.invoices-total {
+  font-size: 28px;
+  font-weight: 400;
+  color: var(--text);
+  line-height: 1.1;
+  margin-bottom: 14px;
+}
+
+.invoices-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.invoices-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 0;
+}
+.invoices-row--border {
+  border-bottom: 1px solid var(--border);
+}
+
+.invoices-row__vendor {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-muted);
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.invoices-row__amount {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text);
+  flex-shrink: 0;
+}
+
+/* ── Bank Balance card ───────────────────────────────── */
+.bank-card {
+  padding: 14px 16px 0;
   overflow: hidden;
 }
 
+.bank-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.bank-card__all-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+}
+
+.bank-card__total {
+  font-size: 28px;
+  font-weight: 400;
+  color: var(--text);
+  line-height: 1.1;
+  margin-bottom: 14px;
+}
+
+.bank-accounts {
+  display: flex;
+  flex-direction: column;
+}
+
+.bank-account {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 0;
+}
+
+.bank-account--border {
+  border-bottom: 1px solid var(--border);
+}
+
+.bank-account__left {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.bank-account__name {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.bank-account__pending {
+  font-size: 10px;
+  font-weight: 500;
+}
+.bank-account__pending--debit  { color: #e05c5c; }
+.bank-account__pending--credit { color: #6bcb77; }
+
+.bank-account__right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 3px;
+  flex-shrink: 0;
+}
+
+.bank-account__balance {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.bank-account__reg-row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.bank-account__reg-label {
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.bank-account__reg-val {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+/* ── Violations card ─────────────────────────────────── */
+.violations-card {
+  overflow: hidden;
+  text-align: left;
+  width: 100%;
+}
+
+.violations-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px 10px;
+  color: var(--text-muted);
+}
+
 .violations-chart {
-  padding: 10px 16px 14px;
+  padding: 2px 16px 14px;
   display: flex;
   flex-direction: column;
   gap: 0;
@@ -84,17 +438,18 @@
   padding: 5px 0;
 }
 
-.violations-chart__month {
-  font-size: 12px;
+.violations-chart__type {
+  font-size: 11px;
   font-weight: 500;
   color: var(--text-muted);
-  width: 28px;
+  width: 96px;
   flex-shrink: 0;
+  text-align: right;
 }
 
 .violations-chart__bar-wrap {
   flex: 1;
-  height: 10px;
+  height: 8px;
   background: rgba(255,255,255,0.06);
   border-radius: 3px;
   overflow: hidden;
@@ -103,14 +458,151 @@
 .violations-chart__bar {
   height: 100%;
   border-radius: 3px;
+  background: var(--lime);
+  opacity: 0.75;
   transition: width 0.6s ease;
 }
 
 .violations-chart__count {
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--text-muted);
-  width: 24px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text);
+  width: 20px;
   text-align: right;
   flex-shrink: 0;
+}
+
+/* ── Agenda card ─────────────────────────────────────── */
+.agenda-card {
+  overflow: hidden;
+  text-align: left;
+  width: 100%;
+}
+
+.agenda-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px 10px;
+  color: var(--text-muted);
+}
+
+.agenda-card__date {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-muted);
+  padding: 0 16px;
+  margin-bottom: 4px;
+}
+
+.agenda-card__meeting {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  padding: 0 16px;
+  margin-bottom: 8px;
+}
+
+.agenda-card__items {
+  list-style: disc;
+  padding: 0 16px 0 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+.agenda-card__items li {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.45;
+}
+
+.agenda-card__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 0 16px 14px;
+}
+
+.agenda-tag {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  border-radius: 4px;
+  padding: 3px 8px;
+}
+.agenda-tag--amber {
+  background: rgba(255, 183, 77, 0.15);
+  color: #ffb74d;
+}
+.agenda-tag--blue {
+  background: rgba(100, 160, 255, 0.15);
+  color: #64a0ff;
+}
+.agenda-tag--red {
+  background: rgba(224, 92, 92, 0.15);
+  color: #e05c5c;
+}
+
+/* ── Delinquency list ────────────────────────────────── */
+.delinquency-list {
+  overflow: hidden;
+  padding: 0;
+}
+
+.delinquency-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 16px;
+  text-align: left;
+}
+
+.delinquency-row--border {
+  border-bottom: 1px solid var(--border);
+}
+
+.delinquency-row__info {
+  flex: 1;
+  min-width: 0;
+}
+
+.delinquency-row__address {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.delinquency-row__name {
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--text-muted);
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.delinquency-tag {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  border-radius: 4px;
+  padding: 3px 8px;
+  flex-shrink: 0;
+}
+.delinquency-tag--red {
+  background: rgba(224, 92, 92, 0.15);
+  color: #e05c5c;
+}
+.delinquency-tag--amber {
+  background: rgba(255, 183, 77, 0.15);
+  color: #ffb74d;
 }

@@ -32,11 +32,9 @@ export default function WelcomeModal({ onClose }) {
   return (
     <div className="welcome-overlay">
       <div className="welcome-modal">
-        <h1 className="welcome-modal__title">WELCOME TO<br />THE BOARD EXPERIENCE</h1>
+        <h1 className="welcome-modal__title">WELCOME TO<br />YOUR BOARD EXPERIENCE</h1>
         <p className="welcome-modal__subtitle">
-          No more waiting for the monthly packet.<br />
-          Everything your board needs to know, and act on<br />
-          is live, in your pocket, right now.
+          No more waiting for the monthly packet. Everything your board needs to know, and act on is live, in your pocket, right now.
         </p>
 
         <div className="welcome-modal__features">
@@ -66,7 +64,7 @@ export default function WelcomeModal({ onClose }) {
             </span>
             <div className="welcome-modal__feature-text">
               <strong>AI companion</strong>
-              <span>Ask anything about your community. CephAI reads every screen and answers in plain language.</span>
+              <span>Ask CephAi anything about your community. When it's pulsating, CephAi is actively analyzing and ready to provide insights and answers based on what's on your screen.</span>
             </div>
           </div>
         </div>

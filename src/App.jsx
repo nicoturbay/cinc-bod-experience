@@ -4,6 +4,7 @@ import { ModeProvider, useMode } from './ModeContext'
 import Header from './components/Header'
 import BottomNav from './components/BottomNav'
 import WelcomeModal from './components/WelcomeModal'
+import CephAIChat from './components/CephAIChat'
 import Feed from './screens/Feed'
 import Pulse from './screens/Pulse'
 import Tasks from './screens/Tasks'
@@ -34,6 +35,7 @@ function AppShell() {
         <Route path="*"       element={<Navigate to="/" replace />} />
       </Routes>
       <BottomNav />
+      <CephAIChat />
       {showWelcome && <WelcomeModal onClose={() => setShowWelcome(false)} />}
     </div>
   )

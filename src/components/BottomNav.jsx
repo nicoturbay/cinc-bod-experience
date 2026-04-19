@@ -1,7 +1,10 @@
-import { NavLink } from 'react-router-dom'
-import { useState } from 'react'
+import { NavLink, useLocation } from 'react-router-dom'
+import { useState, useEffect, useRef } from 'react'
 import { useMode } from '../ModeContext'
 import './BottomNav.css'
+import './CephAIChat.css'
+
+const CONTEXT_ROUTES = ['/pulse', '/tasks']
 
 const CEPHAI_LOGO = '/images/cephai-logo.svg'
 
@@ -15,7 +18,36 @@ const RIGHT_NAV = [
 ]
 
 export default function BottomNav() {
-  const { isBoard } = useMode()
+  const { isBoard, setChatOpen, cephAIPulseCount } = useMode()
+  const { pathname } = useLocation()
+  const hasContext = CONTEXT_ROUTES.includes(pathname)
+  const [isPulsing, setIsPulsing] = useState(false)
+  const [ringLong, setRingLong] = useState(false)
+  const isFirst = useRef(true)
+  const prevPathname = useRef(pathname)
+
+  function triggerRing(long = false) {
+    setRingLong(long)
+    setIsPulsing(false)
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => setIsPulsing(true))
+    })
+  }
+
+  // Pulse the button each time a new task card surfaces (skip mount)
+  useEffect(() => {
+    if (isFirst.current) { isFirst.current = false; return }
+    if (cephAIPulseCount === 0) return
+    triggerRing(false)
+  }, [cephAIPulseCount])
+
+  // Pulse (longer) when navigating to /pulse
+  useEffect(() => {
+    if (prevPathname.current === pathname) return
+    prevPathname.current = pathname
+    if (pathname === '/pulse') triggerRing(true)
+  }, [pathname])
+
   if (!isBoard) return <ResidentNav />
   return (
     <nav className="bottom-nav">
@@ -41,9 +73,37 @@ export default function BottomNav() {
 
       {/* Center CephAI button */}
       <div className="bottom-nav__center-slot">
-        <button className="center-btn" aria-label="CephAI">
+        <button
+          className={`center-btn${hasContext ? ' center-btn--glow' : ''}`}
+          aria-label="CephAI"
+          onClick={() => setChatOpen(true)}
+        >
           <img src={CEPHAI_LOGO} alt="CephAI" className="center-btn__logo" />
         </button>
+
+        {/* SVG ring-trace overlay */}
+        {isPulsing && (
+          <svg
+            className="center-btn-ring"
+            width="96"
+            height="96"
+            viewBox="0 0 96 96"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <circle
+              cx="48"
+              cy="48"
+              r="44"
+              stroke="#b2de61"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              transform="rotate(-90 48 48)"
+              className={`ring-circle${ringLong ? ' ring-circle--long' : ''}`}
+              onAnimationEnd={() => setIsPulsing(false)}
+            />
+          </svg>
+        )}
       </div>
 
       {/* Right items */}
