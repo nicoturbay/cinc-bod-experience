@@ -1,10 +1,15 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useMode } from '../ModeContext'
 import './Feed.css'
 import CalendarCheckSvg from '../ICONS/calendar-check.svg'
 import WorkSvg from '../Illustrations/Work.svg'
+import EmailsSvg from '../Illustrations/emails.svg'
+import WOSvg from '../Illustrations/WO.svg'
+import InvoicesSvg from '../Illustrations/invoices.svg'
+import ViolationsSvg from '../Illustrations/violations.svg'
 
+const CINC_ICON     = '/images/cinc-icon.png'
 const CEPHAI_LOGO   = '/images/cephai-logo.svg'
 const RV_PHOTO      = '/images/rv-photo.jpg'
 const AVATAR_1      = '/images/avatar-1.jpg'
@@ -12,6 +17,339 @@ const AVATAR_2      = '/images/avatar-2.jpg'
 const AVATAR_3      = '/images/avatar-3.jpg'
 const AVATAR_4      = '/images/avatar-4.jpg'
 const LINKEDIN_AVT  = '/images/avatar-linkedin.jpg'
+
+/* ── Weekly Wrap Slide Data ───────────────────────── */
+const WEEKLY_SLIDES = [
+  {
+    eyebrow: 'Resident Communication & Responsiveness',
+    headline: 'Always On.\nAlways Responsive.',
+    copy: 'We stayed connected and accessible, ensuring residents received timely responses and consistent support across all communications.',
+    kpis: [
+      { label: 'Resident Touchpoints', value: '153' },
+      { label: 'Calls Answered', value: '55' },
+      { label: 'Emails Responded', value: '98' },
+      { label: 'Avg. Response Time', value: '2.3 Hrs' },
+    ],
+    theme: {
+      overlayBg: '#21181A',
+      kpiBg: '#B2DE61',
+      kpiValueColor: '#112719',
+      kpiLabelColor: '#112719',
+    },
+  },
+  {
+    eyebrow: 'Work Orders & Maintenance Execution',
+    headline: 'Maintenance,\nHandled. Start\nto Finish.',
+    copy: 'From intake to completion, work orders were efficiently managed and executed to keep the community running smoothly and well maintained.',
+    kpis: [
+      { label: 'Work Orders Received', value: '13' },
+      { label: 'Assigned to Vendors', value: '13' },
+      { label: 'Completed This Week', value: '7' },
+      { label: 'Avg Completion Time', value: '2.1 Days' },
+    ],
+    theme: {
+      overlayBg: '#AEDBBE',
+      kpiBg: '#21181A',
+      kpiValueColor: '#FFF8EA',
+      kpiLabelColor: '#FFF8EA',
+      eyebrowColor: '#1d1d1d',
+      headlineColor: '#21181A',
+      copyColor: '#21181A',
+      illustrationSize: '104%',
+      lightBg: true,
+    },
+  },
+  {
+    eyebrow: 'Financial Oversight & Collections',
+    headline: 'Finances Managed\nwith Clarity\nand Control',
+    copy: 'We maintained strong financial oversight by processing payments, driving collections, and proactively addressing delinquencies.',
+    kpis: [
+      { label: 'Collected', value: '$185K' },
+      { label: 'Delinquent Accounts Contacted', value: '23' },
+      { label: 'Invoices Processed', value: '12' },
+      { label: 'Verified & Approved', value: '100%' },
+    ],
+    theme: {
+      overlayBg: '#112719',
+      kpiBg: '#AEDBBE',
+      kpiValueColor: '#112719',
+      kpiLabelColor: '#112719',
+    },
+  },
+  {
+    eyebrow: 'Violations & Compliance',
+    headline: 'Standards Upheld.\nCommunity\nProtected.',
+    copy: 'We consistently enforced community rules, addressed violations, and followed up on repeat issues to maintain the integrity of the community.',
+    kpis: [
+      { label: 'Violations Issued', value: '18' },
+      { label: 'Resolved', value: '11' },
+      { label: 'Repeat Cases Escalated', value: '3' },
+      { label: 'Resolution Rate', value: '61%' },
+    ],
+    theme: {
+      overlayBg: '#B2DE61',
+      kpiBg: '#21181A',
+      kpiValueColor: '#FFF8EA',
+      kpiLabelColor: '#FFF8EA',
+      eyebrowColor: '#1d1d1d',
+      headlineColor: '#21181A',
+      copyColor: '#21181A',
+      lightBg: true,
+    },
+  },
+  {
+    eyebrow: 'Architectural Requests (ARC)',
+    headline: 'Thoughtful\nReviews. Consistent\nStandards.',
+    copy: 'Architectural requests were reviewed efficiently and fairly, ensuring alignment with community guidelines while maintaining timely approvals.',
+    kpis: [
+      { label: 'ARC Requests Received', value: '5' },
+      { label: 'Approved', value: '4' },
+      { label: 'Pending Review', value: '1' },
+      { label: 'Avg Review Time', value: '3.2 Days' },
+    ],
+  },
+]
+
+const SLIDE_ILLUSTRATIONS = [
+  EmailsSvg,
+  WOSvg,
+  InvoicesSvg,
+  ViolationsSvg,
+  WorkSvg,
+]
+
+/* ── Slide Illustrations ──────────────────────────── */
+function IllustrationComm() {
+  return (
+    <svg viewBox="0 0 220 170" fill="none" xmlns="http://www.w3.org/2000/svg" className="stories-illus-svg">
+      <rect x="18" y="18" width="130" height="90" rx="18" fill="#235237" stroke="#b2de61" strokeWidth="2.5"/>
+      <path d="M44 108 L34 128 L72 108" fill="#235237" stroke="#b2de61" strokeWidth="2.5" strokeLinejoin="round"/>
+      <rect x="34" y="38" width="80" height="10" rx="5" fill="#b2de61" opacity="0.75"/>
+      <rect x="34" y="56" width="98" height="10" rx="5" fill="#b2de61" opacity="0.5"/>
+      <rect x="34" y="74" width="60" height="10" rx="5" fill="#b2de61" opacity="0.3"/>
+      <rect x="112" y="62" width="98" height="76" rx="16" fill="#1a3828" stroke="#b2de61" strokeWidth="2"/>
+      <path d="M128 138 L122 155 L152 138" fill="#1a3828" stroke="#b2de61" strokeWidth="2" strokeLinejoin="round"/>
+      <rect x="126" y="80" width="66" height="9" rx="4.5" fill="#b2de61" opacity="0.6"/>
+      <rect x="126" y="96" width="52" height="9" rx="4.5" fill="#b2de61" opacity="0.4"/>
+      <rect x="126" y="112" width="40" height="9" rx="4.5" fill="#b2de61" opacity="0.25"/>
+      <circle cx="196" cy="22" r="14" fill="#b2de61"/>
+      <text x="196" y="28" textAnchor="middle" fontSize="14" fontWeight="800" fill="#1a3828" fontFamily="Montserrat,sans-serif">@</text>
+      <path d="M4 90 L28 80 L22 104 Z" fill="#b2de61" opacity="0.8"/>
+      <line x1="14" y1="92" x2="22" y2="104" stroke="#1a3828" strokeWidth="2"/>
+      <circle cx="200" cy="148" r="9" fill="#b2de61" opacity="0.45"/>
+    </svg>
+  )
+}
+
+function IllustrationMaintenance() {
+  return (
+    <svg viewBox="0 0 220 170" fill="none" xmlns="http://www.w3.org/2000/svg" className="stories-illus-svg">
+      <path d="M110 18 L190 78 L174 78 L174 158 L46 158 L46 78 L30 78 Z" fill="#235237" stroke="#b2de61" strokeWidth="2.5" strokeLinejoin="round"/>
+      <rect x="82" y="116" width="56" height="42" rx="4" fill="#1a3828" stroke="#b2de61" strokeWidth="2"/>
+      <circle cx="132" cy="137" r="3.5" fill="#b2de61"/>
+      <rect x="56" y="95" width="36" height="28" rx="4" fill="#1a3828" stroke="#b2de61" strokeWidth="2"/>
+      <line x1="74" y1="95" x2="74" y2="123" stroke="#b2de61" strokeWidth="1.5" opacity="0.5"/>
+      <line x1="56" y1="109" x2="92" y2="109" stroke="#b2de61" strokeWidth="1.5" opacity="0.5"/>
+      <circle cx="172" cy="48" r="30" fill="#b2de61"/>
+      <polyline points="158,48 168,58 186,40" stroke="#235237" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M14 155 Q6 146 10 134 L38 106 L48 116 L22 144 Q28 156 14 155Z" fill="#b2de61" opacity="0.75"/>
+      <rect x="40" y="100" width="22" height="9" rx="3" fill="#b2de61" opacity="0.75" transform="rotate(-45 51 104)"/>
+    </svg>
+  )
+}
+
+function IllustrationFinance() {
+  return (
+    <svg viewBox="0 0 220 170" fill="none" xmlns="http://www.w3.org/2000/svg" className="stories-illus-svg">
+      <line x1="28" y1="138" x2="200" y2="138" stroke="#b2de61" strokeWidth="2" opacity="0.35"/>
+      <line x1="28" y1="108" x2="200" y2="108" stroke="#b2de61" strokeWidth="1" opacity="0.2"/>
+      <line x1="28" y1="78" x2="200" y2="78" stroke="#b2de61" strokeWidth="1" opacity="0.2"/>
+      <line x1="28" y1="48" x2="200" y2="48" stroke="#b2de61" strokeWidth="1" opacity="0.2"/>
+      <line x1="28" y1="18" x2="200" y2="18" stroke="#b2de61" strokeWidth="1" opacity="0.2"/>
+      <line x1="28" y1="18" x2="28" y2="142" stroke="#b2de61" strokeWidth="2" opacity="0.35"/>
+      <rect x="42" y="100" width="34" height="38" rx="5" fill="#235237" stroke="#b2de61" strokeWidth="2"/>
+      <rect x="93" y="70" width="34" height="68" rx="5" fill="#235237" stroke="#b2de61" strokeWidth="2"/>
+      <rect x="144" y="36" width="34" height="102" rx="5" fill="#b2de61"/>
+      <polyline points="59,102 110,72 161,38" stroke="#b2de61" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" strokeDasharray="5 4"/>
+      <circle cx="59" cy="102" r="5" fill="#b2de61"/>
+      <circle cx="110" cy="72" r="5" fill="#b2de61"/>
+      <circle cx="161" cy="38" r="5" fill="#235237" stroke="#b2de61" strokeWidth="2.5"/>
+      <circle cx="196" cy="148" r="18" fill="#235237" stroke="#b2de61" strokeWidth="2"/>
+      <text x="196" y="155" textAnchor="middle" fontSize="18" fontWeight="800" fill="#b2de61" fontFamily="Montserrat,sans-serif">$</text>
+    </svg>
+  )
+}
+
+function IllustrationViolations() {
+  return (
+    <svg viewBox="0 0 220 170" fill="none" xmlns="http://www.w3.org/2000/svg" className="stories-illus-svg">
+      <path d="M110 10 L182 38 L182 98 Q182 148 110 165 Q38 148 38 98 L38 38 Z" fill="#235237" stroke="#b2de61" strokeWidth="2.5"/>
+      <path d="M110 28 L165 50 L165 96 Q165 134 110 148 Q55 134 55 96 L55 50 Z" fill="#1a3828"/>
+      <polyline points="76,88 98,110 144,66" stroke="#b2de61" strokeWidth="8" strokeLinecap="round" strokeLinejoin="round"/>
+      <circle cx="22" cy="32" r="7" fill="#b2de61" opacity="0.5"/>
+      <circle cx="198" cy="130" r="9" fill="#b2de61" opacity="0.4"/>
+      <circle cx="195" cy="24" r="5" fill="#b2de61" opacity="0.35"/>
+      <circle cx="14" cy="138" r="4" fill="#b2de61" opacity="0.3"/>
+    </svg>
+  )
+}
+
+function IllustrationARC() {
+  return (
+    <svg viewBox="0 0 220 170" fill="none" xmlns="http://www.w3.org/2000/svg" className="stories-illus-svg">
+      <rect x="14" y="10" width="162" height="150" rx="7" fill="#1a3828" stroke="#b2de61" strokeWidth="2"/>
+      <line x1="14" y1="40" x2="176" y2="40" stroke="#b2de61" strokeWidth="0.6" opacity="0.25"/>
+      <line x1="14" y1="70" x2="176" y2="70" stroke="#b2de61" strokeWidth="0.6" opacity="0.25"/>
+      <line x1="14" y1="100" x2="176" y2="100" stroke="#b2de61" strokeWidth="0.6" opacity="0.25"/>
+      <line x1="14" y1="130" x2="176" y2="130" stroke="#b2de61" strokeWidth="0.6" opacity="0.25"/>
+      <line x1="54" y1="10" x2="54" y2="160" stroke="#b2de61" strokeWidth="0.6" opacity="0.25"/>
+      <line x1="94" y1="10" x2="94" y2="160" stroke="#b2de61" strokeWidth="0.6" opacity="0.25"/>
+      <line x1="134" y1="10" x2="134" y2="160" stroke="#b2de61" strokeWidth="0.6" opacity="0.25"/>
+      <rect x="28" y="30" width="120" height="110" rx="2" fill="none" stroke="#b2de61" strokeWidth="2.5"/>
+      <line x1="88" y1="30" x2="88" y2="140" stroke="#b2de61" strokeWidth="2"/>
+      <line x1="28" y1="85" x2="88" y2="85" stroke="#b2de61" strokeWidth="2"/>
+      <line x1="52" y1="85" x2="64" y2="85" stroke="#1a3828" strokeWidth="5"/>
+      <path d="M52 85 Q52 97 64 97" stroke="#b2de61" strokeWidth="1.5" fill="none" opacity="0.8"/>
+      <rect x="100" y="46" width="32" height="22" rx="2" fill="none" stroke="#b2de61" strokeWidth="1.5"/>
+      <line x1="116" y1="46" x2="116" y2="68" stroke="#b2de61" strokeWidth="1" opacity="0.6"/>
+      <rect x="182" y="12" width="22" height="148" rx="6" fill="#b2de61" transform="rotate(12 193 86)"/>
+      <rect x="185" y="14" width="16" height="143" rx="4" fill="#235237" transform="rotate(12 193 86)"/>
+      <path d="M182 12 L179 4 L196 9 Z" fill="#b2de61" transform="rotate(12 193 86)"/>
+      <line x1="188" y1="24" x2="196" y2="24" stroke="#b2de61" strokeWidth="1" opacity="0.6" transform="rotate(12 193 86)"/>
+      <line x1="190" y1="38" x2="196" y2="38" stroke="#b2de61" strokeWidth="1" opacity="0.6" transform="rotate(12 193 86)"/>
+      <line x1="188" y1="52" x2="196" y2="52" stroke="#b2de61" strokeWidth="1" opacity="0.6" transform="rotate(12 193 86)"/>
+      <line x1="190" y1="66" x2="196" y2="66" stroke="#b2de61" strokeWidth="1" opacity="0.6" transform="rotate(12 193 86)"/>
+      <line x1="188" y1="80" x2="196" y2="80" stroke="#b2de61" strokeWidth="1" opacity="0.6" transform="rotate(12 193 86)"/>
+    </svg>
+  )
+}
+
+/* ── Weekly Wrap Stories Overlay ──────────────────── */
+function WeeklyWrapStories({ onClose }) {
+  const [current, setCurrent] = useState(0)
+  const [paused, setPaused] = useState(false)
+  const onCloseRef = useRef(onClose)
+  onCloseRef.current = onClose
+  const timerRef = useRef(null)
+  const startTimeRef = useRef(null)
+  const remainingRef = useRef(8000)
+  const isHoldRef = useRef(false)
+  const holdTimerRef = useRef(null)
+
+  // Reset remaining time whenever slide changes
+  useEffect(() => { remainingRef.current = 8000 }, [current])
+
+  // Auto-advance timer — pauses when held
+  useEffect(() => {
+    if (paused) {
+      clearTimeout(timerRef.current)
+      if (startTimeRef.current !== null) {
+        remainingRef.current = Math.max(0, remainingRef.current - (Date.now() - startTimeRef.current))
+        startTimeRef.current = null
+      }
+      return
+    }
+    startTimeRef.current = Date.now()
+    timerRef.current = setTimeout(() => {
+      if (current >= WEEKLY_SLIDES.length - 1) onCloseRef.current()
+      else setCurrent(c => c + 1)
+    }, remainingRef.current)
+    return () => clearTimeout(timerRef.current)
+  }, [paused, current])
+
+  function handlePointerDown() {
+    isHoldRef.current = false
+    holdTimerRef.current = setTimeout(() => {
+      isHoldRef.current = true
+      setPaused(true)
+    }, 200)
+  }
+
+  function handlePointerUp(e) {
+    clearTimeout(holdTimerRef.current)
+    if (isHoldRef.current) {
+      isHoldRef.current = false
+      setPaused(false)
+      return
+    }
+    const rect = e.currentTarget.getBoundingClientRect()
+    if (e.clientX - rect.left < rect.width / 2) {
+      setCurrent(c => Math.max(0, c - 1))
+    } else {
+      if (current >= WEEKLY_SLIDES.length - 1) { onClose(); return }
+      setCurrent(c => c + 1)
+    }
+  }
+
+  function handlePointerLeave() {
+    clearTimeout(holdTimerRef.current)
+    if (isHoldRef.current) {
+      isHoldRef.current = false
+      setPaused(false)
+    }
+  }
+
+  const slide = WEEKLY_SLIDES[current]
+  const t = slide.theme || {}
+
+  return (
+    <div
+      className={`stories-overlay${paused ? ' stories-overlay--paused' : ''}`}
+      style={{ background: t.overlayBg || '#111' }}
+      onPointerDown={handlePointerDown}
+      onPointerUp={handlePointerUp}
+      onPointerLeave={handlePointerLeave}
+    >
+      <div className={`stories-progress${t.lightBg ? ' stories-progress--light' : ''}`} key={current}>
+        {WEEKLY_SLIDES.map((_, i) => (
+          <div
+            key={i}
+            className={`stories-bar${i < current ? ' stories-bar--done' : i === current ? ' stories-bar--active' : ''}`}
+          />
+        ))}
+      </div>
+
+      <div className="stories-company-row">
+        <img src={CINC_ICON} alt="" className="stories-logo" />
+        <div className="stories-company-info">
+          <span className="stories-company-name">East Management Company</span>
+          <span className="stories-company-date">Weekly Wrap Apr 12th – 18th</span>
+        </div>
+        <button
+          className="stories-close-btn"
+          onPointerDown={e => e.stopPropagation()}
+          onClick={e => { e.stopPropagation(); onClose() }}
+        >
+          <StoriesCloseIcon />
+        </button>
+      </div>
+
+      <div className="stories-content">
+        <p className="stories-eyebrow" style={t.eyebrowColor ? { color: t.eyebrowColor } : undefined}>{slide.eyebrow}</p>
+        <h1 className="stories-headline" style={t.headlineColor ? { color: t.headlineColor } : undefined}>{slide.headline}</h1>
+        <p className="stories-copy" style={t.copyColor ? { color: t.copyColor } : undefined}>{slide.copy}</p>
+      </div>
+
+      <div className="stories-illus">
+        <img
+          src={SLIDE_ILLUSTRATIONS[current]}
+          alt=""
+          className="stories-illus-svg"
+          style={t.illustrationSize ? { width: t.illustrationSize, height: t.illustrationSize } : undefined}
+        />
+      </div>
+
+      <div className="stories-kpis">
+        {slide.kpis.map((kpi, i) => (
+          <div key={i} className="stories-kpi" style={{ background: t.kpiBg || '#aedbbe' }}>
+            <span className="stories-kpi__label" style={t.kpiLabelColor ? { color: t.kpiLabelColor } : undefined}>{kpi.label}</span>
+            <span className="stories-kpi__value" style={t.kpiValueColor ? { color: t.kpiValueColor } : undefined}>{kpi.value}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
 
 const BOARD_POSTS = [
   {
@@ -63,10 +401,12 @@ export default function Feed() {
 /* ── Board Experience Feed ──────────────────────────── */
 function BoardFeed() {
   const [digestDismissed, setDigestDismissed] = useState(false)
+  const [storiesOpen, setStoriesOpen] = useState(false)
   const navigate = useNavigate()
 
   return (
     <div className="screen">
+      {storiesOpen && <WeeklyWrapStories onClose={() => setStoriesOpen(false)} />}
       <div className="screen-inner">
 
         <div className="engage-bar">
@@ -83,7 +423,7 @@ function BoardFeed() {
           <ChevronRightIcon />
         </div>
 
-        <WeeklyWrapCard />
+        <WeeklyWrapCard onOpen={() => setStoriesOpen(true)} />
 
         {!digestDismissed && (
           <div className="digest-card">
@@ -266,7 +606,7 @@ function PostCard({ post }) {
 }
 
 /* ── Weekly Wrap Card ───────────────────────────────── */
-function WeeklyWrapCard() {
+function WeeklyWrapCard({ onOpen }) {
   return (
     <div className="weekly-wrap">
       <div className="weekly-wrap__content">
@@ -279,7 +619,7 @@ function WeeklyWrapCard() {
         <img src={WorkSvg} alt="" className="weekly-wrap__illustration" />
       </div>
       <div className="weekly-wrap__btn-wrap">
-        <button className="weekly-wrap__cta">See What We Delivered</button>
+        <button className="weekly-wrap__cta" onClick={onOpen}>See What We Delivered</button>
       </div>
     </div>
   )
@@ -362,6 +702,14 @@ function HeartIcon({ filled }) {
   return (
     <svg width="16" height="16" viewBox="0 0 24 24" fill={filled ? '#df434f' : 'none'} stroke={filled ? '#df434f' : 'currentColor'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+    </svg>
+  )
+}
+function StoriesCloseIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+      <line x1="18" y1="6" x2="6" y2="18"/>
+      <line x1="6" y1="6" x2="18" y2="18"/>
     </svg>
   )
 }

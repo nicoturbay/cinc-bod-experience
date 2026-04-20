@@ -1,3 +1,199 @@
+/* ── Weekly Wrap Stories Overlay ────────────────────── */
+.stories-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 200;
+  background: #111;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.stories-progress {
+  display: flex;
+  gap: 5px;
+  padding: 14px 14px 6px;
+  flex-shrink: 0;
+}
+
+.stories-bar {
+  flex: 1;
+  height: 3px;
+  border-radius: 2px;
+  background: rgba(255,255,255,0.2);
+}
+.stories-bar--done {
+  background: #b2de61;
+}
+.stories-bar--active {
+  position: relative;
+  overflow: hidden;
+  background: rgba(255,255,255,0.2);
+}
+.stories-bar--active::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: #b2de61;
+  transform: scaleX(0);
+  transform-origin: left;
+  animation: stories-fill 8s linear forwards;
+}
+.stories-overlay--paused .stories-bar--active::after {
+  animation-play-state: paused;
+}
+
+/* Light-background slides — dark indicators for contrast */
+.stories-progress--light .stories-bar {
+  background: rgba(33,24,26,0.2);
+}
+.stories-progress--light .stories-bar--done {
+  background: rgba(33,24,26,0.7);
+}
+.stories-progress--light .stories-bar--active {
+  background: rgba(33,24,26,0.2);
+}
+.stories-progress--light .stories-bar--active::after {
+  background: rgba(33,24,26,0.7);
+}
+@keyframes stories-fill {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+
+.stories-company-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 14px 10px;
+  flex-shrink: 0;
+}
+
+.stories-logo {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 2px solid #235237;
+}
+
+.stories-company-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.stories-company-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff8ea;
+  line-height: 1.2;
+}
+
+.stories-company-date {
+  font-size: 10px;
+  font-weight: 500;
+  color: rgba(255,248,234,0.5);
+}
+
+.stories-close-btn {
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.12);
+  color: #fff8ea;
+  flex-shrink: 0;
+}
+
+.stories-content {
+  padding: 4px 18px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  flex-shrink: 0;
+}
+
+.stories-eyebrow {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(178,222,97,0.65);
+}
+
+.stories-headline {
+  font-size: 28px;
+  font-weight: 800;
+  color: #b2de61;
+  line-height: 1.1;
+  letter-spacing: -0.3px;
+  white-space: pre-line;
+}
+
+.stories-copy {
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255,248,234,0.8);
+  line-height: 1.55;
+}
+
+.stories-illus {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 32px;
+  min-height: 0;
+}
+
+.stories-illus-svg {
+  width: 80%;
+  height: 80%;
+  object-fit: contain;
+}
+
+.stories-kpis {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  padding: 6px 14px 28px;
+  flex-shrink: 0;
+}
+
+.stories-kpi {
+  background: #aedbbe;
+  border-radius: 12px;
+  padding: 12px 14px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.stories-kpi__label {
+  font-size: 10px;
+  font-weight: 600;
+  color: #1a3828;
+  line-height: 1.3;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.stories-kpi__value {
+  font-size: 26px;
+  font-weight: 500;
+  color: #112719;
+  letter-spacing: -0.5px;
+  line-height: 1.1;
+}
+
 /* ── Weekly Wrap card ───────────────────────────────── */
 .weekly-wrap {
   background: #aedbbe;
