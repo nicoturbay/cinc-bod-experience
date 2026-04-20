@@ -53,6 +53,16 @@
   color: var(--text-muted);
 }
 
+.app-header__back {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 48px;
+  height: 48px;
+  color: var(--text);
+  margin-left: -4px;
+}
+
 .app-header__right {
   display: flex;
   align-items: center;

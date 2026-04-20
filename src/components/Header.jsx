@@ -4,10 +4,14 @@ import './Header.css'
 
 const CINC_ICON = '/images/cinc-icon.png'
 
+const SUB_PAGES = ['/meeting', '/broadcast', '/broadcast/audience']
+
 export default function Header() {
   const { isBoard, setIsBoard } = useMode()
   const { pathname } = useLocation()
   const navigate = useNavigate()
+
+  const isSubPage = SUB_PAGES.includes(pathname)
 
   function handleLogoReset() {
     setIsBoard(false)
@@ -18,21 +22,29 @@ export default function Header() {
   const screenTitle = {
     '/':       null,
     '/pulse':  'Community Pulse',
-    '/tasks':  'Board Tasks',
-    '/more':   'More',
+    '/tasks':   'Board Action Items',
+    '/more':    'More',
   }[pathname] ?? null
 
   return (
     <header className="app-header">
       <div className="app-header__inner">
         <div className="app-header__left">
-          <button className="app-header__logo" onClick={handleLogoReset} aria-label="Reset app">
-            <img src={CINC_ICON} alt="CINC" />
-          </button>
-          <div className="app-header__hoa">
-            <span className="app-header__hoa-name">Cardinal Hills HOA</span>
-            {screenTitle && <span className="app-header__screen">{screenTitle}</span>}
-          </div>
+          {isSubPage ? (
+            <button className="app-header__back" onClick={() => navigate(-1)} aria-label="Back">
+              <ChevronLeftIcon />
+            </button>
+          ) : (
+            <>
+              <button className="app-header__logo" onClick={handleLogoReset} aria-label="Reset app">
+                <img src={CINC_ICON} alt="CINC" />
+              </button>
+              <div className="app-header__hoa">
+                <span className="app-header__hoa-name">Cardinal Hills HOA</span>
+                {screenTitle && <span className="app-header__screen">{screenTitle}</span>}
+              </div>
+            </>
+          )}
         </div>
 
         <div className="app-header__right">
@@ -58,6 +70,14 @@ export default function Header() {
       </div>
       <div className="app-header__divider" />
     </header>
+  )
+}
+
+function ChevronLeftIcon() {
+  return (
+    <svg width="43" height="43" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="15 18 9 12 15 6"/>
+    </svg>
   )
 }
 

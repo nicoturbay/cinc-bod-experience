@@ -1,97 +1,267 @@
-import './More.css'
+import { useNavigate } from 'react-router-dom';
+import './More.css';
 
-const MENU_SECTIONS = [
-  {
-    title: 'Community',
-    items: [
-      { emoji: '🏘️', label: 'Association Info',      sub: 'Cardinal Hills HOA' },
-      { emoji: '📋', label: 'Governing Documents',    sub: 'CC&Rs, Bylaws, Rules' },
-      { emoji: '📅', label: 'Meeting Schedule',       sub: 'Upcoming & past' },
-      { emoji: '🔔', label: 'Announcements',          sub: '3 new' },
-    ],
-  },
-  {
-    title: 'Board Tools',
-    items: [
-      { emoji: '💰', label: 'Financial Reports',      sub: 'Budget & reserve' },
-      { emoji: '🔧', label: 'Work Orders',            sub: '7 open' },
-      { emoji: '🏗️', label: 'ACC Requests',          sub: '3 pending review' },
-      { emoji: '⚠️', label: 'Violations',             sub: '15 active' },
-      { emoji: '📊', label: 'Reports & Analytics',    sub: 'Full dashboard' },
-    ],
-  },
-  {
-    title: 'Account',
-    items: [
-      { emoji: '👤', label: 'My Profile',             sub: 'John Smith' },
-      { emoji: '🔔', label: 'Notifications',          sub: 'Manage preferences' },
-      { emoji: '🔒', label: 'Privacy & Security',     sub: null },
-      { emoji: '❓', label: 'Help & Support',         sub: null },
-    ],
-  },
-]
+function MegaphoneIcon({ size = 30 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 77 59" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M55.1299 2.5C55.1299 1.12 54.0099 0 52.6299 0C51.2499 0 50.1299 1.12 50.1299 2.5V9.75H15.5503C11.4003 9.75 7.50031 11.3699 4.57031 14.2999C1.63031 17.2199 0 21.1199 0 25.2999C0 27.7299 0.569883 30.14 1.62988 32.2L12.0703 53.77C13.1103 55.95 14.9502 57.59 17.2402 58.39C18.2202 58.73 19.2302 58.9 20.2402 58.9C21.5902 58.9 22.9399 58.59 24.1899 57.99C26.3699 56.95 28.0101 55.1099 28.8101 52.8199C29.6101 50.5199 29.4699 48.05 28.3999 45.86L25.9702 40.85H50.1299V48.1C50.1299 49.48 51.2499 50.6 52.6299 50.6C54.0099 50.6 55.1299 49.48 55.1299 48.1V38.41C55.1299 38.41 55.1299 38.37 55.1299 38.34V12.24C55.1299 12.24 55.1299 12.1999 55.1299 12.1699V2.47998V2.5ZM24.0903 51.1699C23.7303 52.1899 23 53.01 22.02 53.48C21.03 53.96 19.9201 54.02 18.8901 53.66C17.8701 53.3 17.0501 52.57 16.5801 51.59L11.3799 40.84H20.4199L23.9102 48.03C24.3902 49.02 24.4503 50.13 24.0903 51.16V51.1699ZM21.98 35.85H8.9502L6.1001 29.97C5.3801 28.56 4.99023 26.9499 4.99023 25.2999C4.99023 22.4699 6.09008 19.83 8.08008 17.85C10.0701 15.85 12.7203 14.76 15.5303 14.76H50.1104V35.86H21.96L21.98 35.85Z" fill="currentColor"/>
+      <path d="M74.1699 22.7999H63.7603C62.3803 22.7999 61.2603 23.9199 61.2603 25.2999C61.2603 26.6799 62.3803 27.7999 63.7603 27.7999H74.1699C75.5499 27.7999 76.6699 26.6799 76.6699 25.2999C76.6699 23.9199 75.5499 22.7999 74.1699 22.7999Z" fill="currentColor"/>
+      <path d="M63.7605 17.61C64.2405 17.61 64.7204 17.48 65.1404 17.19L72.5002 12.3C73.6502 11.54 73.9604 9.98 73.2004 8.83C72.4404 7.68 70.8802 7.37005 69.7302 8.13005L62.3703 13.0201C61.2203 13.7801 60.9101 15.34 61.6701 16.49C62.1501 17.21 62.9502 17.61 63.7502 17.61H63.7605Z" fill="currentColor"/>
+      <path d="M72.5002 38.3L65.1404 33.4101C63.9904 32.6501 62.4401 32.96 61.6701 34.11C60.9101 35.26 61.2203 36.81 62.3703 37.58L69.7302 42.47C70.1502 42.75 70.6406 42.8901 71.1106 42.8901C71.9206 42.8901 72.7102 42.5001 73.1902 41.7701C73.9502 40.6201 73.6404 39.07 72.4904 38.3H72.5002Z" fill="currentColor"/>
+    </svg>
+  );
+}
+
+function ViolationPlusIcon({ size = 30 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 66 65" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M53.71 40.14C46.97 40.14 41.48 45.63 41.48 52.37C41.48 59.11 46.97 64.6 53.71 64.6C60.45 64.6 65.9399 59.11 65.9399 52.37C65.9399 45.63 60.45 40.14 53.71 40.14ZM53.71 60.6C49.17 60.6 45.48 56.91 45.48 52.37C45.48 47.83 49.17 44.14 53.71 44.14C58.25 44.14 61.9399 47.83 61.9399 52.37C61.9399 56.91 58.25 60.6 53.71 60.6Z" fill="currentColor"/>
+      <path d="M57.3499 50.37H55.71V48.73C55.71 47.63 54.81 46.73 53.71 46.73C52.61 46.73 51.71 47.63 51.71 48.73V50.37H50.0701C48.9701 50.37 48.0701 51.27 48.0701 52.37C48.0701 53.47 48.9701 54.37 50.0701 54.37H51.71V56.01C51.71 57.11 52.61 58.01 53.71 58.01C54.81 58.01 55.71 57.11 55.71 56.01V54.37H57.3499C58.4499 54.37 59.3499 53.47 59.3499 52.37C59.3499 51.27 58.4499 50.37 57.3499 50.37Z" fill="currentColor"/>
+      <path d="M34.8 17.72C34.8 16.34 33.68 15.22 32.3 15.22C30.92 15.22 29.8 16.34 29.8 17.72V36.48C29.8 37.86 30.92 38.98 32.3 38.98C33.68 38.98 34.8 37.86 34.8 36.48V17.72Z" fill="currentColor"/>
+      <path d="M34.3799 45.5C34.2899 45.36 34.1801 45.24 34.0701 45.12C33.1401 44.19 31.47 44.19 30.53 45.12C30.42 45.24 30.31 45.36 30.22 45.5C30.13 45.64 30.06 45.78 29.99 45.93C29.93 46.08 29.8799 46.24 29.8499 46.4C29.8199 46.56 29.8 46.73 29.8 46.89C29.8 47.55 30.07 48.19 30.53 48.66C31 49.12 31.64 49.39 32.3 49.39C32.96 49.39 33.6001 49.12 34.0701 48.66C34.5301 48.19 34.8 47.55 34.8 46.89C34.8 46.73 34.78 46.56 34.75 46.4C34.72 46.24 34.6699 46.08 34.6099 45.93C34.5499 45.78 34.4699 45.64 34.3799 45.5Z" fill="currentColor"/>
+      <path d="M40.26 59.46C37.67 60.22 34.99 60.6 32.3 60.6C16.7 60.6 4 47.91 4 32.3C4 16.69 16.69 4 32.3 4C47.91 4 60.5898 16.69 60.5898 32.3C60.5898 34.37 60.3599 36.45 59.8999 38.49C59.6599 39.57 60.3399 40.64 61.4199 40.88C62.4999 41.12 63.5701 40.44 63.8101 39.36C64.3301 37.03 64.5898 34.66 64.5898 32.3C64.5898 14.49 50.1 0 32.3 0C14.5 0 0 14.49 0 32.3C0 50.11 14.49 64.6 32.3 64.6C35.37 64.6 38.4199 64.16 41.3799 63.3C42.4399 62.99 43.05 61.88 42.74 60.82C42.43 59.76 41.31 59.15 40.26 59.46Z" fill="currentColor"/>
+    </svg>
+  );
+}
+
+function BoardMeetingIcon({ size = 22 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 20 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12.0952 12.9606H7.90484C7.61426 12.9606 7.37842 13.1993 7.37842 13.4933C7.37842 13.7873 7.61426 14.0259 7.90484 14.0259H12.0952C12.3858 14.0259 12.6216 13.7873 12.6216 13.4933C12.6216 13.1993 12.3858 12.9606 12.0952 12.9606Z" fill="currentColor"/>
+      <path d="M5.66022 8.30939L4.86637 10.1737C4.75056 10.4443 4.8748 10.7575 5.14222 10.8747C5.2096 10.9045 5.2812 10.9173 5.35069 10.9173C5.55494 10.9173 5.74866 10.7958 5.835 10.5955L6.49198 9.05298H13.6893L14.1652 10.2653C14.2726 10.538 14.5779 10.6722 14.8495 10.5636C15.119 10.4549 15.2517 10.146 15.1443 9.87114L14.5358 8.32217C14.4557 8.11976 14.262 7.98553 14.0472 7.98553H6.14243C5.93186 7.98553 5.74235 8.11124 5.65812 8.30726L5.66022 8.30939Z" fill="currentColor"/>
+      <path d="M9.99996 5.46718C11.4887 5.46718 12.7016 4.23994 12.7016 2.73359C12.7016 1.22724 11.4887 0 9.99996 0C8.51123 0 7.29834 1.22724 7.29834 2.73359C7.29834 4.23994 8.51123 5.46718 9.99996 5.46718ZM9.99996 1.06531C10.9096 1.06531 11.6487 1.81316 11.6487 2.73359C11.6487 3.65402 10.9096 4.40186 9.99996 4.40186C9.09029 4.40186 8.35119 3.65402 8.35119 2.73359C8.35119 1.81316 9.09029 1.06531 9.99996 1.06531Z" fill="currentColor"/>
+      <path d="M17.2983 2.73364C15.8096 2.73364 14.5967 3.96088 14.5967 5.46723C14.5967 6.97358 15.8096 8.20082 17.2983 8.20082C18.787 8.20082 19.9999 6.97358 19.9999 5.46723C19.9999 3.96088 18.787 2.73364 17.2983 2.73364ZM17.2983 7.13551C16.3886 7.13551 15.6495 6.38766 15.6495 5.46723C15.6495 4.5468 16.3886 3.79895 17.2983 3.79895C18.208 3.79895 18.9471 4.5468 18.9471 5.46723C18.9471 6.38766 18.208 7.13551 17.2983 7.13551Z" fill="currentColor"/>
+      <path d="M2.70162 8.20082C4.19035 8.20082 5.40324 6.97358 5.40324 5.46723C5.40324 3.96088 4.19035 2.73364 2.70162 2.73364C1.21289 2.73364 0 3.96088 0 5.46723C0 6.97358 1.21289 8.20082 2.70162 8.20082ZM2.70162 3.79895C3.61128 3.79895 4.35038 4.5468 4.35038 5.46723C4.35038 6.38766 3.61128 7.13551 2.70162 7.13551C1.79195 7.13551 1.05285 6.38766 1.05285 5.46723C1.05285 4.5468 1.79195 3.79895 2.70162 3.79895Z" fill="currentColor"/>
+      <path d="M3.83443 11.7696C2.3457 11.7696 1.13281 12.9968 1.13281 14.5032C1.13281 16.0095 2.3457 17.2368 3.83443 17.2368C5.32316 17.2368 6.53605 16.0095 6.53605 14.5032C6.53605 12.9968 5.32316 11.7696 3.83443 11.7696ZM3.83443 16.1715C2.92477 16.1715 2.18566 15.4236 2.18566 14.5032C2.18566 13.5828 2.92477 12.8349 3.83443 12.8349C4.74409 12.8349 5.4832 13.5828 5.4832 14.5032C5.4832 15.4236 4.74409 16.1715 3.83443 16.1715Z" fill="currentColor"/>
+      <path d="M16.1655 11.7696C14.6768 11.7696 13.4639 12.9968 13.4639 14.5032C13.4639 16.0095 14.6768 17.2368 16.1655 17.2368C17.6542 17.2368 18.8671 16.0095 18.8671 14.5032C18.8671 12.9968 17.6542 11.7696 16.1655 11.7696ZM16.1655 16.1715C15.2558 16.1715 14.5167 15.4236 14.5167 14.5032C14.5167 13.5828 15.2558 12.8349 16.1655 12.8349C17.0751 12.8349 17.8143 13.5828 17.8143 14.5032C17.8143 15.4236 17.0751 16.1715 16.1655 16.1715Z" fill="currentColor"/>
+    </svg>
+  );
+}
+
+function FolderIcon({ size = 22 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 73 67" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M64.0701 5.55005H40.7402C36.5602 5.55005 32.8202 4.51995 29.9202 2.56995C27.4102 0.889946 24.4802 0 21.4502 0H15.2402C6.84023 0 0 6.82999 0 15.24V58.1899C0 62.6099 3.60003 66.21 8.03003 66.21H64.6101C69.0301 66.21 72.6401 62.6099 72.6401 58.1899V14.11C72.6401 9.38999 68.8001 5.55005 64.0801 5.55005H64.0701ZM5 15.24C5 9.59999 9.59023 5 15.2402 5H21.4502C23.4902 5 25.4501 5.59997 27.1301 6.71997C30.8601 9.21997 35.5702 10.54 40.7402 10.54H64.0701C66.0301 10.54 67.6301 12.14 67.6301 14.1V17.66H5V15.23V15.24ZM67.6301 58.1899C67.6301 59.8599 66.2701 61.21 64.6001 61.21H8.02002C6.35002 61.21 4.99023 59.8499 4.99023 58.1899V22.67H67.6201V58.1899H67.6301Z" fill="currentColor"/>
+    </svg>
+  );
+}
+
+function DirectoryIcon({ size = 22 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 69 71" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M48.4899 57.71H27.53C26.08 57.71 24.7199 57.06 23.8099 55.93C22.8899 54.78 22.5399 53.3 22.8599 51.86C24.4099 44.82 30.7799 39.7 38.0099 39.7C45.2399 39.7 51.6 44.81 53.16 51.86C53.48 53.3 53.13 54.79 52.21 55.93C51.3 57.06 49.9499 57.71 48.4899 57.71ZM27.7999 52.71H48.22C47.08 48.06 42.8299 44.7 38.0099 44.7C33.1899 44.7 28.9299 48.05 27.7999 52.71Z" fill="currentColor"/>
+      <path d="M38.0101 34.6299C33.0801 34.6299 29.0701 30.6199 29.0701 25.6899C29.0701 20.7599 33.0801 16.75 38.0101 16.75C42.9401 16.75 46.9501 20.7599 46.9501 25.6899C46.9501 30.6199 42.9401 34.6299 38.0101 34.6299ZM38.0101 21.7599C35.8401 21.7599 34.0701 23.53 34.0701 25.7C34.0701 27.87 35.8401 29.64 38.0101 29.64C40.1801 29.64 41.9501 27.87 41.9501 25.7C41.9501 23.53 40.1801 21.7599 38.0101 21.7599Z" fill="currentColor"/>
+      <path d="M60.25 70.45H15.77C11.35 70.45 7.75 66.85 7.75 62.43V8.01996C7.75 3.59996 11.35 0 15.77 0H60.25C64.67 0 68.27 3.59996 68.27 8.01996V62.43C68.27 66.85 64.67 70.45 60.25 70.45ZM15.77 4.98999C14.1 4.98999 12.75 6.34995 12.75 8.00995V62.42C12.75 64.09 14.11 65.4399 15.77 65.4399H60.25C61.92 65.4399 63.27 64.08 63.27 62.42V8.00995C63.27 6.33995 61.91 4.98999 60.25 4.98999H15.77Z" fill="currentColor"/>
+      <path d="M10.24 17.72H2.5C1.12 17.72 0 16.6 0 15.22C0 13.84 1.12 12.72 2.5 12.72H10.24C11.62 12.72 12.74 13.84 12.74 15.22C12.74 16.6 11.62 17.72 10.24 17.72Z" fill="currentColor"/>
+      <path d="M10.24 57.71H2.5C1.12 57.71 0 56.59 0 55.21C0 53.83 1.12 52.71 2.5 52.71H10.24C11.62 52.71 12.74 53.83 12.74 55.21C12.74 56.59 11.62 57.71 10.24 57.71Z" fill="currentColor"/>
+      <path d="M10.24 44.3799H2.5C1.12 44.3799 0 43.2599 0 41.8799C0 40.4999 1.12 39.3799 2.5 39.3799H10.24C11.62 39.3799 12.74 40.4999 12.74 41.8799C12.74 43.2599 11.62 44.3799 10.24 44.3799Z" fill="currentColor"/>
+      <path d="M10.24 31.05H2.5C1.12 31.05 0 29.93 0 28.55C0 27.17 1.12 26.05 2.5 26.05H10.24C11.62 26.05 12.74 27.17 12.74 28.55C12.74 29.93 11.62 31.05 10.24 31.05Z" fill="currentColor"/>
+    </svg>
+  );
+}
+
+function AlertCircleIcon() {
+  return (
+    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="var(--lime)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="10" />
+      <line x1="12" y1="8" x2="12" y2="13" />
+      <circle cx="12" cy="16.5" r="0.5" fill="var(--lime)" stroke="var(--lime)" />
+    </svg>
+  );
+}
+
+function ContactCardIcon() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="2" y="5" width="20" height="14" rx="2" />
+      <circle cx="8" cy="10.5" r="2" />
+      <path d="M4 19v-1a4 4 0 014-4h0a4 4 0 014 4v1" />
+      <line x1="14" y1="9" x2="19" y2="9" />
+      <line x1="14" y1="13" x2="19" y2="13" />
+    </svg>
+  );
+}
+
+function BoardIcon({ type }) {
+  const shared = {
+    width: 22,
+    height: 22,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "1.8",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+  };
+
+  switch (type) {
+    case 'broadcast':
+      return (
+        <svg {...shared}>
+          <path d="M3 11l19-9-9 19-2-8-8-2z" />
+        </svg>
+      );
+    case 'violations':
+      return (
+        <svg {...shared}>
+          <circle cx="12" cy="12" r="10" />
+          <line x1="12" y1="8" x2="12" y2="13" />
+          <circle cx="12" cy="16.5" r="0.5" fill="currentColor" />
+        </svg>
+      );
+    case 'acc':
+      return (
+        <svg {...shared}>
+          <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+          <polyline points="9 22 9 12 15 12 15 22" />
+        </svg>
+      );
+    case 'workorder':
+      return (
+        <svg {...shared}>
+          <path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z" />
+        </svg>
+      );
+    case 'invoices':
+      return (
+        <svg {...shared}>
+          <rect x="3" y="2" width="18" height="20" rx="2" />
+          <line x1="7" y1="9" x2="17" y2="9" />
+          <line x1="7" y1="13" x2="17" y2="13" />
+          <line x1="7" y1="17" x2="13" y2="17" />
+        </svg>
+      );
+    case 'bank':
+      return (
+        <svg {...shared}>
+          <polygon points="12 2 20 7 4 7" />
+          <line x1="6" y1="7" x2="6" y2="18" />
+          <line x1="10" y1="7" x2="10" y2="18" />
+          <line x1="14" y1="7" x2="14" y2="18" />
+          <line x1="18" y1="7" x2="18" y2="18" />
+          <line x1="3" y1="22" x2="21" y2="22" />
+        </svg>
+      );
+    case 'payment':
+      return (
+        <svg {...shared}>
+          <rect x="2" y="5" width="20" height="14" rx="2" />
+          <line x1="2" y1="10" x2="22" y2="10" />
+          <line x1="6" y1="15" x2="10" y2="15" />
+        </svg>
+      );
+    case 'aging':
+      return (
+        <svg {...shared}>
+          <circle cx="12" cy="12" r="10" />
+          <polyline points="12 6 12 12 16 14" />
+        </svg>
+      );
+    default:
+      return null;
+  }
+}
+
+function ChevronIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M9 18l6-6-6-6" />
+    </svg>
+  );
+}
+
+function EditIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
+      <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
+    </svg>
+  );
+}
+
+const RESOURCE_ITEMS = [
+  { label: 'Meetings',        icon: <BoardMeetingIcon /> },
+  { label: 'Board Documents', icon: <FolderIcon /> },
+  { label: 'Home Owner List', icon: <ContactCardIcon /> },
+  { label: 'Directories',     icon: <DirectoryIcon /> },
+];
+
+const BOARD_ITEMS = [
+  { label: 'Sent Broadcast Notifications', type: 'broadcast' },
+  { label: 'Violations', type: 'violations' },
+  { label: 'ACC Requests', type: 'acc' },
+  { label: 'Work Order', type: 'workorder' },
+  { label: 'Approved Invoices', type: 'invoices' },
+  { label: 'Bank Summary', type: 'bank' },
+  { label: 'Vendor Payment History', type: 'payment' },
+  { label: 'Board Aging', type: 'aging' },
+];
 
 export default function More() {
+  const navigate = useNavigate();
+
   return (
     <div className="screen">
       <div className="screen-inner">
 
-        {/* Profile card */}
         <div className="more-profile card">
           <div className="more-profile__avatar">JS</div>
           <div className="more-profile__info">
             <p className="more-profile__name">John Smith</p>
-            <p className="more-profile__role">Board President · Cardinal Hills HOA</p>
+            <p className="more-profile__role">Board President</p>
           </div>
           <button className="more-profile__edit" aria-label="Edit profile">
             <EditIcon />
           </button>
         </div>
 
-        {/* Sections */}
-        {MENU_SECTIONS.map(section => (
-          <div key={section.title}>
-            <p className="section-label">{section.title}</p>
-            <div className="card">
-              {section.items.map((item, i) => (
-                <div key={item.label}>
-                  {i > 0 && <div className="divider" />}
-                  <button className="more-row">
-                    <span className="more-row__emoji">{item.emoji}</span>
-                    <div className="more-row__info">
-                      <span className="more-row__label">{item.label}</span>
-                      {item.sub && <span className="more-row__sub">{item.sub}</span>}
-                    </div>
-                    <ChevronIcon />
-                  </button>
-                </div>
-              ))}
-            </div>
+        <div className="more-section">
+          <div className="more-section-label">Tools</div>
+          <div className="more-tools">
+            <button className="more-tool-card" onClick={() => navigate('/broadcast')}>
+              <span className="more-tool-card__icon"><MegaphoneIcon size={30} /></span>
+              <span className="more-tool-card__label">Send Broadcast Notifications</span>
+            </button>
+            <button className="more-tool-card">
+              <span className="more-tool-card__icon"><ViolationPlusIcon size={30} /></span>
+              <span className="more-tool-card__label">Report New Violation</span>
+            </button>
           </div>
-        ))}
+        </div>
 
-        {/* Sign out */}
+        <div className="more-section">
+          <div className="more-section-label">Resources and Assets</div>
+          <div className="more-item-list">
+            {RESOURCE_ITEMS.map((item) => (
+              <button key={item.label} className="more-item-card">
+                <span className="more-item-card__icon">{item.icon}</span>
+                <span className="more-item-card__label">{item.label}</span>
+                <ChevronIcon />
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="more-section">
+          <div className="more-section-label">Board</div>
+          <div className="more-item-list">
+            {BOARD_ITEMS.map((item) => (
+              <button key={item.label} className="more-item-card">
+                <span className="more-item-card__icon">
+                  <BoardIcon type={item.type} />
+                </span>
+                <span className="more-item-card__label">{item.label}</span>
+                <ChevronIcon />
+              </button>
+            ))}
+          </div>
+        </div>
+
         <button className="more-signout">Sign Out</button>
 
         <p className="more-version">CINC BOD Experience · v1.0 prototype</p>
 
       </div>
     </div>
-  )
-}
-
-function ChevronIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-      <path d="M9 18l6-6-6-6"/>
-    </svg>
-  )
-}
-function EditIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
-      <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
-    </svg>
-  )
+  );
 }

@@ -8,7 +8,7 @@
   width: 52px;
   height: 52px;
   border-radius: 50%;
-  background: var(--lime-border);
+  background: var(--lime);
   color: var(--text-dark);
   font-size: 16px;
   font-weight: 800;
@@ -38,56 +38,111 @@
   padding: 6px;
 }
 
-/* Menu rows */
-.more-row {
+.more-tool-card__icon {
+  color: var(--lime);
   display: flex;
   align-items: center;
+}
+
+.more-section-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--lime);
+}
+
+.more-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.more-tools {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.more-tool-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+  transition: opacity 0.15s;
+}
+.more-tool-card:active {
+  opacity: 0.7;
+}
+
+.more-tool-card__label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.3;
+  text-align: left;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.more-item-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.more-item-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
   gap: 14px;
-  padding: 14px 16px;
+  padding: 16px;
   width: 100%;
   text-align: left;
   transition: opacity 0.15s;
 }
-.more-row:active { opacity: 0.7; }
+.more-item-card:active {
+  opacity: 0.7;
+}
 
-.more-row__emoji {
-  font-size: 18px;
+.more-item-card__icon {
+  color: var(--lime);
   flex-shrink: 0;
-  width: 26px;
-  text-align: center;
-}
-.more-row__info {
-  flex: 1;
   display: flex;
-  flex-direction: column;
-  gap: 2px;
+  align-items: center;
 }
-.more-row__label {
+
+.more-item-card__label {
+  flex: 1;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 600;
   color: var(--text);
 }
-.more-row__sub {
-  font-size: 11px;
+
+.more-item-card > svg:last-child {
   color: var(--text-muted);
-}
-.more-row svg {
-  color: var(--text-muted);
-  flex-shrink: 0;
 }
 
 .more-signout {
   width: 100%;
   padding: 14px;
   border-radius: var(--radius-md);
-  border: 1px solid rgba(223,67,79,0.4);
+  border: 1px solid rgba(223, 67, 79, 0.4);
   font-size: 14px;
   font-weight: 700;
+  text-transform: uppercase;
   color: var(--red);
-  background: rgba(223,67,79,0.08);
+  background: rgba(223, 67, 79, 0.08);
   transition: background 0.15s;
 }
-.more-signout:active { background: rgba(223,67,79,0.18); }
+.more-signout:active {
+  background: rgba(223, 67, 79, 0.18);
+}
 
 .more-version {
   text-align: center;

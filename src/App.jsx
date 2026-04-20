@@ -9,6 +9,9 @@ import Feed from './screens/Feed'
 import Pulse from './screens/Pulse'
 import Tasks from './screens/Tasks'
 import More from './screens/More'
+import MeetingAgenda from './screens/MeetingAgenda'
+import BroadcastNotification from './screens/BroadcastNotification'
+import BroadcastCompose from './screens/BroadcastCompose'
 
 function AppShell() {
   const { isBoard } = useMode()
@@ -31,8 +34,11 @@ function AppShell() {
         <Route path="/"       element={<Feed />} />
         <Route path="/pulse"  element={<Pulse />} />
         <Route path="/tasks"  element={<Tasks />} />
-        <Route path="/more"   element={<More />} />
-        <Route path="*"       element={<Navigate to="/" replace />} />
+        <Route path="/more"    element={<More />} />
+        <Route path="/meeting"   element={<MeetingAgenda />} />
+        <Route path="/broadcast"          element={<BroadcastCompose />} />
+        <Route path="/broadcast/audience" element={<BroadcastNotification />} />
+        <Route path="*"          element={<Navigate to="/" replace />} />
       </Routes>
       <BottomNav />
       <CephAIChat />

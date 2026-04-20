@@ -125,6 +125,36 @@ const TASKS = [
     due: 'Due today',
     actionLabel: 'Mark Done',
   },
+  {
+    id: 8,
+    type: 'Task',
+    title: 'Approve Unit Ownership Record Change',
+    dueDate: '04/24/2026',
+    category: 'Collections',
+    taskStatus: null,
+    description: 'Review a submitted ownership record update. No sale has occurred, however, ownership is now held under a new LLC, and supporting documentation has been provided. Please review and advise.',
+    attachment: 'Violations 2025-2026',
+    acctInfo: 'Acct: 1588-4821  |  12346 Washington Avenue',
+    logCount: 2,
+    due: 'Due Apr 24',
+    urgency: 'urgent',
+    actionLabel: 'Complete',
+  },
+  {
+    id: 9,
+    type: 'Task',
+    title: 'Review Violation Trend Analysis',
+    dueDate: '04/24/2026',
+    category: 'Collections',
+    taskStatus: 'Not Started',
+    description: 'Please review the attached report, which outlines recent patterns and recurring issues within the community. Please evaluate the findings and provide guidance on any actions, policy adjustments, or enforcement measures.',
+    attachment: 'Violation analysis',
+    acctInfo: null,
+    logCount: 2,
+    due: 'Due Apr 24',
+    urgency: 'urgent',
+    actionLabel: 'Complete',
+  },
 ]
 
 const TYPE_META = {
@@ -132,6 +162,7 @@ const TYPE_META = {
   ACC:       { color: '#ffb74d', bg: 'rgba(255,183,77,0.18)',  label: 'ACC Request'  },
   Violation: { color: '#e05c5c', bg: 'rgba(224,92,92,0.18)',   label: 'Violation'    },
   WorkOrder: { color: '#a78bfa', bg: 'rgba(167,139,250,0.18)', label: 'Work Order'   },
+  Task:      { color: '#34d399', bg: 'rgba(52,211,153,0.18)',  label: 'Task'         },
 }
 
 const SWIPE_THRESHOLD = 80
@@ -142,13 +173,33 @@ export default function Tasks() {
   const [isDragging, setIsDragging] = useState(false)
   const [dragX,      setDragX]      = useState(0)
   const [flyOff,     setFlyOff]     = useState(null)
+  const [viewMode,   setViewMode]   = useState('card')   // 'card' | 'list'
+  const [filterType, setFilterType] = useState(null)     // null | type string
+  const [filterOpen, setFilterOpen] = useState(false)
 
-  const startXRef = useRef(0)
-  const dragXRef  = useRef(0)
-  const cardRef   = useRef(null)
-  const rafRef    = useRef(null)
+  const startXRef  = useRef(0)
+  const dragXRef   = useRef(0)
+  const cardRef    = useRef(null)
+  const rafRef     = useRef(null)
+  const filterRef  = useRef(null)
 
-  const pendingTasks = queue.map(id => TASKS.find(t => t.id === id)).filter(Boolean)
+  // Close filter menu on outside click
+  useEffect(() => {
+    if (!filterOpen) return
+    function handleClick(e) {
+      if (filterRef.current && !filterRef.current.contains(e.target)) {
+        setFilterOpen(false)
+      }
+    }
+    document.addEventListener('pointerdown', handleClick)
+    return () => document.removeEventListener('pointerdown', handleClick)
+  }, [filterOpen])
+
+  const filteredQueue = filterType
+    ? queue.filter(id => TASKS.find(t => t.id === id)?.type === filterType)
+    : queue
+
+  const pendingTasks = filteredQueue.map(id => TASKS.find(t => t.id === id)).filter(Boolean)
   const topTask      = pendingTasks[0]
 
   const { setActiveTask, setCephAIPulseCount } = useMode()
@@ -236,7 +287,7 @@ export default function Tasks() {
     }
   }
 
-  const skipLabel = topTask?.type === 'Invoice' ? 'Deny' : 'Skip'
+  const skipLabel = topTask?.type === 'Invoice' ? 'Deny' : topTask?.type === 'Task' ? 'In Progress' : 'Skip'
 
   return (
     <div className="screen tasks-screen">
@@ -245,17 +296,49 @@ export default function Tasks() {
         {/* Header */}
         <div className="tasks-header">
           <div>
-            <h1 className="tasks-title">Board Tasks</h1>
+            <h1 className="tasks-title">Board Action Items</h1>
             <p className="tasks-sub">
               {pendingTasks.length > 0
                 ? `${pendingTasks.length} pending · ${doneIds.size} completed`
                 : `All ${doneIds.size} tasks completed`}
             </p>
           </div>
+          <div className="tasks-header-actions" ref={filterRef}>
+            <button
+              className={`tasks-header-btn${filterType ? ' tasks-header-btn--active' : ''}`}
+              onClick={() => setFilterOpen(o => !o)}
+            >
+              <FilterIcon />
+              {filterType && <span className="tasks-filter-dot" />}
+            </button>
+            {filterOpen && (
+              <div className="tasks-filter-menu">
+                <button
+                  className={`tasks-filter-option${!filterType ? ' tasks-filter-option--active' : ''}`}
+                  onClick={() => { setFilterType(null); setFilterOpen(false) }}
+                >
+                  All Types
+                </button>
+                {Object.entries(TYPE_META).map(([type, meta]) => (
+                  <button
+                    key={type}
+                    className={`tasks-filter-option${filterType === type ? ' tasks-filter-option--active' : ''}`}
+                    style={filterType === type ? { color: meta.color } : {}}
+                    onClick={() => { setFilterType(type); setFilterOpen(false) }}
+                  >
+                    <span className="tasks-filter-option__dot" style={{ background: meta.color }} />
+                    {meta.label}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
 
-        {/* Card stack or empty state */}
-        {pendingTasks.length > 0 ? (
+        {/* Card stack or list view or empty state */}
+        {viewMode === 'list' ? (
+          <TaskListView tasks={pendingTasks} doneIds={doneIds} />
+        ) : pendingTasks.length > 0 ? (
           <div className="swipe-stack">
             {pendingTasks.slice(0, 3).map((task, stackIdx) => (
               <div
@@ -300,10 +383,10 @@ export default function Tasks() {
           </div>
         )}
 
-        {/* Position dots — below the card stack */}
-        {pendingTasks.length > 0 && (
+        {/* Position dots — card view only */}
+        {viewMode === 'card' && pendingTasks.length > 0 && (
           <div className="tasks-progress">
-            {TASKS.map(t => {
+            {(filterType ? TASKS.filter(t => t.type === filterType) : TASKS).map(t => {
               const isCurrent = t.id === topTask?.id
               const isDone    = doneIds.has(t.id)
               return (
@@ -321,12 +404,60 @@ export default function Tasks() {
   )
 }
 
+/* ── Task list view ───────────────────────────────────── */
+function TaskListView({ tasks }) {
+  if (tasks.length === 0) {
+    return (
+      <div className="tasks-empty-state">
+        <div className="tasks-empty-state__check"><CheckBigIcon /></div>
+        <p className="tasks-empty-state__title">No tasks</p>
+        <p className="tasks-empty-state__sub">Nothing matches the current filter</p>
+      </div>
+    )
+  }
+
+  return (
+    <div className="task-list">
+      {tasks.map(task => {
+        const meta = TYPE_META[task.type]
+        const isUrgent = task.urgency === 'urgent'
+        let title = ''
+        let subtitle = ''
+        if (task.type === 'Invoice')   { title = task.title;         subtitle = `${task.invoiceNum} · ${task.amount}` }
+        if (task.type === 'ACC')       { title = task.address;       subtitle = task.accType }
+        if (task.type === 'Violation') { title = task.violationType; subtitle = task.address }
+        if (task.type === 'WorkOrder') { title = task.woNumber;      subtitle = task.vendor }
+
+        return (
+          <div key={task.id} className="task-list-row">
+            <span
+              className="task-list-row__pill"
+              style={{ color: meta.color, background: meta.bg }}
+            >
+              {meta.label}
+            </span>
+            <div className="task-list-row__info">
+              <span className="task-list-row__title">{title}</span>
+              {subtitle && <span className="task-list-row__sub">{subtitle}</span>}
+            </div>
+            <span className={`task-list-row__due${isUrgent ? ' task-list-row__due--urgent' : ''}`}>
+              {task.due}
+            </span>
+            <ChevronRowIcon />
+          </div>
+        )
+      })}
+    </div>
+  )
+}
+
 /* ── Card dispatcher ──────────────────────────────────── */
 function CardContent({ task, flyCard, flyOff }) {
   if (task.type === 'Invoice')   return <InvoiceCardContent   task={task} flyCard={flyCard} flyOff={flyOff} />
   if (task.type === 'WorkOrder') return <WorkOrderCardContent task={task} flyCard={flyCard} flyOff={flyOff} />
   if (task.type === 'Violation') return <ViolationCardContent task={task} />
   if (task.type === 'ACC')       return <ACCCardContent       task={task} />
+  if (task.type === 'Task')      return <TaskCardContent      task={task} flyCard={flyCard} flyOff={flyOff} />
   return null
 }
 
@@ -694,7 +825,122 @@ function ACCCardContent({ task }) {
   )
 }
 
+/* ── Task card ────────────────────────────────────────── */
+function TaskCardContent({ task, flyCard, flyOff }) {
+  function stopDrag(e) { e.stopPropagation() }
+
+  return (
+    <div className="card-body invoice-body">
+      <div className="inv-scroll">
+
+        {/* Meta fields */}
+        <div className="task-meta">
+          <div className="task-meta__row">
+            <span className="task-meta__label">Due Date:</span>
+            <span className={`task-meta__value${task.urgency === 'urgent' ? ' task-meta__value--urgent' : ''}`}>{task.dueDate}</span>
+          </div>
+          <div className="task-meta__row">
+            <span className="task-meta__label">Category:</span>
+            <span className="task-meta__value">{task.category}</span>
+          </div>
+          {task.taskStatus && (
+            <div className="task-meta__row">
+              <span className="task-meta__label">Status:</span>
+              <span className="task-meta__value">{task.taskStatus}</span>
+            </div>
+          )}
+        </div>
+
+        {/* Title */}
+        <p className="task-card__title">{task.title}</p>
+
+        {/* Description */}
+        <p className="task-card__desc">{task.description}</p>
+
+        {/* Info rows */}
+        <div className="inv-rows">
+          {task.attachment && (
+            <button className="inv-row" onPointerDown={stopDrag}>
+              <span className="inv-row__icon"><img src={AttachSvg} className="inv-row__svg" alt="" /></span>
+              <span className="inv-row__content">
+                <span className="inv-row__title">{task.attachment}</span>
+              </span>
+              <ChevronRowIcon />
+            </button>
+          )}
+          {task.acctInfo && (
+            <button className="inv-row" onPointerDown={stopDrag}>
+              <span className="inv-row__icon"><img src={BankSvg} className="inv-row__svg" alt="" /></span>
+              <span className="inv-row__content">
+                <span className="inv-row__title">Account Info</span>
+                <span className="inv-row__sub task-acct-info">{task.acctInfo}</span>
+              </span>
+              <ChevronRowIcon />
+            </button>
+          )}
+          <button className="inv-row inv-row--last" onPointerDown={stopDrag}>
+            <span className="inv-row__icon"><img src={LogSvg} className="inv-row__svg" alt="" /></span>
+            <span className="inv-row__content">
+              <span className="inv-row__title">Log &amp; Messages</span>
+            </span>
+            {task.logCount > 0 && <span className="inv-row__badge">{task.logCount}</span>}
+            <ChevronRowIcon />
+          </button>
+        </div>
+
+      </div>
+
+      {/* Action buttons */}
+      <div className="task-actions" onPointerDown={stopDrag}>
+        <button
+          className="task-btn task-btn--progress"
+          onClick={() => flyCard && !flyOff && flyCard('left')}
+        >
+          In Progress
+        </button>
+        <button
+          className="task-btn task-btn--complete"
+          onClick={() => flyCard && !flyOff && flyCard('right')}
+        >
+          Completed
+        </button>
+      </div>
+    </div>
+  )
+}
+
 /* ── Icons ────────────────────────────────────────────── */
+function FilterIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <line x1="4" y1="6" x2="20" y2="6"/>
+      <line x1="7" y1="12" x2="17" y2="12"/>
+      <line x1="10" y1="18" x2="14" y2="18"/>
+    </svg>
+  )
+}
+function ListViewIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <line x1="8" y1="6" x2="21" y2="6"/>
+      <line x1="8" y1="12" x2="21" y2="12"/>
+      <line x1="8" y1="18" x2="21" y2="18"/>
+      <line x1="3" y1="6" x2="3.01" y2="6"/>
+      <line x1="3" y1="12" x2="3.01" y2="12"/>
+      <line x1="3" y1="18" x2="3.01" y2="18"/>
+    </svg>
+  )
+}
+function CardViewIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="2" y="3" width="9" height="9" rx="1"/>
+      <rect x="13" y="3" width="9" height="9" rx="1"/>
+      <rect x="2" y="13" width="9" height="9" rx="1"/>
+      <rect x="13" y="13" width="9" height="9" rx="1"/>
+    </svg>
+  )
+}
 function ApproveIcon() {
   return (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">

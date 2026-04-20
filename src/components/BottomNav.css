@@ -147,12 +147,14 @@
 
 /* ── Nav items ──────────────────────────────────────── */
 .nav-item {
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 5px;
-  padding: 4px 8px;
+  padding: 4px 4px;
   -webkit-tap-highlight-color: transparent;
+  min-width: 0;
 }
 
 /* Inactive: larger slot, cream color, no background */

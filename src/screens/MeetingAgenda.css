@@ -1,0 +1,182 @@
+/* ── Screen ───────────────────────────────────────────── */
+.meeting-screen {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.meeting-inner {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 16px 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.meeting-inner::-webkit-scrollbar { display: none; }
+
+/* ── Header ───────────────────────────────────────────── */
+.meeting-header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.meeting-back {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid var(--border);
+  color: var(--text);
+  flex-shrink: 0;
+  margin-top: 2px;
+  transition: background 0.15s;
+}
+.meeting-back:active { background: rgba(255,255,255,0.12); }
+
+.meeting-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--lime);
+  line-height: 1.2;
+}
+
+.meeting-sub {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-muted);
+  margin-top: 3px;
+  line-height: 1.4;
+}
+
+/* ── Section label ────────────────────────────────────── */
+.agenda-section-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: -8px;
+}
+
+/* ── Agenda card ──────────────────────────────────────── */
+.agenda-section {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+/* ── Agenda row ───────────────────────────────────────── */
+.agenda-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+}
+
+.agenda-row--border {
+  border-bottom: 1px solid var(--border);
+}
+
+.agenda-row__content {
+  flex: 1;
+  min-width: 0;
+}
+
+.agenda-row__title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.3;
+}
+
+.agenda-row__id {
+  color: var(--lime);
+}
+
+.agenda-row__sub {
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--text-muted);
+  margin-top: 2px;
+  line-height: 1.35;
+}
+
+/* ── Badges ───────────────────────────────────────────── */
+.agenda-badge {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 3px 9px;
+  border-radius: 6px;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.agenda-badge--vote {
+  background: rgba(100, 160, 255, 0.15);
+  color: #64a0ff;
+}
+
+.agenda-badge--fines {
+  background: rgba(224, 92, 92, 0.15);
+  color: #e05c5c;
+}
+
+.agenda-badge--auth {
+  background: rgba(255, 183, 77, 0.15);
+  color: #ffb74d;
+}
+
+.agenda-badge--info {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-muted);
+}
+
+/* ── Bottom actions ───────────────────────────────────── */
+.meeting-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 4px;
+}
+
+.meeting-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 13px 12px;
+  border-radius: 14px;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  transition: opacity 0.15s, transform 0.1s;
+}
+
+.meeting-btn:active {
+  opacity: 0.8;
+  transform: scale(0.97);
+}
+
+.meeting-btn--zoom {
+  background: rgba(37, 99, 235, 0.85);
+  color: #ffffff;
+}
+
+.meeting-btn--pdf {
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid var(--border);
+  color: var(--text);
+}

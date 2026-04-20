@@ -1,6 +1,8 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useMode } from '../ModeContext'
 import './Feed.css'
+import CalendarCheckSvg from '../ICONS/calendar-check.svg'
 
 const CEPHAI_LOGO   = '/images/cephai-logo.svg'
 const RV_PHOTO      = '/images/rv-photo.jpg'
@@ -60,6 +62,7 @@ export default function Feed() {
 /* ── Board Experience Feed ──────────────────────────── */
 function BoardFeed() {
   const [digestDismissed, setDigestDismissed] = useState(false)
+  const navigate = useNavigate()
 
   return (
     <div className="screen">
@@ -70,11 +73,12 @@ function BoardFeed() {
           <div className="engage-bar__icons"><FilterIcon /><SortIcon /></div>
         </div>
 
-        <div className="alert-banner">
-          <BellAlertIcon />
-          <p className="alert-banner__text">
-            Meeting tonight at 5:30 PM via Zoom — 9 hearing decisions pending board vote
-          </p>
+        <div className="alert-banner" onClick={() => navigate('/meeting')}>
+          <img src={CalendarCheckSvg} alt="" className="alert-banner__icon" />
+          <div className="alert-banner__body">
+            <p className="alert-banner__title">BOD Meeting. Tonight 5:30PM</p>
+            <p className="alert-banner__text">Zoom Meeting, 9 hearing decisions pending board vote, See Agenda</p>
+          </div>
           <ChevronRightIcon />
         </div>
 
@@ -92,17 +96,16 @@ function BoardFeed() {
             </div>
             <p className="digest-card__title">Hello John, Your Daily Digest is ready</p>
             <div className="digest-card__body">
-              <p>Since your last login, new invoices, ACC requests, and compliance updates have been processed and are ready for your review.</p>
-              <p className="digest-card__bold">Today, your attention is needed for the following:</p>
+              <p>I have put together the most pressing things you need to review, approve or take action on.</p>
               <ul className="digest-card__list">
-                <li>Approve 5 new invoices</li>
-                <li>Review 3 new ACC requests</li>
-                <li>Review 2 ACC request status updates</li>
-                <li>Review violation trends</li>
-                <li>Review the board meeting agenda</li>
+                <li>3 new invoices for Approval</li>
+                <li>2 new ACC requests for review</li>
+                <li>1 New Violation pending escalation decision</li>
+                <li>1 New Work Order for review and comment</li>
+                <li>2 board Tasks you need to complete</li>
               </ul>
             </div>
-            <button className="cta-btn">LET'S DO THIS</button>
+            <button className="cta-btn" onClick={() => navigate('/tasks')}>LET'S DO THIS</button>
           </div>
         )}
 

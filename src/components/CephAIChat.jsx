@@ -84,6 +84,16 @@ const SCREEN_CONTEXTS = {
     greeting: "I can see your board task queue. I can help you prioritize, find supporting documentation, or help you make faster decisions. What do you need?",
     suggestions: ['What needs urgent action?', 'Summarize pending approvals', 'Help me draft a response'],
   },
+  '/meeting': {
+    badge: "Analyzing Tonight's Agenda",
+    greeting: "Tonight's meeting has **8 agenda items** across the General and Executive sessions. The most action-intensive items are:\n\n• **Consent calendar** — board vote on Minutes, Financials, Delinquency, and Investment reports\n• **Violation hearings** — 9 cases including Tang, Chen, Ahluwalia + 6 more require individual board decisions\n• **Delinquency decisions** — 4 accounts at lien & foreclosure stage require board authorization\n\nWant me to brief you on any specific item?",
+    suggestions: ['Explain consent calendar', 'Violation hearings detail', 'Delinquency decisions', 'How to vote tonight'],
+  },
+  '/broadcast': {
+    badge: 'Message Crafting Assistant',
+    greeting: "I can help you write a clear, effective broadcast message for your community. What do you want to communicate?",
+    suggestions: ['Draft a pool closure notice', 'Write a parking rule reminder', 'Draft a maintenance alert', 'Emergency notice template'],
+  },
 }
 
 const DEFAULT_CONTEXT = {
@@ -93,11 +103,12 @@ const DEFAULT_CONTEXT = {
 }
 
 /* ── Simulated AI responses ───────────────────────────── */
-function getAIResponse(message, pathname) {
+function getAIResponse(message, pathname, task) {
   const m = message.toLowerCase()
 
+  /* ── Pulse responses ──────────────────────────────── */
   if (pathname === '/pulse') {
-    if (m.includes('maintenance') || (m.includes('budget') && m.includes('over'))) {
+    if (m.includes('maintenance') || m.includes('explain budget') || (m.includes('budget') && m.includes('over'))) {
       return "Maintenance has been **chronically over budget** all year. In April, actual spend was $10,590 against a $6,000 monthly budget — projecting $127K annually against a $72K annual budget. That's a **76% overrun**.\n\nI'd recommend the board request an itemized breakdown from management and ask whether prior-year deferred repairs are being front-loaded into this fiscal year."
     }
     if (m.includes('violation')) {
@@ -114,12 +125,125 @@ function getAIResponse(message, pathname) {
     }
   }
 
-  if (pathname === '/tasks') {
+  /* ── Tasks queue responses ────────────────────────── */
+  if (pathname === '/tasks' && !task) {
     if (m.includes('urgent') || m.includes('priority') || m.includes('action')) {
       return "Your highest-priority items right now:\n\n1. **Invoice approvals** — 5 pending, $18,340 total\n2. **ACC requests** — 3 past the 30-day response window (legal exposure)\n3. **Violation hearing votes** — Scheduled for next week, board decisions needed\n\nThe ACC timing is the most legally sensitive. Want help drafting any of these responses?"
     }
+    if (m.includes('summarize') || m.includes('pending approval')) {
+      return "Pending approvals across your queue:\n\n• **5 invoices** totaling $18,340 — oldest is 12 days pending\n• **3 ACC requests** — two are within the 30-day window, one has passed it\n• **2 work orders** awaiting sign-off — both vendors have acknowledged\n\nTotal financial exposure if delayed: $18,340 in invoices + 1 deemed-approval risk on the ACC."
+    }
+    if (m.includes('draft') || m.includes('response')) {
+      return "I can help draft responses for any open item. Which would you like?\n\n• **Invoice approval** — formal approval or denial note\n• **ACC decision** — approval with stipulations or denial letter\n• **Violation board note** — escalation authorization\n• **Work order status** — vendor follow-up or sign-off note\n\nJust swipe to the card and open me again — I'll have a draft ready."
+    }
   }
 
+  /* ── Invoice card responses ───────────────────────── */
+  if (task?.type === 'Invoice') {
+    if (m.includes('vendor history')) {
+      return `**${task.title}** has been an active vendor with Cardinal Hills HOA since 2021.\n\n• 18 invoices processed — zero disputed\n• Average invoice: $5,840 | This invoice: **${task.amount}** — within normal range\n• Last 3 invoices approved without modification\n• No open work order disputes or complaints on file\n\nVendor performance is consistent and reliable.`
+    }
+    if (m.includes('budget impact')) {
+      return `GL ${task.glAccount} (${task.glDescription}):\n\n• **April budget:** $12,000 | **Actual to date:** $12,200\n• This invoice would bring April to $18,400 — **$6,400 over monthly budget**\n• Annual projection with current pace: **$146,400 vs $144,000 budget**\n\nThe overage is within the at-risk threshold. No board action required unless the trend continues into Q3.`
+    }
+    if (m.includes('draft approval')) {
+      return `Here's a draft approval note for **${task.invoiceNum}**:\n\n---\n*Approved by the Cardinal Hills HOA Board on ${new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}. Invoice ${task.invoiceNum} from ${task.title} in the amount of ${task.amount} has been reviewed and approved for payment. Services rendered are consistent with the executed contract and prior billing history.*\n---\n\nCopy and paste this into the Add Comment field, then tap Approve.`
+    }
+    if (m.includes('flag')) {
+      return `To flag **${task.invoiceNum}** for review:\n\n• Use **Add Comment** to note your concern (amount discrepancy, scope question, etc.)\n• The invoice will remain pending and won't auto-approve\n• Management will be notified to follow up with the vendor\n\nWhat's the specific concern? I can help you draft a precise comment.`
+    }
+  }
+
+  /* ── ACC card responses ───────────────────────────── */
+  if (task?.type === 'ACC') {
+    if (m.includes("cc&r") || m.includes('requirement')) {
+      const rules = task.accType === 'Solar Panel Installation'
+        ? "Per CC&R **§4.2 — Architectural Guidelines**:\n\n• Solar panels are permitted but require prior ACC approval\n• Panels must be installed on rear or non-street-facing roof sections where feasible\n• Color and framing must be low-profile and blend with the roof material\n• Installation must comply with all local building permits\n\nThis request will need a stipulation addressing panel placement."
+        : "Per CC&R **§4.2 — Architectural Guidelines**:\n\n• Decks and patio structures require prior ACC approval\n• Materials must be compatible with the home's exterior (wood, composite, or painted to match)\n• Setback requirements from property lines must be met per city code\n• Footings and structural elements must be permitted by the city\n\nThis request appears to meet standard guidelines."
+      return rules
+    }
+    if (m.includes('similar') || m.includes('past request')) {
+      const similar = task.accType === 'Solar Panel Installation'
+        ? "3 solar panel requests in the last 24 months:\n\n• **512 W Birch Ct** — Approved with stipulations (rear-facing, Apr 2025)\n• **308 E Magnolia** — Approved with stipulations (side elevation, Jan 2025)\n• **791 N Cedar Ln** — Denied (front-facing placement not corrected, Aug 2024)\n\nAll approvals included the rear/non-street-facing stipulation."
+        : "4 deck installation requests in the last 24 months:\n\n• **210 W Oak Ave** — Approved (composite material, Jun 2025)\n• **445 E Juniper Dr** — Approved (wood, painted to match, Mar 2025)\n• **88 N Maple Ct** — Approved with stipulations (railing height adjustment, Nov 2024)\n• **623 S Birch Ln** — Denied (exceeded setback requirements, Jul 2024)\n\nThis request appears consistent with approved precedents."
+      return similar
+    }
+    if (m.includes('draft approval') || m.includes('approval letter')) {
+      return `Here's a draft approval letter for **${task.address}**:\n\n---\n*Dear Property Owner,*\n\n*The Cardinal Hills HOA Architectural Control Committee has reviewed your request for a ${task.accType} at ${task.address}.*\n\n*Your request is hereby **APPROVED** subject to the following stipulations:*\n*1. All work must comply with applicable city building codes and permits.*\n*2. Installation must follow the specifications submitted with this application.*\n*3. Work must be completed within 90 days of this approval.*\n\n*Sincerely, Cardinal Hills HOA Board of Directors*\n\n---\n\nPaste this into Add Decision and select "Approve with stipulations."`
+    }
+    if (m.includes('draft denial') || m.includes('denial letter')) {
+      return `Here's a draft denial letter for **${task.address}**:\n\n---\n*Dear Property Owner,*\n\n*The Cardinal Hills HOA Architectural Control Committee has reviewed your request for a ${task.accType} at ${task.address}.*\n\n*After careful review, your request is hereby **DENIED** for the following reason(s):*\n*1. The proposed installation does not meet the requirements of CC&R §4.2.*\n*2. You may resubmit a revised application addressing the items noted above.*\n\n*Sincerely, Cardinal Hills HOA Board of Directors*\n\n---\n\nPaste this into Add Decision and select "Deny."`
+    }
+  }
+
+  /* ── Violation card responses ─────────────────────── */
+  if (task?.type === 'Violation') {
+    if (m.includes('fine enforcement') || m.includes('enforcement rule')) {
+      return "Cardinal Hills HOA fine schedule for **${task?.violationType ?? 'violations'}**:\n\n• **1st notice** — Written warning, no fine\n• **2nd notice** — $50 fine + 15-day cure period\n• **3rd notice** — $100 fine + hearing scheduled\n• **Hearing** — Board may assess up to $250/day until corrected\n• **Lien** — If fines exceed $1,800 and remain unpaid\n\nThis violation is at 3rd notice. Fines begin automatically on the date shown unless the board intervenes."
+    }
+    if (m.includes('draft board note') || m.includes('board note')) {
+      return `Here's a draft board note for **${task.address}**:\n\n---\n*Board Note — ${new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}*\n\n*Re: ${task.violationType} violation at ${task.address} — Owner: ${task.ownerName}*\n\n*Owner has failed to respond to notices 1–3. The board has reviewed this matter and authorizes escalation to the association attorney for fine enforcement proceedings. Hearing date to be confirmed with management.*\n\n---\n\nPaste this into Add Board Note.`
+    }
+    if (m.includes('escalation') || m.includes('escalation step')) {
+      return `Escalation steps for **${task.address}**:\n\n1. **Confirm hearing date** with management — should be set within 21 days of 3rd notice\n2. **Verify notice delivery** — certified mail receipt required for hearing to proceed\n3. **Board vote at hearing** — majority vote needed to impose fines\n4. **Authorize attorney** — if owner does not appear or comply within 30 days post-hearing\n5. **Lien filing** — attorney files lien if fines exceed $1,800 unpaid\n\nStep 1 and 2 should be confirmed before the next board meeting.`
+    }
+    if (m.includes('owner contact') || m.includes('contact history')) {
+      return `Contact history for **${task.ownerName}** at ${task.address}:\n\n• **1st notice** — Mailed 03/01/2026 · No response\n• **2nd notice** — Mailed 03/22/2026 · No response\n• **3rd notice** — Mailed 04/08/2026 · No response\n• **Phone attempt** — 04/12/2026 · Voicemail left, not returned\n\nNo corrective action has been taken. Owner has been unresponsive across all contact channels.`
+    }
+  }
+
+  /* ── Work Order card responses ────────────────────── */
+  if (task?.type === 'WorkOrder') {
+    if (m.includes('vendor history')) {
+      return `**${task.vendor}** vendor record:\n\n• Active since 2020 — 34 work orders completed\n• On-time completion rate: **91%**\n• Last 5 work orders closed without disputes\n• Average response to acknowledgment: 6 hours\n• No open complaints or warranty claims\n\nVendor is reliable. The lack of receipt confirmation on this WO is atypical — follow up directly.`
+    }
+    if (m.includes('budget line') || m.includes('budget line check')) {
+      return `Budget check for **WO ${task.woNumber}**:\n\n• Associated GL account: 50-3100-00 (Maintenance — Repairs)\n• April budget: $6,000 | Committed to date: $8,450\n• This work order: included in committed total\n• Annual projection: **$127K vs $72K budget** — already flagged as over\n\nNo additional board action needed for this WO specifically, but the Maintenance category overrun should be addressed at the next meeting.`
+    }
+    if (m.includes('related work order') || m.includes('related open')) {
+      return `Open work orders related to **${task.location ?? 'this property/area'}**:\n\n• **WO #4810** — Pool area drain repair · Pacific Pool Services · Due 04/22\n• **WO #4798** — Irrigation system check · Green Valley Landscaping · Due 04/25\n• **WO #4772** — Common area lighting · Arrow Electric · Completed 04/14\n\nNo conflicts in scheduling. ${task.vendor} is not assigned to any other active WOs.`
+    }
+    if (m.includes('draft status') || m.includes('status note')) {
+      return `Here's a draft status note for **WO ${task.woNumber}**:\n\n---\n*Status update — ${new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}*\n\n*Board followed up with ${task.vendor} regarding WO ${task.woNumber}. Vendor confirmed receipt and advised work is ${task.status?.toLowerCase() ?? 'in progress'}. Expected completion: per due date. No additional scope changes or cost overruns reported.*\n\n---\n\nPaste this into Add Note to close the paper trail.`
+    }
+  }
+
+  /* ── Broadcast message crafting ─────────────────── */
+  if (pathname === '/broadcast') {
+    if (m.includes('pool') || m.includes('pool closure')) {
+      return "Here's a draft pool closure notice:\n\n**Subject:** Community Pool — Temporary Closure\n\n*Dear Cardinal Hills Homeowners,*\n\n*Please be advised that the community pool will be temporarily closed from [start date] to [end date] for scheduled maintenance and safety inspections.*\n\n*We apologize for any inconvenience and appreciate your patience. The pool will reopen as soon as inspections are complete and we will notify you promptly.*\n\n*Thank you,*\n*Cardinal Hills HOA Board of Directors*\n\nPaste this into the Message field and update the dates."
+    }
+    if (m.includes('parking') || m.includes('parking rule') || m.includes('rule reminder')) {
+      return "Here's a parking rule reminder draft:\n\n**Subject:** Parking Reminder — Please Review Community Rules\n\n*Dear Cardinal Hills Residents,*\n\n*We want to remind all residents of our community parking guidelines:*\n\n*• Vehicles must be parked in designated spaces only*\n*• No overnight parking on community streets between 11 PM – 6 AM*\n*• Inoperable or unregistered vehicles must be removed within 72 hours*\n*• Guest parking is limited to [X] consecutive days*\n\n*Violations may result in a warning notice followed by towing at owner's expense. Thank you for keeping our community safe and accessible.*\n\n*Cardinal Hills HOA Board*\n\nCustomize the rules as needed and paste into the Message field."
+    }
+    if (m.includes('maintenance') || m.includes('maintenance alert')) {
+      return "Here's a maintenance alert template:\n\n**Subject:** Scheduled Maintenance — [Area/System] Notice\n\n*Dear Cardinal Hills Residents,*\n\n*Please be advised that scheduled maintenance will be performed on [area/system — e.g., irrigation system, common area lighting, pool equipment] on [date] between [start time] and [end time].*\n\n*During this time, [describe any impact — e.g., 'the pool will be inaccessible' / 'water service may be briefly interrupted in Building C'].*\n\n*We apologize for any inconvenience. If you have questions, please contact management at [contact info].*\n\n*Cardinal Hills HOA Board of Directors*\n\nFill in the bracketed fields and paste into the Message field."
+    }
+    if (m.includes('emergency') || m.includes('emergency notice')) {
+      return "Here's an emergency notice template:\n\n**Subject:** URGENT — [Brief Description]\n\n*Dear Cardinal Hills Residents,*\n\n*This is an urgent notice regarding [brief description of situation].*\n\n*Effective immediately: [describe required action or precaution — e.g., 'please avoid the pool area', 'do not use tap water until further notice', 'the main gate will be closed until repairs are complete'].*\n\n*We are actively working to resolve this situation and will provide updates as they become available. For immediate concerns, please contact [emergency contact].*\n\n*Cardinal Hills HOA Board of Directors*\n\nFor emergency broadcasts, make sure to select all audience sections and all delivery methods."
+    }
+    if (m.includes('draft') || m.includes('write') || m.includes('help')) {
+      return "I can draft broadcast messages for common HOA situations. Try asking me:\n\n• **Pool closure notice** — temporary or seasonal\n• **Parking rule reminder** — courtesy or enforcement\n• **Maintenance alert** — scheduled work affecting residents\n• **Emergency notice** — urgent community-wide alert\n• Or describe your specific situation and I'll write a custom draft"
+    }
+  }
+
+  /* ── Meeting agenda responses ────────────────────── */
+  if (pathname === '/meeting') {
+    if (m.includes('consent calendar') || m.includes('consent')) {
+      return "The **Consent Calendar** bundles routine approvals into a single board vote — if no member pulls an item for separate discussion, the whole batch passes with one motion.\n\nTonight's consent calendar includes:\n\n• **Minutes** — approval of the prior meeting minutes\n• **Financials** — acceptance of the March 2026 financial statements\n• **Delinquency report** — acknowledgment of current delinquency status\n• **Investment report** — review of reserve fund investment activity\n\nIf you have questions about any of these, you can pull the item off consent and discuss it separately before voting."
+    }
+    if (m.includes('violation hearing') || m.includes('hearing')) {
+      return "Tonight's Executive Session includes **9 violation hearings**. Each requires a board vote on a fine decision after giving the homeowner an opportunity to speak.\n\nKnown cases on the docket:\n\n• **Tang** — Landscaping violation, 3rd notice\n• **Chen** — Exterior paint non-compliance, 2nd hearing\n• **Ahluwalia** — Unauthorized structure, 3rd notice\n• **+ 6 additional cases** — details in the hearing packets\n\nFor each hearing: owner presents (or is absent), board deliberates in exec session, then votes to impose, waive, or defer the fine. A majority vote is required."
+    }
+    if (m.includes('delinquency') || m.includes('lien') || m.includes('foreclosure')) {
+      return "The **Delinquency Decisions** item covers 4 accounts that have reached lien or foreclosure authorization stage:\n\n• Board must vote to **authorize the association attorney** to proceed with lien filing or foreclosure action on each account\n• Accounts at this stage have typically exhausted 3+ collection notices and payment plans\n• A majority board vote is required to authorize each account\n\nThis is handled in Executive Session — no owners are present. Board members should review the delinquency packets provided by management before voting."
+    }
+    if (m.includes('how to vote') || m.includes('voting') || m.includes('vote tonight')) {
+      return "Here's how voting works for tonight's items:\n\n**General Session**\n• **Consent Calendar** — one motion covers all items unless pulled. Board member makes a motion, second required, then majority vote.\n• **New Business** — holiday lighting and perimeter restroom each need a separate motion and majority vote.\n\n**Executive Session** (board members only)\n• **Exec Minutes** — motion, second, majority vote\n• **Violation Hearings** — for each of the 9 cases: motion to impose/waive fine, second, majority vote\n• **Delinquency** — motion to authorize attorney for each account, second, majority vote\n\nQuorum tonight requires at least 3 of 5 board members present. All votes are recorded in the minutes."
+    }
+  }
+
+  /* ── General responses ────────────────────────────── */
   if (m.includes('rule') || m.includes('regulation') || m.includes("cc&r")) {
     return "Cardinal Hills HOA is governed by the CC&Rs recorded in 2018, with amendments in 2021 and 2023. Key areas include architectural guidelines, landscaping standards, parking rules, and noise ordinances.\n\nWhat specific rule or topic are you looking for?"
   }
@@ -130,7 +254,7 @@ function getAIResponse(message, pathname) {
     return "The next board meeting is scheduled for **May 14, 2026 at 5:30 PM** via Zoom. The agenda includes: reserve study update, Q1 financial review, 3 ACC appeals, and the Maintenance contractor contract renewal.\n\nWant me to summarize any of the agenda items?"
   }
 
-  return `I heard "${message}" — let me check what I know about Cardinal Hills HOA.\n\nCould you be a bit more specific? I can cover financials, violations, delinquencies, CC&R rules, board procedures, or anything currently on your screen.`
+  return `I can help with that. Could you be more specific? I can cover vendor history, budget details, CC&R rules, fine enforcement, draft notes, or anything currently on your screen.`
 }
 
 /* ── Markdown-lite renderer ───────────────────────────── */
@@ -179,9 +303,36 @@ function renderText(text, onAction) {
   })
 }
 
+/* ── Extract subject + body from a draft AI response ─── */
+function extractDraft(text) {
+  const subjectMatch = text.match(/\*\*Subject:\*\*\s*(.+)/)
+  if (!subjectMatch) return null
+  const subject = subjectMatch[1].trim()
+
+  const lines = text.split('\n')
+  const subjectIdx = lines.findIndex(l => l.includes('**Subject:**'))
+
+  const bodyLines = []
+  let inBody = false
+  for (let i = subjectIdx + 1; i < lines.length; i++) {
+    const line = lines[i]
+    // Stop before trailing instruction line
+    if (/^(Paste this|Copy this|Copy and paste|Fill in|Customize)/i.test(line.trim())) break
+    if (!inBody && line.trim() === '') continue // skip leading blank
+    inBody = true
+    // Strip markdown bold/italic markers
+    bodyLines.push(line.replace(/\*\*([^*]+)\*\*/g, '$1').replace(/\*([^*]+)\*/g, '$1'))
+  }
+  // Trim trailing blank lines
+  while (bodyLines.length && bodyLines[bodyLines.length - 1].trim() === '') bodyLines.pop()
+
+  const message = bodyLines.join('\n').trim()
+  return message ? { subject, message } : null
+}
+
 /* ── Component ────────────────────────────────────────── */
 export default function CephAIChat() {
-  const { chatOpen, setChatOpen, activeTask } = useMode()
+  const { chatOpen, setChatOpen, activeTask, setBroadcastDraft } = useMode()
   const { pathname } = useLocation()
   const messagesEndRef = useRef(null)
 
@@ -218,12 +369,12 @@ export default function CephAIChat() {
   function handleSend(text) {
     const msg = (text ?? input).trim()
     if (!msg || thinking) return
-    setSuggestions([])
+    if (text) setSuggestions(prev => prev.filter(s => s !== text))
     setMessages(prev => [...prev, { role: 'user', text: msg }])
     setInput('')
     setThinking(true)
     setTimeout(() => {
-      const response = getAIResponse(msg, pathname)
+      const response = getAIResponse(msg, pathname, activeTask)
       setMessages(prev => [...prev, { role: 'ai', text: response }])
       setThinking(false)
     }, 900 + Math.random() * 600)
@@ -265,19 +416,35 @@ export default function CephAIChat() {
 
         {/* Messages */}
         <div className="cephai-messages">
-          {messages.map((msg, i) => (
-            <div key={i} className={`cephai-bubble cephai-bubble--${msg.role}`}>
-              {msg.role === 'ai' && (
-                <img src={CEPHAI_LOGO} alt="" className="cephai-bubble__avatar" />
-              )}
-              <div className="cephai-bubble__body">
-                {msg.role === 'ai'
-                  ? <div className="cephai-bubble__text">{renderText(msg.text, msg.role === 'ai' && pathname === '/tasks' ? () => setChatOpen(false) : null)}</div>
-                  : <div className="cephai-bubble__text">{msg.text}</div>
-                }
+          {messages.map((msg, i) => {
+            const draft = msg.role === 'ai' && pathname === '/broadcast' ? extractDraft(msg.text) : null
+            return (
+              <div key={i} className={`cephai-bubble cephai-bubble--${msg.role}`}>
+                {msg.role === 'ai' && (
+                  <img src={CEPHAI_LOGO} alt="" className="cephai-bubble__avatar" />
+                )}
+                <div className="cephai-bubble__body">
+                  {msg.role === 'ai'
+                    ? <div className="cephai-bubble__text">
+                        {renderText(msg.text, msg.role === 'ai' && pathname === '/tasks' ? () => setChatOpen(false) : null)}
+                        {draft && (
+                          <button
+                            className="cephai-insert-btn"
+                            onClick={() => {
+                              setBroadcastDraft(draft)
+                              setChatOpen(false)
+                            }}
+                          >
+                            <InsertIcon /> Insert Message
+                          </button>
+                        )}
+                      </div>
+                    : <div className="cephai-bubble__text">{msg.text}</div>
+                  }
+                </div>
               </div>
-            </div>
-          ))}
+            )
+          })}
 
           {thinking && (
             <div className="cephai-bubble cephai-bubble--ai">
@@ -338,6 +505,16 @@ function SendIcon() {
   return (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
       <path d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z" />
+    </svg>
+  )
+}
+
+function InsertIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="17 12 12 17 7 12"/>
+      <line x1="12" y1="5" x2="12" y2="17"/>
+      <line x1="5" y1="21" x2="19" y2="21"/>
     </svg>
   )
 }

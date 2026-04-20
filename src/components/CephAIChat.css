@@ -345,6 +345,30 @@
   opacity: 0.82;
 }
 
+.cephai-insert-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  width: 100%;
+  margin-top: 12px;
+  padding: 11px 14px;
+  background: #b2de61;
+  border-radius: 10px;
+  color: #112719;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  transition: opacity 0.15s;
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+}
+.cephai-insert-btn:active {
+  opacity: 0.82;
+}
+
 /* ── CephAI ambient glow (context screen) ────────────── */
 @keyframes cephai-glow {
   0%, 100% {

@@ -4,7 +4,7 @@ import { useMode } from '../ModeContext'
 import './BottomNav.css'
 import './CephAIChat.css'
 
-const CONTEXT_ROUTES = ['/pulse', '/tasks']
+const CONTEXT_ROUTES = ['/pulse', '/tasks', '/meeting', '/broadcast']
 
 const CEPHAI_LOGO = '/images/cephai-logo.svg'
 
@@ -13,7 +13,7 @@ const LEFT_NAV  = [
   { to: '/pulse', label: 'Pulse',      icon: PulseIcon },
 ]
 const RIGHT_NAV = [
-  { to: '/tasks', label: 'Tasks', icon: TasksIcon },
+  { to: '/tasks', label: 'Action Items', icon: TasksIcon },
   { to: '/more',  label: 'More',  icon: MoreIcon },
 ]
 
@@ -46,6 +46,8 @@ export default function BottomNav() {
     if (prevPathname.current === pathname) return
     prevPathname.current = pathname
     if (pathname === '/pulse') triggerRing(true)
+    if (pathname === '/meeting') triggerRing(false)
+    if (pathname === '/broadcast') triggerRing(false)
   }, [pathname])
 
   if (!isBoard) return <ResidentNav />

@@ -7,6 +7,7 @@ export function ModeProvider({ children }) {
   const [chatOpen,         setChatOpen]         = useState(false)
   const [activeTask,       setActiveTask]       = useState(null)
   const [cephAIPulseCount, setCephAIPulseCount] = useState(0)
+  const [broadcastDraft,   setBroadcastDraft]   = useState(null)
 
   return (
     <ModeContext.Provider value={{
@@ -14,6 +15,7 @@ export function ModeProvider({ children }) {
       chatOpen,         setChatOpen,
       activeTask,       setActiveTask,
       cephAIPulseCount, setCephAIPulseCount,
+      broadcastDraft,   setBroadcastDraft,
     }}>
       {children}
     </ModeContext.Provider>
