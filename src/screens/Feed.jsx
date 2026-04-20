@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useMode } from '../ModeContext'
 import './Feed.css'
 import CalendarCheckSvg from '../ICONS/calendar-check.svg'
+import WorkSvg from '../Illustrations/Work.svg'
 
 const CEPHAI_LOGO   = '/images/cephai-logo.svg'
 const RV_PHOTO      = '/images/rv-photo.jpg'
@@ -81,6 +82,8 @@ function BoardFeed() {
           </div>
           <ChevronRightIcon />
         </div>
+
+        <WeeklyWrapCard />
 
         {!digestDismissed && (
           <div className="digest-card">
@@ -257,6 +260,26 @@ function PostCard({ post }) {
             <span>{post.comments}</span>
           </button>
         </div>
+      </div>
+    </div>
+  )
+}
+
+/* ── Weekly Wrap Card ───────────────────────────────── */
+function WeeklyWrapCard() {
+  return (
+    <div className="weekly-wrap">
+      <div className="weekly-wrap__content">
+        <div className="weekly-wrap__left">
+          <p className="weekly-wrap__eyebrow">Your Weekly Wrap</p>
+          <span className="weekly-wrap__date-pill">APR 12th – 18th</span>
+          <p className="weekly-wrap__title">Here's What East Management Has Been Up To</p>
+          <p className="weekly-wrap__sub">A quick look at the meaningful work happening behind the scenes.</p>
+        </div>
+        <img src={WorkSvg} alt="" className="weekly-wrap__illustration" />
+      </div>
+      <div className="weekly-wrap__btn-wrap">
+        <button className="weekly-wrap__cta">See What We Delivered</button>
       </div>
     </div>
   )
