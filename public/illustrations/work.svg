@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 200" fill="none">
+  <!-- Shadow -->
+  <ellipse cx="120" cy="178" rx="62" ry="10" fill="rgba(0,80,0,0.18)"/>
+
+  <!-- Tablet body -->
+  <rect x="72" y="28" width="96" height="128" rx="8" fill="#1a5c1a" transform="rotate(-8 72 28)"/>
+  <rect x="76" y="32" width="88" height="116" rx="6" fill="#f5fff5" transform="rotate(-8 76 32)"/>
+
+  <!-- Bar chart on tablet -->
+  <g transform="rotate(-8 76 32)">
+    <rect x="84" y="50" width="10" height="28" rx="2" fill="#2d8c2d" opacity="0.8"/>
+    <rect x="98" y="62" width="10" height="16" rx="2" fill="#2d8c2d" opacity="0.6"/>
+    <rect x="112" y="44" width="10" height="34" rx="2" fill="#2d8c2d" opacity="0.9"/>
+    <rect x="126" y="56" width="10" height="22" rx="2" fill="#2d8c2d" opacity="0.7"/>
+    <line x1="82" y1="80" x2="140" y2="80" stroke="#ccc" strokeWidth="1"/>
+    <!-- Lines below chart -->
+    <rect x="84" y="96" width="56" height="4" rx="2" fill="#ddd"/>
+    <rect x="84" y="104" width="44" height="4" rx="2" fill="#eee"/>
+    <rect x="84" y="112" width="50" height="4" rx="2" fill="#ddd"/>
+    <rect x="84" y="120" width="38" height="4" rx="2" fill="#eee"/>
+  </g>
+
+  <!-- Scroll/document in front -->
+  <rect x="48" y="88" width="72" height="90" rx="5" fill="#fff" transform="rotate(5 48 88)"/>
+  <g transform="rotate(5 48 88)">
+    <!-- Checkbox items -->
+    <rect x="52" y="96" width="8" height="8" rx="1.5" fill="#2d8c2d" opacity="0.7"/>
+    <line x1="53.5" y1="100" x2="55" y2="102" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
+    <line x1="55" y1="102" x2="58" y2="98" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
+    <rect x="64" y="97" width="40" height="3" rx="1.5" fill="#bbb"/>
+    <rect x="64" y="102" width="30" height="3" rx="1.5" fill="#ddd"/>
+
+    <rect x="52" y="112" width="8" height="8" rx="1.5" fill="#2d8c2d" opacity="0.7"/>
+    <line x1="53.5" y1="116" x2="55" y2="118" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
+    <line x1="55" y1="118" x2="58" y2="114" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
+    <rect x="64" y="113" width="36" height="3" rx="1.5" fill="#bbb"/>
+    <rect x="64" y="118" width="28" height="3" rx="1.5" fill="#ddd"/>
+
+    <rect x="52" y="128" width="8" height="8" rx="1.5" fill="#ccc"/>
+    <rect x="64" y="129" width="40" height="3" rx="1.5" fill="#ddd"/>
+    <rect x="64" y="134" width="24" height="3" rx="1.5" fill="#eee"/>
+
+    <rect x="52" y="144" width="8" height="8" rx="1.5" fill="#ccc"/>
+    <rect x="64" y="145" width="32" height="3" rx="1.5" fill="#ddd"/>
+    <rect x="64" y="150" width="38" height="3" rx="1.5" fill="#eee"/>
+  </g>
+  <!-- Scroll curl at bottom -->
+  <ellipse cx="84" cy="178" rx="36" ry="6" fill="#e8e8e8" transform="rotate(5 84 178)"/>
+
+  <!-- Pencil -->
+  <g transform="rotate(-30 40 140)">
+    <rect x="26" y="90" width="10" height="56" rx="3" fill="#2d8c2d"/>
+    <polygon points="26,146 36,146 31,158" fill="#ffe0a0"/>
+    <rect x="26" y="88" width="10" height="8" rx="1" fill="#aaa"/>
+    <rect x="26" y="90" width="10" height="4" fill="#ff9090" opacity="0.6"/>
+  </g>
+
+  <!-- Pie chart (top right) -->
+  <g transform="translate(172, 52)">
+    <circle cx="0" cy="0" r="20" fill="#e8f5e8"/>
+    <path d="M0,0 L20,0 A20,20 0 0,1 -10,17.3 Z" fill="#2d8c2d"/>
+    <path d="M0,0 L-10,17.3 A20,20 0 0,1 -20,0 Z" fill="#6bcb6b" opacity="0.7"/>
+    <path d="M0,0 L-20,0 A20,20 0 1,1 20,0 Z" fill="#1a5c1a" opacity="0.5"/>
+  </g>
+
+  <!-- Chess piece (bottom right) -->
+  <g transform="translate(178, 128)">
+    <ellipse cx="0" cy="26" rx="14" ry="5" fill="#1a5c1a" opacity="0.4"/>
+    <rect x="-7" y="18" width="14" height="6" rx="2" fill="#1a5c1a"/>
+    <rect x="-5" y="10" width="10" height="10" rx="1" fill="#2d8c2d"/>
+    <circle cx="0" cy="6" r="7" fill="#2d8c2d"/>
+    <circle cx="0" cy="4" r="4" fill="#f5fff5"/>
+  </g>
+
+  <!-- Floating cubes (bottom left) -->
+  <g transform="translate(30, 148)" opacity="0.7">
+    <rect x="0" y="6" width="12" height="12" rx="2" fill="#2d8c2d"/>
+    <rect x="0" y="0" width="12" height="8" rx="2" fill="#4aaa4a"/>
+    <rect x="12" y="14" width="10" height="10" rx="2" fill="#1a5c1a" opacity="0.8"/>
+  </g>
+
+  <!-- Dots decoration -->
+  <circle cx="170" cy="100" r="4" fill="#1a5c1a" opacity="0.3"/>
+  <circle cx="40" cy="78" r="3" fill="#2d8c2d" opacity="0.4"/>
+  <circle cx="168" cy="144" r="3" fill="#2d8c2d" opacity="0.3"/>
+</svg>

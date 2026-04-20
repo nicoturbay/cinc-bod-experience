@@ -102,6 +102,70 @@ const DEFAULT_CONTEXT = {
   suggestions: ['HOA rules summary', 'Board member duties', 'Community policies', 'Upcoming meetings'],
 }
 
+/* ── Pulse card-level contexts (triggered by long press) ── */
+const CARD_CONTEXTS = {
+  'kpi:0': {
+    badge: 'Open Violations',
+    greeting: "**42 open violations** in April — up 12 from March. That's the sharpest month-over-month jump this fiscal year.\n\nLandscaping leads with 18 cases (spring inspection surge). Home exterior violations (11) tend to linger without direct owner contact.\n\nThe trend is still improving vs the January peak of 38, but the April spike needs attention.",
+    suggestions: ["What's driving the spike?", 'Compare to January peak', 'Top violation categories', 'Enforcement recommendations'],
+  },
+  'kpi:1': {
+    badge: 'Delinquent Accounts',
+    greeting: "**18 delinquent accounts** in April — down 9 from last month, which is positive. However, 3 accounts have reached lien status and 2 are pre-lien.\n\nTotal outstanding balance is $84,210. The lien accounts (Thompson, Davis, Wilson) should be confirmed with the association attorney before the next meeting.",
+    suggestions: ['Lien account status', 'Payment plan options', 'Attorney escalation steps', 'Compare to last quarter'],
+  },
+  'kpi:2': {
+    badge: 'Total Delinquency',
+    greeting: "**$84,210 total delinquency** — up $19,400 from March. This is the largest single-month jump this year.\n\nThe spike is driven by two new lien escalations. Three accounts at lien stage: 735 E Sierra Madre, 420 E Newcomer, and 854 E Weeping Willow.\n\nI'd suggest confirming the attorney has received the lien packets before the next board meeting.",
+    suggestions: ['Which accounts jumped?', 'Lien packet status', 'Collection timeline', 'Foreclosure risk'],
+  },
+  'kpi:3': {
+    badge: 'Budget Variance',
+    greeting: "**-$3,180 budget variance** in April — 2% over monthly budget. The overrun is driven primarily by Maintenance, which is on pace for $127K against a $72K annual budget.\n\nLandscaping is also at risk, projecting $146K vs $144K annual budget. All other categories are on track or under.",
+    suggestions: ['Explain Maintenance overrun', 'Landscaping risk detail', 'Which categories are on track?', 'Full budget report'],
+  },
+  'bank:balance': {
+    badge: 'Bank Balance Analysis',
+    greeting: "**$796,960 total across both accounts** as of April 2026.\n\n• **Depository Account**: $284,620 — $23,140 pending debit (outstanding checks/ACH)\n• **Reserves Account**: $512,340 — fully registered, no pending items\n\nCash position is healthy. The Depository pending debit is normal operating float.",
+    suggestions: ["What's the pending debit?", 'Compare to last month', 'Reserve fund adequacy', 'Investment opportunities'],
+  },
+  'bank:reserve': {
+    badge: 'Reserve Fund Health',
+    greeting: "**Reserve Fund is 84% funded** — $512,340 of a $607,000 target. Up 2.4 percentage points this quarter.\n\nAt current contribution rate, the fund will reach 100% in approximately 3.5 years. The reserve study recommends maintaining this trajectory to avoid special assessments.\n\nYTD violation repairs and deferred maintenance have not yet impacted the reserve balance.",
+    suggestions: ['What is the funding target based on?', 'Special assessment risk?', 'Reserve study update', 'Investment performance'],
+  },
+  'violations:month': {
+    badge: 'Violations — April 2026',
+    greeting: "**15 new violations in April** — down 4 from March's 19. The trend is improving.\n\nParking leads (5), followed by Landscaping (4) and Architectural (3). 11 of 15 have been cured already — strong cure rate.\n\nOnly 1 escalated case this month. The board is in a good enforcement posture.",
+    suggestions: ['Which violations are open?', 'Escalated case details', 'Compare to March', 'Enforcement effectiveness'],
+  },
+  'violations:6mo': {
+    badge: 'Violations — 6 Month Trend',
+    greeting: "Looking at the last 6 months (Nov–Apr), violations **peaked in January at 38** and have been declining since.\n\nThe Jan spike was driven by post-holiday landscaping neglect and a catch-up inspection sweep. April's 15 is the lowest in 12 months.\n\nThe YTD total of 97 is on pace to come in below last year's annual figure.",
+    suggestions: ['Why did January spike?', 'YTD vs last year', 'Forecast for Q2', 'Seasonal patterns'],
+  },
+  'violations:ytd': {
+    badge: 'Violations — YTD',
+    greeting: "**97 violations YTD** (Jan–Apr 2026). The trend is clearly improving — down 61% from the January peak.\n\nVS January's peak of 38, April's 15 is **-61%**. If this trajectory holds, the full-year total will likely come in below 2025.\n\nThe enforcement program appears to be working — the high cure rate (73% this month) is a strong indicator.",
+    suggestions: ['Compare to 2025 full year', 'Cure rate analysis', 'Top violation types YTD', 'Forecast rest of year'],
+  },
+  'delinquencies': {
+    badge: 'Top Delinquencies',
+    greeting: "**5 accounts in the delinquency pipeline** — 3 at lien stage, 2 at pre-lien.\n\nThe 3 lien accounts (Thompson, Davis, Wilson) require board action: confirm the association attorney has received lien packets and authorize foreclosure proceedings if payment isn't received within 30 days.\n\nThe 2 pre-lien accounts should receive final demand letters this week.",
+    suggestions: ['Lien packet status', 'Authorize foreclosure action', 'Draft demand letter', 'Payment plan options'],
+  },
+  'expenses': {
+    badge: 'Expenses vs Budget',
+    greeting: "**$44,180 actual vs $41,000 budget** in April — $3,180 over (7.8%).\n\nThe problem is Maintenance: $10,590 actual vs $6,000 budget — projecting **$127K annually against a $72K budget**. That's a 76% overrun.\n\nLandscaping is at-risk but manageable. All other categories are on track or under budget.",
+    suggestions: ['Maintenance overrun breakdown', 'Landscaping risk detail', 'Annual projection', 'Recommend board action'],
+  },
+  'invoices': {
+    badge: 'Approved to Pay Invoices',
+    greeting: "**7 invoices totaling $18,340** approved and ready to pay this period.\n\nGreen Valley Landscaping ($6,200) and Pacific Pool Services ($3,800) are the two largest. All 7 have been reviewed and cleared.\n\nNote: the Westside Plumbing invoice ($2,140) relates to the Maintenance category that is already over budget.",
+    suggestions: ['Vendor history check', 'Budget impact by vendor', 'Flag an invoice', 'Payment schedule'],
+  },
+}
+
 /* ── Simulated AI responses ───────────────────────────── */
 function getAIResponse(message, pathname, task) {
   const m = message.toLowerCase()
@@ -332,7 +396,7 @@ function extractDraft(text) {
 
 /* ── Component ────────────────────────────────────────── */
 export default function CephAIChat() {
-  const { chatOpen, setChatOpen, activeTask, setBroadcastDraft } = useMode()
+  const { chatOpen, setChatOpen, activeTask, setBroadcastDraft, cephAICardContext, setCephAICardContext } = useMode()
   const { pathname } = useLocation()
   const messagesEndRef = useRef(null)
 
@@ -341,8 +405,11 @@ export default function CephAIChat() {
   const [thinking, setThinking] = useState(false)
   const [suggestions, setSuggestions] = useState([])
 
-  // Resolve context: card-specific on /tasks, else screen-level
+  // Resolve context: card-specific (long-press) > task card > screen-level
   function getCtx() {
+    if (cephAICardContext && CARD_CONTEXTS[cephAICardContext]) {
+      return CARD_CONTEXTS[cephAICardContext]
+    }
     if (pathname === '/tasks' && activeTask) {
       const cardCtx = getTaskCardContext(activeTask)
       if (cardCtx) return cardCtx
@@ -351,6 +418,9 @@ export default function CephAIChat() {
   }
 
   // Reset and seed greeting each time panel opens
+  // NOTE: cephAICardContext intentionally excluded from deps — it's set ~1800ms
+  // before chatOpen flips to true, so getCtx() already sees the correct value.
+  // Including it would cause the else-branch to clear it immediately on set.
   useEffect(() => {
     if (chatOpen) {
       const ctx = getCtx()
@@ -358,7 +428,10 @@ export default function CephAIChat() {
       setSuggestions(ctx.suggestions)
       setInput('')
       setThinking(false)
+    } else {
+      setCephAICardContext(null)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chatOpen, pathname, activeTask?.id])
 
   // Scroll to bottom on new messages

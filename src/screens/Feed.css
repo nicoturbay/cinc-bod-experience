@@ -1,3 +1,91 @@
+/* ── Weekly Wrap card ───────────────────────────────── */
+.weekly-wrap {
+  background: #aedbbe;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.weekly-wrap__content {
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+  padding: 14px 12px 10px 14px;
+}
+
+.weekly-wrap__left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  min-width: 0;
+}
+
+.weekly-wrap__eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #319245;
+}
+
+.weekly-wrap__date-pill {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  color: #a5ce9f;
+  background: #235237;
+  border-radius: 20px;
+  padding: 3px 10px;
+  width: fit-content;
+}
+
+.weekly-wrap__title {
+  font-size: 18px;
+  font-weight: 800;
+  color: #112719;
+  line-height: 1.2;
+}
+
+.weekly-wrap__sub {
+  font-size: 12px;
+  font-weight: 400;
+  color: #112719;
+  line-height: 1.45;
+}
+
+.weekly-wrap__illustration {
+  width: 150px;
+  height: 150px;
+  flex-shrink: 0;
+  object-fit: contain;
+  align-self: center;
+}
+
+.weekly-wrap__btn-wrap {
+  padding: 0 14px 14px;
+}
+
+.weekly-wrap__cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 15px;
+  border: 1.5px solid #b2de61;
+  border-radius: var(--radius-md);
+  background: #235237;
+  font-family: var(--font);
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: #b2de61;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.weekly-wrap__cta:active { background: #112719; }
+
 /* ── Engage bar ─────────────────────────────────────── */
 .engage-bar {
   display: flex;

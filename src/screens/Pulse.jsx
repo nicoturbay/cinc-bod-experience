@@ -1,5 +1,6 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useMode } from '../ModeContext'
 import './Pulse.css'
 
 const PERIODS = [
@@ -387,10 +388,55 @@ const PERIOD_DATA = {
 
 const GROUPS = ['Monthly', 'Quarterly', 'Yearly']
 
+/* ── Violations data ─────────────────────────────────── */
+const VIOL_MONTHLY = [
+  { short: 'May', total: 22 },
+  { short: 'Jun', total: 28 },
+  { short: 'Jul', total: 34 },
+  { short: 'Aug', total: 29 },
+  { short: 'Sep', total: 24 },
+  { short: 'Oct', total: 21 },
+  { short: 'Nov', total: 26 },
+  { short: 'Dec', total: 31 },
+  { short: 'Jan', total: 38 },
+  { short: 'Feb', total: 25 },
+  { short: 'Mar', total: 19 },
+  { short: 'Apr', total: 15, current: true },
+]
+
+const VIOL_LATEST = {
+  period: 'April 2026',
+  total: 15,
+  prevTotal: 19,
+  byCategory: [
+    { type: 'Parking',          count: 5, color: '#c05a35' },
+    { type: 'Landscaping',      count: 4, color: '#4a7a4a' },
+    { type: 'Architectural',    count: 3, color: '#9a8030' },
+    { type: 'Noise / nuisance', count: 2, color: '#7a3535' },
+    { type: 'Trash / bins',     count: 1, color: '#6a8a6a' },
+  ],
+  status: { cured: 11, open: 3, escalated: 1 },
+}
+
+function getMonthBarColor(total, isCurrent) {
+  if (isCurrent) return 'var(--lime)'
+  if (total >= 35) return '#804040'
+  if (total >= 28) return '#c06030'
+  if (total >= 22) return '#b87840'
+  return '#6a8a6a'
+}
+
 const BANK_ACCOUNTS = [
   { name: 'Depository Account', balance: 284620, registered: 261480 },
   { name: 'Reserves Account',   balance: 512340, registered: 512340 },
 ]
+
+const RESERVE_FUND = {
+  funded: 512340,   // Reserves Account balance
+  target: 607000,
+  pct: Math.round(512340 / 607000 * 100),  // 84%
+  qoqDelta: 2.4,
+}
 
 function fmt(n) {
   return '$' + Math.abs(n).toLocaleString()
@@ -398,9 +444,14 @@ function fmt(n) {
 
 export default function Pulse() {
   const navigate = useNavigate()
+  const { setCephAIPulseCount, setChatOpen, setCephAICardContext } = useMode()
   const [period, setPeriod] = useState('apr-2026')
   const [open, setOpen] = useState(false)
+  const [violTab, setViolTab] = useState('month')
+  const [bankTab, setBankTab] = useState('balance')
+  const [holdingCard, setHoldingCard] = useState(null)
   const dropdownRef = useRef(null)
+  const holdTimerRef = useRef(null)
 
   const data = PERIOD_DATA[period]
   const currentPeriod = PERIODS.find(p => p.key === period)
@@ -418,7 +469,47 @@ export default function Pulse() {
     return () => document.removeEventListener('mousedown', handleOutside)
   }, [open])
 
+  // Long-press to trigger CephAI
+  const startHold = useCallback((cardId) => {
+    cancelHold()
+    setHoldingCard(cardId)
+    holdTimerRef.current = setTimeout(() => {
+      setHoldingCard(null)
+      setCephAICardContext(cardId)
+      setCephAIPulseCount(c => c + 1)
+      setTimeout(() => setChatOpen(true), 1800)
+    }, 2500)
+  }, [setCephAIPulseCount, setChatOpen, setCephAICardContext])
+
+  const cancelHold = useCallback(() => {
+    if (holdTimerRef.current) {
+      clearTimeout(holdTimerRef.current)
+      holdTimerRef.current = null
+    }
+    setHoldingCard(null)
+  }, [])
+
+  // Helper: spread these onto any holdable element.
+  // pointerDown/Up bubble naturally so inner button clicks still work.
+  function holdProps(cardId) {
+    return {
+      onPointerDown: () => startHold(cardId),
+      onPointerUp: cancelHold,
+      onPointerLeave: cancelHold,
+      onPointerCancel: cancelHold,
+      onContextMenu: (e) => e.preventDefault(),
+    }
+  }
+
   const { total, categories } = data.expenses
+
+  const violDelta    = VIOL_LATEST.total - VIOL_LATEST.prevTotal
+  const violDeltaPct = Math.round((violDelta / VIOL_LATEST.prevTotal) * 100)
+  const violMaxCat   = VIOL_LATEST.byCategory[0].count
+  const violYTD      = VIOL_MONTHLY.slice(-4).reduce((s, m) => s + m.total, 0)
+  const violPeak     = Math.max(...VIOL_MONTHLY.map(m => m.total))
+  const violCurrent  = VIOL_MONTHLY[VIOL_MONTHLY.length - 1].total
+  const violVsPeak   = Math.round(((violCurrent - violPeak) / violPeak) * 100)
 
   function getTrend(c) {
     const annualBudget = ANNUAL_BUDGETS[c.name]
@@ -472,77 +563,217 @@ export default function Pulse() {
         {/* AT A GLANCE */}
         <div>
           <p className="section-label">At a Glance</p>
-          <div className="pulse-grid">
-            {data.kpis.map(k => (
-              <button key={k.label} className="pulse-stat card" onClick={() => navigate(k.route)}>
-                <p className="pulse-stat__label">{k.label}</p>
-                <p className="pulse-stat__value">{k.value}</p>
-                <p className={`pulse-stat__delta pulse-stat__delta--${k.deltaColor}`}>{k.delta}</p>
-                <span className="pulse-stat__arrow"><ChevronRightIcon /></span>
-              </button>
-            ))}
+          <div className="pulse-glance-scroll">
+            <div className="pulse-grid">
+              {data.kpis.map((k, i) => (
+                <button
+                  key={k.label}
+                  className={`pulse-stat card${holdingCard === `kpi:${i}` ? ' card--holding' : ''}`}
+                  onClick={() => navigate(k.route)}
+                  {...holdProps(`kpi:${i}`)}
+                >
+                  <p className="pulse-stat__label">{k.label}</p>
+                  <p className="pulse-stat__value">{k.value}</p>
+                  <p className={`pulse-stat__delta pulse-stat__delta--${k.deltaColor}`}>{k.delta}</p>
+                </button>
+              ))}
+            </div>
           </div>
         </div>
 
-        {/* BANK BALANCE */}
-        <div className="card bank-card">
-          <div className="bank-card__header">
-            <p className="section-label" style={{ margin: 0 }}>Bank Balance</p>
-            <span className="bank-card__all-label">All Accounts</span>
+        {/* BANK BALANCE / RESERVE FUND */}
+        <div>
+        <p className="section-label">Bank Balance / Reserve Fund Health</p>
+        <div
+          className={`card bank-card${holdingCard === (bankTab === 'balance' ? 'bank:balance' : 'bank:reserve') ? ' card--holding' : ''}`}
+          {...holdProps(bankTab === 'balance' ? 'bank:balance' : 'bank:reserve')}
+        >
+
+          {/* Tab strip */}
+          <div className="viol-tabs">
+            {[['balance', 'Balance'], ['reserve', 'Reserve Fund']].map(([key, label]) => (
+              <button
+                key={key}
+                className={`viol-tab${bankTab === key ? ' viol-tab--active' : ''}`}
+                onClick={() => setBankTab(key)}
+              >{label}</button>
+            ))}
           </div>
-          <p className="bank-card__total">
-            {fmt(BANK_ACCOUNTS.reduce((s, a) => s + a.balance, 0))}
-          </p>
-          <div className="bank-accounts">
-            {BANK_ACCOUNTS.map((acct, i) => {
-              const hasPending = acct.registered !== acct.balance
-              const pendingDiff = acct.registered - acct.balance
-              return (
-                <div key={acct.name} className={`bank-account${i < BANK_ACCOUNTS.length - 1 ? ' bank-account--border' : ''}`}>
-                  <div className="bank-account__left">
-                    <span className="bank-account__name">{acct.name}</span>
-                    {hasPending && (
-                      <span className={`bank-account__pending ${pendingDiff < 0 ? 'bank-account__pending--debit' : 'bank-account__pending--credit'}`}>
-                        {pendingDiff < 0 ? '↓' : '↑'} {fmt(Math.abs(pendingDiff))} pending
+
+          {/* ── Balance tab ── */}
+          {bankTab === 'balance' && <>
+            <div className="bank-card__header">
+              <span className="bank-card__all-label">All Accounts</span>
+            </div>
+            <p className="bank-card__total">
+              {fmt(BANK_ACCOUNTS.reduce((s, a) => s + a.balance, 0))}
+            </p>
+            <div className="bank-accounts">
+              {BANK_ACCOUNTS.map((acct, i) => {
+                const hasPending = acct.registered !== acct.balance
+                const pendingDiff = acct.registered - acct.balance
+                return (
+                  <div key={acct.name} className={`bank-account${i < BANK_ACCOUNTS.length - 1 ? ' bank-account--border' : ''}`}>
+                    <div className="bank-account__left">
+                      <span className="bank-account__name">{acct.name}</span>
+                      {hasPending && (
+                        <span className={`bank-account__pending ${pendingDiff < 0 ? 'bank-account__pending--debit' : 'bank-account__pending--credit'}`}>
+                          {pendingDiff < 0 ? '↓' : '↑'} {fmt(Math.abs(pendingDiff))} pending
+                        </span>
+                      )}
+                    </div>
+                    <div className="bank-account__right">
+                      <span className="bank-account__balance">{fmt(acct.balance)}</span>
+                      <span className="bank-account__reg-row">
+                        <span className="bank-account__reg-label">Registered</span>
+                        <span className="bank-account__reg-val">{fmt(acct.registered)}</span>
                       </span>
-                    )}
+                    </div>
                   </div>
-                  <div className="bank-account__right">
-                    <span className="bank-account__balance">{fmt(acct.balance)}</span>
-                    <span className="bank-account__reg-row">
-                      <span className="bank-account__reg-label">Registered</span>
-                      <span className="bank-account__reg-val">{fmt(acct.registered)}</span>
-                    </span>
+                )
+              })}
+            </div>
+          </>}
+
+          {/* ── Reserve Fund tab ── */}
+          {bankTab === 'reserve' && (
+            <div className="reserve-body">
+              <div className="reserve-hero">
+                <p className="reserve-pct">
+                  <span className="reserve-pct__num">{RESERVE_FUND.pct}</span>
+                  <span className="reserve-pct__unit">%</span>
+                </p>
+                <span className="reserve-qoq">↗ +{RESERVE_FUND.qoqDelta}pp QoQ</span>
+              </div>
+              <div className="reserve-bottom">
+                <div className="reserve-bar">
+                  <div className="reserve-bar__fill" style={{ width: `${RESERVE_FUND.pct}%` }} />
+                  <div className="reserve-bar__tick" style={{ left: '33%' }} />
+                  <div className="reserve-bar__tick" style={{ left: '66%' }} />
+                </div>
+                <div className="reserve-labels">
+                  <span className="reserve-labels__funded">
+                    {fmt(RESERVE_FUND.funded)}<span className="reserve-labels__word"> funded</span>
+                  </span>
+                  <span className="reserve-labels__target">
+                    target <strong>{fmt(RESERVE_FUND.target)}</strong>
+                  </span>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+        </div>
+
+        {/* VIOLATIONS */}
+        <div>
+        <p className="section-label">Violations</p>
+        <div
+          className={`card viol-card${holdingCard === `violations:${violTab}` ? ' card--holding' : ''}`}
+          {...holdProps(`violations:${violTab}`)}
+        >
+
+          {/* Tab strip */}
+          <div className="viol-tabs">
+            {[['month', 'By type'], ['6mo', '6 months'], ['ytd', 'YTD']].map(([key, label]) => (
+              <button
+                key={key}
+                className={`viol-tab${violTab === key ? ' viol-tab--active' : ''}`}
+                onClick={() => setViolTab(key)}
+              >{label}</button>
+            ))}
+          </div>
+
+          {/* Body — fixed height, flex column */}
+          <div className="viol-body">
+
+            {/* ── By type ── */}
+            {violTab === 'month' && <>
+              <div className="viol-period-row">
+                <span className="viol-period-name">{VIOL_LATEST.period}</span>
+                <span className={`viol-delta-badge${violDelta > 0 ? ' viol-delta-badge--red' : ''}`}>
+                  {violDelta > 0 ? '↗' : '↘'} {violDelta > 0 ? '+' : ''}{violDelta} ({violDeltaPct}%)
+                </span>
+              </div>
+              <p className="viol-total-line">
+                <span className="viol-total-num">{VIOL_LATEST.total}</span>
+                <span className="viol-total-word"> total</span>
+              </p>
+              <p className="viol-cat-label">By category</p>
+              <div className="viol-bars">
+                {VIOL_LATEST.byCategory.map(c => (
+                  <div key={c.type} className="viol-bar-row">
+                    <span className="viol-bar-label">{c.type}</span>
+                    <div className="viol-bar-track">
+                      <div className="viol-bar-fill" style={{ width: `${(c.count / violMaxCat) * 100}%`, background: c.color }} />
+                    </div>
+                    <span className="viol-bar-count" style={{ color: c.color }}>{c.count}</span>
                   </div>
+                ))}
+              </div>
+              <div className="viol-status">
+                {[
+                  { label: 'Cured',     val: VIOL_LATEST.status.cured,     cls: 'green'  },
+                  { label: 'Open',      val: VIOL_LATEST.status.open,      cls: 'orange' },
+                  { label: 'Escalated', val: VIOL_LATEST.status.escalated, cls: 'red'    },
+                ].map(s => (
+                  <div key={s.label} className="viol-status-item">
+                    <span className="viol-status-label">{s.label}</span>
+                    <span className={`viol-status-val viol-status-val--${s.cls}`}>{s.val}</span>
+                  </div>
+                ))}
+              </div>
+            </>}
+
+            {/* ── 6 months / YTD ── */}
+            {(violTab === '6mo' || violTab === 'ytd') && (() => {
+              const months = violTab === '6mo' ? VIOL_MONTHLY.slice(-6) : VIOL_MONTHLY.slice(-4)
+              const maxVal = Math.max(...months.map(m => m.total))
+              return (
+                <div className="viol-bars">
+                  {months.map(m => (
+                    <div key={m.short} className={`viol-bar-row${m.current ? ' viol-bar-row--current' : ''}`}>
+                      <span className="viol-bar-month">{m.short}</span>
+                      <div className="viol-bar-track">
+                        <div className="viol-bar-fill" style={{ width: `${(m.total / maxVal) * 100}%`, background: getMonthBarColor(m.total, m.current) }} />
+                      </div>
+                      <span className="viol-bar-count">{m.total}</span>
+                    </div>
+                  ))}
                 </div>
               )
-            })}
+            })()}
           </div>
-        </div>
 
-        {/* VIOLATIONS BY TYPE */}
-        <button className="card violations-card" onClick={() => navigate('/pulse/violations')}>
-          <div className="violations-card__header">
-            <p className="section-label" style={{ margin: 0 }}>Violations by Type</p>
+          {/* Footer — always visible */}
+          <div className="viol-footer">
+            <div className="viol-footer-item">
+              <span className="viol-footer-label">YTD</span>
+              <span className="viol-footer-val">{violYTD}</span>
+            </div>
+            <div className="viol-footer-item">
+              <span className="viol-footer-label">VS Jan peak</span>
+              <span className="viol-footer-val viol-footer-val--good">{violVsPeak}%</span>
+            </div>
+            <div className="viol-footer-item">
+              <span className="viol-footer-label">Trend</span>
+              <TrendSparkline data={VIOL_MONTHLY.slice(-8).map(m => m.total)} />
+            </div>
           </div>
-          <div className="violations-chart">
-            {data.violations.map(v => (
-              <div key={v.type} className="violations-chart__row">
-                <span className="violations-chart__type">{v.type}</span>
-                <div className="violations-chart__bar-wrap">
-                  <div className="violations-chart__bar" style={{ width: `${v.pct}%` }} />
-                </div>
-                <span className="violations-chart__count">{v.count}</span>
-              </div>
-            ))}
-          </div>
-          <span className="card-cta">See details <ChevronRightIcon /></span>
-        </button>
+
+          <button className="card-cta" onClick={() => navigate('/pulse/violations')}>
+            See all violations <ChevronRightIcon />
+          </button>
+        </div>
+        </div>
 
         {/* TOP DELINQUENCIES */}
         <div>
           <p className="section-label">Top Delinquencies</p>
-          <div className="delinquency-list card">
+          <div
+            className={`delinquency-list card${holdingCard === 'delinquencies' ? ' card--holding' : ''}`}
+            {...holdProps('delinquencies')}
+          >
             {data.delinquencies.map((d, i) => (
               <button
                 key={d.name}
@@ -563,10 +794,12 @@ export default function Pulse() {
         </div>
 
         {/* EXPENSES VS BUDGET */}
-        <div className="card expenses-card">
-          <p className="section-label" style={{ margin: '0 0 4px' }}>
-            Expenses vs Budget — <span style={{ textTransform: 'none', letterSpacing: 0 }}>{periodLabel}</span>
-          </p>
+        <div>
+        <p className="section-label">Expenses vs Budget</p>
+        <div
+          className={`card expenses-card${holdingCard === 'expenses' ? ' card--holding' : ''}`}
+          {...holdProps('expenses')}
+        >
           <div className="expenses-list">
             {categories.map((c, i) => {
               const trend = getTrend(c)
@@ -602,11 +835,16 @@ export default function Pulse() {
             See full report <ChevronRightIcon />
           </button>
         </div>
+        </div>
 
         {/* APPROVED INVOICES */}
-        <div className="card invoices-card">
+        <div>
+        <p className="section-label">Approved to Pay Invoices</p>
+        <div
+          className={`card invoices-card${holdingCard === 'invoices' ? ' card--holding' : ''}`}
+          {...holdProps('invoices')}
+        >
           <div className="invoices-card__header">
-            <p className="section-label" style={{ margin: 0 }}>Approved to Pay</p>
             <span className="invoices-count">{data.invoices.count} invoices</span>
           </div>
           <p className="invoices-total">{fmt(data.invoices.total)}</p>
@@ -625,9 +863,28 @@ export default function Pulse() {
             See all invoices <ChevronRightIcon />
           </button>
         </div>
+        </div>
 
       </div>
     </div>
+  )
+}
+
+function TrendSparkline({ data, width = 64, height = 24 }) {
+  const min = Math.min(...data)
+  const max = Math.max(...data)
+  const range = max - min || 1
+  const pts = data.map((v, i) => {
+    const x = (i / (data.length - 1)) * width
+    const y = height - ((v - min) / range) * (height - 4) - 2
+    return `${x.toFixed(1)},${y.toFixed(1)}`
+  }).join(' ')
+  const last = pts.split(' ').at(-1).split(',')
+  return (
+    <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} style={{ overflow: 'visible' }}>
+      <polyline points={pts} fill="none" stroke="var(--lime)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      <circle cx={last[0]} cy={last[1]} r="3" fill="var(--lime)" />
+    </svg>
   )
 }
 
