@@ -65,7 +65,7 @@
 
 /* ── Swipe stack ─────────────────────────────────────── */
 .swipe-stack {
-  flex: 0 0 615px;
+  flex: 0 0 555px;
   position: relative;
 }
 
@@ -143,7 +143,7 @@
 .card-body {
   display: flex;
   flex-direction: column;
-  padding: 16px 18px 18px;
+  padding: 12px 16px 14px;
   gap: 0;
 }
 
@@ -151,7 +151,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 14px;
+  margin-bottom: 10px;
   flex-shrink: 0;
 }
 
@@ -176,7 +176,7 @@
 
 .card-body__main {
   flex-shrink: 0;
-  margin-bottom: 14px;
+  margin-bottom: 10px;
 }
 
 .card-body__title {
@@ -197,7 +197,7 @@
 .card-body__divider {
   height: 1px;
   background: var(--border);
-  margin-bottom: 12px;
+  margin-bottom: 8px;
   flex-shrink: 0;
 }
 
@@ -205,7 +205,7 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 7px;
+  gap: 5px;
   list-style: none;
 }
 
@@ -229,7 +229,7 @@
   font-weight: 300;
   color: var(--text);
   letter-spacing: -0.01em;
-  margin-top: 12px;
+  margin-top: 8px;
   flex-shrink: 0;
 }
 
@@ -274,7 +274,7 @@
 
 /* ── Invoice card ────────────────────────────────────── */
 .invoice-body {
-  padding: 12px 14px 14px;
+  padding: 10px 14px 12px;
   gap: 0;
   display: flex;
   flex-direction: column;
@@ -294,7 +294,7 @@
   display: flex;
   align-items: center;
   gap: 7px;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
   flex-shrink: 0;
   color: var(--lime);
 }
@@ -310,8 +310,8 @@
 .inv-fields {
   display: flex;
   flex-direction: column;
-  gap: 3px;
-  margin-bottom: 10px;
+  gap: 2px;
+  margin-bottom: 8px;
   flex-shrink: 0;
 }
 
@@ -351,7 +351,7 @@
   align-items: center;
   gap: 10px;
   width: 100%;
-  padding: 7px 0;
+  padding: 5px 0;
   border-bottom: 1px solid var(--border);
   text-align: left;
   -webkit-tap-highlight-color: transparent;
@@ -433,7 +433,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 0 0;
+  padding: 6px 0 0;
   flex-shrink: 0;
   border-top: 1px solid var(--border);
 }
@@ -455,7 +455,7 @@
 .inv-actions {
   display: flex;
   gap: 10px;
-  padding: 12px 0 0;
+  padding: 9px 0 0;
   flex-shrink: 0;
 }
 
@@ -523,7 +523,7 @@
 .viol-actions {
   display: flex;
   gap: 10px;
-  padding: 12px 0 0;
+  padding: 9px 0 0;
   flex-shrink: 0;
 }
 
@@ -569,7 +569,7 @@
 }
 
 .wo-actions {
-  padding: 12px 0 0;
+  padding: 9px 0 0;
   flex-shrink: 0;
 }
 
@@ -601,7 +601,7 @@
 .acc-actions {
   display: flex;
   gap: 10px;
-  padding: 12px 0 0;
+  padding: 9px 0 0;
   flex-shrink: 0;
 }
 
@@ -740,10 +740,10 @@
   width: calc(100% + 28px);
   margin-left: -14px;
   margin-top: -12px;
-  height: 182px;
+  height: 155px;
   flex-shrink: 0;
   overflow: hidden;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
   border-radius: 22px;
 }
 
@@ -844,7 +844,7 @@
   display: flex;
   flex-direction: column;
   gap: 2px;
-  margin-bottom: 10px;
+  margin-bottom: 7px;
   flex-shrink: 0;
 }
 
@@ -878,7 +878,7 @@
   font-weight: 700;
   color: #34d399;
   line-height: 1.3;
-  margin-bottom: 8px;
+  margin-bottom: 5px;
   flex-shrink: 0;
 }
 
@@ -887,7 +887,7 @@
   font-weight: 400;
   color: var(--text-muted);
   line-height: 1.5;
-  margin-bottom: 10px;
+  margin-bottom: 7px;
   flex-shrink: 0;
 }
 
@@ -899,7 +899,7 @@
 .task-actions {
   display: flex;
   gap: 10px;
-  padding: 12px 0 0;
+  padding: 9px 0 0;
   flex-shrink: 0;
 }
 
