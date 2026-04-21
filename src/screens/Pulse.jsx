@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useMode } from '../ModeContext'
+import PulseTourModal from '../components/PulseTourModal'
 import './Pulse.css'
 
 const PERIODS = [
@@ -448,6 +449,9 @@ export default function Pulse() {
   const [period, setPeriod] = useState('apr-2026')
   const [open, setOpen] = useState(false)
   const [violTab, setViolTab] = useState('month')
+  const [showTour, setShowTour] = useState(
+    () => localStorage.getItem('pulseTourDismissed') !== 'true'
+  )
   const [bankTab, setBankTab] = useState('balance')
   const [holdingCard, setHoldingCard] = useState(null)
   const dropdownRef = useRef(null)
@@ -523,6 +527,7 @@ export default function Pulse() {
 
   return (
     <div className="screen">
+      {showTour && <PulseTourModal onClose={() => setShowTour(false)} />}
       <div className="screen-inner">
 
         {/* Title + period selector */}

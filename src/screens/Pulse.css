@@ -199,9 +199,9 @@
   font-weight: 500;
   line-height: 1.3;
 }
-.pulse-stat__delta--red   { color: #e05c5c; }
-.pulse-stat__delta--green { color: #6bcb77; }
-.pulse-stat__delta--amber { color: var(--amber); }
+.pulse-stat__delta--red   { color: #b87a7a; }
+.pulse-stat__delta--green { color: #7daa85; }
+.pulse-stat__delta--amber { color: #c49a4a; }
 
 /* ── Expenses vs Budget ──────────────────────────────── */
 .expenses-card {

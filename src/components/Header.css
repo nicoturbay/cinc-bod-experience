@@ -93,16 +93,18 @@
   left: auto;
 }
 
-/* Board state: mint bg, thumb right, icon left */
+/* Board state: dark bg, thumb right, icon left */
 .mode-toggle--board {
-  background: #aedbbe;
+  background: #1d1d1d;
 }
 .mode-toggle--board .mode-toggle__thumb {
   left: 31px;
+  background: #FFF8EA;
 }
 .mode-toggle--board .mode-toggle__icon {
-  left: 7px;
+  left: 10px;
   right: auto;
+  color: #FFF8EA;
 }
 
 /* Shared thumb */

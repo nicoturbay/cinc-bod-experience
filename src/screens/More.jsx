@@ -204,17 +204,6 @@ export default function More() {
     <div className="screen">
       <div className="screen-inner">
 
-        <div className="more-profile card">
-          <div className="more-profile__avatar">JS</div>
-          <div className="more-profile__info">
-            <p className="more-profile__name">John Smith</p>
-            <p className="more-profile__role">Board President</p>
-          </div>
-          <button className="more-profile__edit" aria-label="Edit profile">
-            <EditIcon />
-          </button>
-        </div>
-
         <div className="more-section">
           <div className="more-section-label">Tools</div>
           <div className="more-tools">
