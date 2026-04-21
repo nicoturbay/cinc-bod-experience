@@ -65,7 +65,7 @@
 
 /* ── Swipe stack ─────────────────────────────────────── */
 .swipe-stack {
-  flex: 0 0 420px;
+  flex: 0 0 615px;
   position: relative;
 }
 
@@ -125,16 +125,18 @@
 /* ── Type pill ───────────────────────────────────────── */
 .card-type-pill {
   position: absolute;
-  top: 12px;
-  right: 12px;
+  top: 20px;
+  right: 20px;
   font-size: 10px;
   font-weight: 800;
   letter-spacing: 0.07em;
   text-transform: uppercase;
-  padding: 4px 10px;
+  padding: 5px 11px;
   border-radius: 20px;
   pointer-events: none;
-  z-index: 5;
+  z-index: 15;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
 }
 
 /* ── Card body ───────────────────────────────────────── */
@@ -279,18 +281,13 @@
   height: 100%;
 }
 
-/* Scrollable content area — fills space above action buttons */
+/* Content area — fills space above action buttons, no scroll */
 .inv-scroll {
   flex: 1;
   min-height: 0;
-  overflow-y: auto;
-  overflow-x: hidden;
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-
-.inv-scroll::-webkit-scrollbar {
-  display: none;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .inv-vendor {
@@ -726,6 +723,35 @@
   height: 8px;
   border-radius: 50%;
   flex-shrink: 0;
+}
+
+.tasks-filter-option__count {
+  margin-left: auto;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: rgba(255,255,255,0.08);
+  border-radius: 99px;
+  padding: 1px 7px;
+}
+
+/* ── Card hero ───────────────────────────────────────── */
+.card-hero {
+  width: calc(100% + 28px);
+  margin-left: -14px;
+  margin-top: -12px;
+  height: 182px;
+  flex-shrink: 0;
+  overflow: hidden;
+  margin-bottom: 12px;
+  border-radius: 22px;
+}
+
+.card-hero__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
 }
 
 /* ── Task list view ──────────────────────────────────── */

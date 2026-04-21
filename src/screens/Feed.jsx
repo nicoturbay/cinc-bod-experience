@@ -411,7 +411,10 @@ function BoardFeed() {
 
         <div className="engage-bar">
           <span className="engage-bar__text">Engage with Fellow Board Members</span>
-          <div className="engage-bar__icons"><FilterIcon /><SortIcon /></div>
+          <div className="engage-bar__icons">
+            <button className="engage-bar__icon-btn"><EditIcon /></button>
+            <button className="engage-bar__icon-btn engage-bar__icon-btn--filled"><SlidersIcon /></button>
+          </div>
         </div>
 
         <div className="alert-banner" onClick={() => navigate('/meeting')}>

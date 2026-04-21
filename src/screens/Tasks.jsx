@@ -9,6 +9,13 @@ import WoSvg        from '../ICONS/wo.svg'
 import LogSvg       from '../ICONS/log.svg'
 import ChecklistSvg from '../ICONS/checklist.svg'
 import ChatSvg      from '../ICONS/Chat.svg'
+const TYPE_ILLUSTRATIONS = {
+  Invoice:   { src: '/images/card-invoice.jpg'   },
+  WorkOrder: { src: '/images/card-workorder.jpg' },
+  Violation: { src: '/images/card-violation.jpg' },
+  ACC:       { src: '/images/card-acc.jpg'       },
+  Task:      { src: '/images/card-task.jpg'      },
+}
 
 const TASKS = [
   {
@@ -199,6 +206,12 @@ export default function Tasks() {
     ? queue.filter(id => TASKS.find(t => t.id === id)?.type === filterType)
     : queue
 
+  const queueCounts = queue.reduce((acc, id) => {
+    const type = TASKS.find(t => t.id === id)?.type
+    if (type) acc[type] = (acc[type] || 0) + 1
+    return acc
+  }, {})
+
   const pendingTasks = filteredQueue.map(id => TASKS.find(t => t.id === id)).filter(Boolean)
   const topTask      = pendingTasks[0]
 
@@ -328,6 +341,9 @@ export default function Tasks() {
                   >
                     <span className="tasks-filter-option__dot" style={{ background: meta.color }} />
                     {meta.label}
+                    {queueCounts[type] > 0 && (
+                      <span className="tasks-filter-option__count">{queueCounts[type]}</span>
+                    )}
                   </button>
                 ))}
               </div>
@@ -366,7 +382,7 @@ export default function Tasks() {
                 {(() => {
                   const m = TYPE_META[task.type]
                   return m ? (
-                    <span className="card-type-pill" style={{ color: m.color, background: m.bg }}>
+                    <span className="card-type-pill" style={{ color: '#111', background: m.color }}>
                       {m.label}
                     </span>
                   ) : null
@@ -451,6 +467,17 @@ function TaskListView({ tasks }) {
   )
 }
 
+/* ── Card hero image ──────────────────────────────────── */
+function CardHero({ type }) {
+  const illus = TYPE_ILLUSTRATIONS[type]
+  if (!illus) return null
+  return (
+    <div className="card-hero">
+      <img src={illus.src} className="card-hero__img" alt="" />
+    </div>
+  )
+}
+
 /* ── Card dispatcher ──────────────────────────────────── */
 function CardContent({ task, flyCard, flyOff }) {
   if (task.type === 'Invoice')   return <InvoiceCardContent   task={task} flyCard={flyCard} flyOff={flyOff} />
@@ -468,6 +495,7 @@ function InvoiceCardContent({ task, flyCard, flyOff }) {
   return (
     <div className="card-body invoice-body">
       <div className="inv-scroll">
+        <CardHero type="Invoice" />
 
         {/* Vendor header */}
         <div className="inv-vendor">
@@ -576,6 +604,7 @@ function WorkOrderCardContent({ task, flyCard, flyOff }) {
   return (
     <div className="card-body invoice-body">
       <div className="inv-scroll">
+        <CardHero type="WorkOrder" />
 
         {/* WO header */}
         <div className="inv-vendor">
@@ -661,6 +690,7 @@ function ViolationCardContent({ task }) {
   return (
     <div className="card-body invoice-body">
       <div className="inv-scroll">
+        <CardHero type="Violation" />
 
         {/* Header */}
         <div className="inv-vendor">
@@ -750,6 +780,7 @@ function ACCCardContent({ task }) {
   return (
     <div className="card-body invoice-body">
       <div className="inv-scroll">
+        <CardHero type="ACC" />
 
         {/* Address header */}
         <div className="inv-vendor">
@@ -832,6 +863,7 @@ function TaskCardContent({ task, flyCard, flyOff }) {
   return (
     <div className="card-body invoice-body">
       <div className="inv-scroll">
+        <CardHero type="Task" />
 
         {/* Meta fields */}
         <div className="task-meta">
