@@ -98,7 +98,7 @@ const SCREEN_CONTEXTS = {
 
 const DEFAULT_CONTEXT = {
   badge: null,
-  greeting: "Hi, I'm CephAI — your HOA intelligence assistant. Ask me about Cardinal Hills HOA rules, financials, board responsibilities, or anything you see on screen.",
+  greeting: "Hi, I'm Cephai — your HOA intelligence assistant. Ask me about Cardinal Hills HOA rules, financials, board responsibilities, or anything you see on screen.",
   suggestions: ['HOA rules summary', 'Board member duties', 'Community policies', 'Upcoming meetings'],
 }
 
@@ -695,9 +695,9 @@ export default function CephAIChat() {
         {/* Header */}
         <div className="cephai-panel__header">
           <div className="cephai-panel__brand">
-            <img src={CEPHAI_LOGO} alt="CephAI" className="cephai-panel__logo" />
+            <img src={CEPHAI_LOGO} alt="Cephai" className="cephai-panel__logo" />
             <div className="cephai-panel__brand-text">
-              <span className="cephai-panel__name">CephAI</span>
+              <span className="cephai-panel__name">Cephai</span>
               {getCtx().badge && <span className="cephai-panel__badge">{getCtx().badge}</span>}
             </div>
           </div>
@@ -770,7 +770,7 @@ export default function CephAIChat() {
             value={input}
             onChange={e => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="Ask CephAI anything…"
+            placeholder="Ask Cephai anything…"
           />
           <button
             className={`cephai-send${input.trim() ? ' cephai-send--active' : ''}`}

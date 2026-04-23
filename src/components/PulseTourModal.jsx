@@ -57,17 +57,17 @@ export default function PulseTourModal({ onClose }) {
             </span>
             <div className="welcome-modal__feature-text">
               <strong>Hold any card for AI analysis</strong>
-              <span>Press and hold any data card for 2 seconds. CephAI will surface deep insights and context specific to that metric.</span>
+              <span>Press and hold any data card for 2 seconds. Cephai will surface deep insights and context specific to that metric.</span>
             </div>
           </div>
 
           <div className="welcome-modal__feature">
             <span className="welcome-modal__feature-icon">
-              <img src={CEPHAI_LOGO} alt="CephAI" className="welcome-modal__cephai-logo" style={{ width: 28, height: 28 }} />
+              <img src={CEPHAI_LOGO} alt="Cephai" className="welcome-modal__cephai-logo" style={{ width: 28, height: 28 }} />
             </span>
             <div className="welcome-modal__feature-text">
               <strong>Context-aware answers</strong>
-              <span>CephAI reads what's on screen and delivers answers about violations, finances, delinquency, and trends. No prompting needed.</span>
+              <span>Cephai reads what's on screen and delivers answers about violations, finances, delinquency, and trends. No prompting needed.</span>
             </div>
           </div>
 

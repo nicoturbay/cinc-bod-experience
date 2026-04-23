@@ -324,13 +324,13 @@ function WeeklyWrapStories({ onClose }) {
         </button>
       </div>
 
-      <div className="stories-content">
-        <p className="stories-eyebrow" style={t.eyebrowColor ? { color: t.eyebrowColor } : undefined}>{slide.eyebrow}</p>
-        <h1 className="stories-headline" style={t.headlineColor ? { color: t.headlineColor } : undefined}>{slide.headline}</h1>
-        <p className="stories-copy" style={t.copyColor ? { color: t.copyColor } : undefined}>{slide.copy}</p>
+      <div className="stories-content" key={`content-${current}`}>
+        <p className="stories-eyebrow stories-anim-eyebrow" style={t.eyebrowColor ? { color: t.eyebrowColor } : undefined}>{slide.eyebrow}</p>
+        <h1 className="stories-headline stories-anim-headline" style={t.headlineColor ? { color: t.headlineColor } : undefined}>{slide.headline}</h1>
+        <p className="stories-copy stories-anim-copy" style={t.copyColor ? { color: t.copyColor } : undefined}>{slide.copy}</p>
       </div>
 
-      <div className="stories-illus">
+      <div className="stories-illus stories-anim-illus" key={`illus-${current}`}>
         <img
           src={SLIDE_ILLUSTRATIONS[current]}
           alt=""
@@ -339,9 +339,9 @@ function WeeklyWrapStories({ onClose }) {
         />
       </div>
 
-      <div className="stories-kpis">
+      <div className="stories-kpis" key={`kpis-${current}`}>
         {slide.kpis.map((kpi, i) => (
-          <div key={i} className="stories-kpi" style={{ background: t.kpiBg || '#aedbbe' }}>
+          <div key={i} className="stories-kpi stories-anim-kpi" style={{ background: t.kpiBg || '#aedbbe', animationDelay: `${0.35 + i * 0.07}s` }}>
             <span className="stories-kpi__label" style={t.kpiLabelColor ? { color: t.kpiLabelColor } : undefined}>{kpi.label}</span>
             <span className="stories-kpi__value" style={t.kpiValueColor ? { color: t.kpiValueColor } : undefined}>{kpi.value}</span>
           </div>
@@ -402,10 +402,17 @@ export default function Feed() {
 function BoardFeed() {
   const [digestDismissed, setDigestDismissed] = useState(false)
   const [storiesOpen, setStoriesOpen] = useState(false)
+  const screenRef = useRef(null)
   const navigate = useNavigate()
 
+  useEffect(() => {
+    if (!screenRef.current) return
+    screenRef.current.style.overflow = storiesOpen ? 'hidden' : ''
+    return () => { if (screenRef.current) screenRef.current.style.overflow = '' }
+  }, [storiesOpen])
+
   return (
-    <div className="screen">
+    <div className="screen" ref={screenRef}>
       {storiesOpen && <WeeklyWrapStories onClose={() => setStoriesOpen(false)} />}
       <div className="screen-inner">
 
@@ -420,7 +427,7 @@ function BoardFeed() {
         <div className="alert-banner" onClick={() => navigate('/meeting')}>
           <img src={CalendarCheckSvg} alt="" className="alert-banner__icon" />
           <div className="alert-banner__body">
-            <p className="alert-banner__title">BOD Meeting. Tonight 5:30PM</p>
+            <p className="alert-banner__title">Board Meeting. Tonight 5:30PM</p>
             <p className="alert-banner__text">Zoom Meeting, 9 hearing decisions pending board vote, See Agenda</p>
           </div>
           <ChevronRightIcon />
@@ -432,9 +439,9 @@ function BoardFeed() {
           <div className="digest-card">
             <div className="digest-card__header">
               <div className="digest-card__author">
-                <img src={CEPHAI_LOGO} alt="CephAI" className="digest-card__logo" />
+                <img src={CEPHAI_LOGO} alt="Cephai" className="digest-card__logo" />
                 <div>
-                  <p className="digest-card__name">CephAi</p>
+                  <p className="digest-card__name">Cephai</p>
                   <p className="digest-card__time">Now</p>
                 </div>
               </div>
@@ -444,7 +451,7 @@ function BoardFeed() {
             <div className="digest-card__body">
               <p>I have put together the most pressing things you need to review, approve or take action on.</p>
               <ul className="digest-card__list">
-                <li>3 new invoices for Approval</li>
+                <li>3 new invoices for approval</li>
                 <li>2 new ACC requests for review</li>
                 <li>1 New Violation pending escalation decision</li>
                 <li>1 New Work Order for review and comment</li>

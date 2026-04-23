@@ -1,5 +1,8 @@
+import { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
 import './More.css';
+import ReportViolation from './ReportViolation';
 
 function MegaphoneIcon({ size = 30 }) {
   return (
@@ -199,9 +202,14 @@ const BOARD_ITEMS = [
 
 export default function More() {
   const navigate = useNavigate();
+  const [showReport, setShowReport] = useState(false);
 
   return (
     <div className="screen">
+      {showReport && createPortal(
+        <ReportViolation onClose={() => setShowReport(false)} />,
+        document.querySelector('.phone-frame')
+      )}
       <div className="screen-inner">
 
         <div className="more-section">
@@ -211,7 +219,7 @@ export default function More() {
               <span className="more-tool-card__icon"><MegaphoneIcon size={30} /></span>
               <span className="more-tool-card__label">Send Broadcast Notifications</span>
             </button>
-            <button className="more-tool-card">
+            <button className="more-tool-card" onClick={() => setShowReport(true)}>
               <span className="more-tool-card__icon"><ViolationPlusIcon size={30} /></span>
               <span className="more-tool-card__label">Report New Violation</span>
             </button>

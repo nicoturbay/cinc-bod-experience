@@ -1,3 +1,39 @@
+/* ── Stories Entry Animations ────────────────────────── */
+@keyframes stories-fade-up {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes stories-slide-right {
+  from { opacity: 0; transform: translateX(32px) scale(0.94); }
+  to   { opacity: 1; transform: translateX(0) scale(1); }
+}
+
+@keyframes stories-pop-up {
+  from { opacity: 0; transform: translateY(14px) scale(0.96); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.stories-anim-eyebrow {
+  animation: stories-fade-up 0.55s cubic-bezier(0.22,1,0.36,1) both;
+  animation-delay: 0.06s;
+}
+.stories-anim-headline {
+  animation: stories-fade-up 0.62s cubic-bezier(0.22,1,0.36,1) both;
+  animation-delay: 0.18s;
+}
+.stories-anim-copy {
+  animation: stories-fade-up 0.62s cubic-bezier(0.22,1,0.36,1) both;
+  animation-delay: 0.30s;
+}
+.stories-anim-illus {
+  animation: stories-slide-right 0.68s cubic-bezier(0.22,1,0.36,1) both;
+  animation-delay: 0.10s;
+}
+.stories-anim-kpi {
+  animation: stories-pop-up 0.55s cubic-bezier(0.22,1,0.36,1) both;
+}
+
 /* ── Weekly Wrap Stories Overlay ────────────────────── */
 .stories-overlay {
   position: absolute;

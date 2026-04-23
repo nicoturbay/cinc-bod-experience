@@ -60,11 +60,11 @@ export default function WelcomeModal({ onClose }) {
 
           <div className="welcome-modal__feature">
             <span className="welcome-modal__feature-icon">
-              <img src={CEPHAI_LOGO} alt="CephAI" className="welcome-modal__cephai-logo" />
+              <img src={CEPHAI_LOGO} alt="Cephai" className="welcome-modal__cephai-logo" />
             </span>
             <div className="welcome-modal__feature-text">
               <strong>AI companion</strong>
-              <span>Ask CephAi anything about your community. When it's pulsating, CephAi is actively analyzing and ready to provide insights and answers based on what's on your screen.</span>
+              <span>Ask Cephai anything about your community. When it's pulsating, Cephai is actively analyzing and ready to provide insights and answers based on what's on your screen.</span>
             </div>
           </div>
         </div>

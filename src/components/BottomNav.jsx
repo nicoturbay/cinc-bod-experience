@@ -77,10 +77,10 @@ export default function BottomNav() {
       <div className="bottom-nav__center-slot">
         <button
           className={`center-btn${hasContext ? ' center-btn--glow' : ''}`}
-          aria-label="CephAI"
+          aria-label="Cephai"
           onClick={() => setChatOpen(true)}
         >
-          <img src={CEPHAI_LOGO} alt="CephAI" className="center-btn__logo" />
+          <img src={CEPHAI_LOGO} alt="Cephai" className="center-btn__logo" />
         </button>
 
         {/* SVG ring-trace overlay */}
