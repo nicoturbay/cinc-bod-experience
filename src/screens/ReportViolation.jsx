@@ -103,7 +103,7 @@ export default function ReportViolation({ onClose }) {
             </button>
             <div className="app-header__hoa">
               <span className="rv-page-title">
-                {step === 1 ? 'CephAI Analysis' : ''}
+                {step === 1 ? 'Cephai Analysis' : ''}
               </span>
             </div>
           </div>
@@ -211,7 +211,7 @@ export default function ReportViolation({ onClose }) {
           <div className="rv-ai-lines">
             <div className="rv-ai-header">
               <CephaiLogoIcon />
-              <span>CephAI is analyzing your report</span>
+              <span>Cephai is analyzing your report</span>
             </div>
             {aiLines.map((line, i) => (
               <div key={i} className={`rv-ai-line${i === aiLines.length - 1 && !aiDone ? ' rv-ai-line--typing' : ''}`}>
@@ -244,7 +244,7 @@ export default function ReportViolation({ onClose }) {
           </div>
           <h2 className="rv-confirmed-title">Violation Reported</h2>
           <p className="rv-confirmed-sub">
-            CephAI has documented this violation and submitted it for board review. A notice will be issued to the homeowner within 3 business days.
+            Cephai has documented this violation and submitted it for board review. A notice will be issued to the homeowner within 3 business days.
           </p>
           <div className="rv-confirmed-card">
             <img src={VIOLATION_IMAGE} alt="Violation" className="rv-confirmed-photo" />
