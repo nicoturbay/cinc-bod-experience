@@ -433,8 +433,6 @@ function BoardFeed() {
           <ChevronRightIcon />
         </div>
 
-        <WeeklyWrapCard onOpen={() => setStoriesOpen(true)} />
-
         {!digestDismissed && (
           <div className="digest-card">
             <div className="digest-card__header">
@@ -461,6 +459,8 @@ function BoardFeed() {
             <button className="cta-btn" onClick={() => navigate('/tasks')}>LET'S DO THIS</button>
           </div>
         )}
+
+        <WeeklyWrapCard onOpen={() => setStoriesOpen(true)} />
 
         {BOARD_POSTS.map(post => <PostCard key={post.id} post={post} />)}
       </div>
