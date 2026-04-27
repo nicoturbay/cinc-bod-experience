@@ -12,6 +12,7 @@ import More from './screens/More'
 import MeetingAgenda from './screens/MeetingAgenda'
 import BroadcastNotification from './screens/BroadcastNotification'
 import BroadcastCompose from './screens/BroadcastCompose'
+import PulseViolations from './screens/PulseViolations'
 
 function AppShell() {
   const { isBoard } = useMode()
@@ -38,6 +39,7 @@ function AppShell() {
         <Route path="/meeting"   element={<MeetingAgenda />} />
         <Route path="/broadcast"          element={<BroadcastCompose />} />
         <Route path="/broadcast/audience" element={<BroadcastNotification />} />
+        <Route path="/pulse/violations"   element={<PulseViolations />} />
         <Route path="*"          element={<Navigate to="/" replace />} />
       </Routes>
       <BottomNav />

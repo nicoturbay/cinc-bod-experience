@@ -12,6 +12,19 @@
   -webkit-user-select: none;
 }
 
+/* ── Pulse title actions ─────────────────────────────── */
+.pulse-title-actions {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+}
+.pulse-title-row .engage-filter-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-sm);
+  flex-shrink: 0;
+}
+
 /* ── Period dropdown ─────────────────────────────────── */
 .period-dropdown {
   position: relative;
@@ -104,6 +117,61 @@
   padding: 6px;
   flex-shrink: 0;
   margin-top: 2px;
+}
+
+/* ── Export sheet ────────────────────────────────────── */
+.export-sheet__sub {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin: -4px 0 12px;
+}
+.export-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.export-option {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 16px 18px;
+  text-align: left;
+  width: 100%;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+.export-option:active {
+  background: rgba(255,255,255,0.04);
+  border-color: var(--lime);
+}
+.export-option__icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: rgba(178,222,97,0.12);
+  color: var(--lime);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.export-option__text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.export-option__label {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+}
+.export-option__sub {
+  font-size: 12px;
+  color: var(--text-muted);
 }
 
 /* ── Section label ───────────────────────────────────── */
@@ -878,4 +946,18 @@
 .delinquency-tag--amber {
   background: rgba(255, 183, 77, 0.15);
   color: #ffb74d;
+}
+
+/* filter-sheet, filter-chip, mini-cal styles are defined globally in Feed.css */
+
+/* ── Print / PDF export ──────────────────────────────── */
+@media print {
+  .app-header, nav, .pulse-title-actions, .period-dropdown,
+  .card-cta, .pulse-tour-modal, .cephai-chat { display: none !important; }
+  .screen { overflow: visible !important; height: auto !important; }
+  .screen-inner { padding: 0 !important; gap: 16px !important; }
+  .card { break-inside: avoid; box-shadow: none !important; border: 1px solid #ccc !important; }
+  body { background: white !important; color: black !important; }
+  .pulse-title { color: black !important; }
+  .pulse-sub, .section-label { color: #555 !important; }
 }

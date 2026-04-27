@@ -6,7 +6,7 @@ import './Header.css'
 
 const CINC_ICON = '/images/cinc-icon.png'
 
-const SUB_PAGES = ['/meeting', '/broadcast', '/broadcast/audience']
+const SUB_PAGES = ['/meeting', '/broadcast', '/broadcast/audience', '/pulse/violations']
 
 const NOTIFICATIONS = [
   {

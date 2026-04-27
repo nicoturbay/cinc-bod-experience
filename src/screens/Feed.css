@@ -319,14 +319,36 @@
 .weekly-wrap__cta:active { background: #112719; }
 
 /* ── Engage bar ─────────────────────────────────────── */
+.engage-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
 .engage-bar {
   display: flex;
+  flex: 1;
   align-items: center;
   background: var(--bg-card);
   border-radius: var(--radius-sm);
   padding: 0 12px;
   height: 48px;
   gap: 8px;
+}
+.engage-filter-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-card);
+  color: var(--text-muted);
+  flex-shrink: 0;
+  transition: background 0.15s, color 0.15s;
+}
+.engage-filter-btn--active {
+  background: var(--lime);
+  color: var(--text-dark);
 }
 .engage-bar__text {
   flex: 1;
@@ -483,10 +505,6 @@
   color: var(--text-muted);
   flex-shrink: 0;
 }
-.engage-bar__icon-btn--filled {
-  background: var(--lime);
-  color: var(--text-dark);
-}
 
 /* ── Account balance card (Resident) ───────────────── */
 .acct-card {
@@ -596,6 +614,349 @@
 }
 .acct-card__dot--active {
   background: #1e3320;
+}
+
+/* ── Month section header ───────────────────────────── */
+.feed-month-header {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding: 4px 0 0;
+}
+
+/* ── Feed empty state ───────────────────────────────── */
+.feed-empty {
+  text-align: center;
+  padding: 32px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+}
+.feed-empty p {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+.feed-empty__clear {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--lime);
+  padding: 6px 16px;
+}
+
+/* ── Filter dot indicator on sliders button ─────────── */
+.engage-bar__icon-btn {
+  position: relative;
+}
+.engage-bar__filter-dot {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #df434f;
+  border: 1.5px solid var(--lime);
+}
+
+/* ── Filter scrim & sheet ───────────────────────────── */
+.filter-scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 150;
+  background: rgba(0,0,0,0.55);
+}
+
+.filter-sheet {
+  position: absolute;
+  top: 82px;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 151;
+  background: var(--bg-card);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  padding: 0 16px calc(var(--nav-h, 80px) + 20px);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  overflow-y: auto;
+  animation: sheet-slide-up 0.28s cubic-bezier(0.22,1,0.36,1) both;
+}
+
+@keyframes sheet-slide-up {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0); }
+}
+
+.filter-sheet__handle {
+  width: 36px;
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(255,248,234,0.15);
+  margin: 10px auto 0;
+  flex-shrink: 0;
+}
+
+.filter-sheet__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 0 4px;
+  border-bottom: 1px solid rgba(255,248,234,0.08);
+  flex-shrink: 0;
+}
+
+.filter-sheet__title {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.filter-sheet__close {
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.08);
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.filter-sheet__back {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--lime);
+  font-family: var(--font);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  min-width: 60px;
+}
+
+.filter-chip--nav {
+  border-style: dashed;
+}
+.filter-chip--nav.filter-chip--active {
+  border-style: solid;
+}
+
+.filter-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.filter-section__label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+/* ── Date range selectors ───────────────────────────── */
+.filter-date-selectors {
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
+}
+
+.filter-date-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid rgba(255,248,234,0.15);
+  background: rgba(255,248,234,0.05);
+  font-family: var(--font);
+  transition: border-color 0.15s, background 0.15s;
+  cursor: pointer;
+}
+.filter-date-btn--active {
+  border-color: var(--lime);
+  background: rgba(178,222,97,0.08);
+}
+.filter-date-btn__label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.filter-date-btn--active .filter-date-btn__label { color: var(--lime); }
+.filter-date-btn__value {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text);
+}
+.filter-date-btn__value--placeholder {
+  color: rgba(255,248,234,0.3);
+  font-weight: 400;
+}
+.filter-date-arrow {
+  font-size: 20px;
+  color: var(--text-muted);
+  align-self: center;
+  flex-shrink: 0;
+}
+
+/* ── Mini calendar ──────────────────────────────────── */
+.mini-cal {
+  background: rgba(255,248,234,0.04);
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(255,248,234,0.08);
+  overflow: hidden;
+}
+.mini-cal__nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(255,248,234,0.08);
+}
+.mini-cal__nav-btn {
+  font-size: 22px;
+  line-height: 1;
+  color: var(--text-muted);
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background 0.12s, color 0.12s;
+}
+.mini-cal__nav-btn:not(:disabled) { color: var(--text); }
+.mini-cal__nav-btn:disabled { opacity: 0.2; pointer-events: none; }
+.mini-cal__month {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+}
+.mini-cal__weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  padding: 10px 6px 4px;
+  gap: 2px;
+}
+.mini-cal__wd {
+  text-align: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+}
+.mini-cal__grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 3px;
+  padding: 4px 6px 12px;
+}
+.mini-cal__cell {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  border-radius: 50%;
+  font-family: var(--font);
+  transition: background 0.1s, color 0.1s;
+}
+.mini-cal__cell--empty { pointer-events: none; }
+.mini-cal__cell--disabled { opacity: 0.18; pointer-events: none; }
+.mini-cal__cell--from,
+.mini-cal__cell--to {
+  background: var(--lime) !important;
+  color: var(--text-dark) !important;
+  font-weight: 800;
+  border-radius: 50%;
+}
+.mini-cal__cell--range {
+  background: rgba(178,222,97,0.18);
+  border-radius: 0;
+}
+.mini-cal__cell--range-start { border-radius: 50% 0 0 50%; }
+.mini-cal__cell--range-end   { border-radius: 0 50% 50% 0; }
+.mini-cal__cell:not(.mini-cal__cell--disabled):not(.mini-cal__cell--empty):active {
+  background: rgba(178,222,97,0.35);
+}
+
+.filter-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.filter-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 20px;
+  border: 1.5px solid rgba(255,248,234,0.15);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: transparent;
+  font-family: var(--font);
+  transition: border-color 0.12s, color 0.12s, background 0.12s;
+  cursor: pointer;
+}
+
+.filter-chip--active {
+  border-color: var(--lime);
+  color: var(--text-dark);
+  background: var(--lime);
+}
+
+.filter-chip--avatar {
+  padding: 5px 12px 5px 5px;
+}
+
+.filter-chip__avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.filter-apply {
+  width: 100%;
+  padding: 15px;
+  border-radius: var(--radius-md);
+  background: var(--lime);
+  color: var(--text-dark);
+  font-family: var(--font);
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+.filter-apply:active { opacity: 0.85; }
+
+.filter-clear {
+  text-align: center;
+  font-family: var(--font);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+  padding: 0 0 8px;
+  cursor: pointer;
 }
 
 /* ── Post card ──────────────────────────────────────── */

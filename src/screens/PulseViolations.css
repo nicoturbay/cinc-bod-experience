@@ -1,0 +1,72 @@
+/* ── Page header (title + filter btn) ───────────────── */
+.pv-page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 16px 8px;
+}
+
+/* ── Scrollable list ─────────────────────────────────── */
+.pv-list {
+  padding: 4px 16px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* ── Violation card ──────────────────────────────────── */
+.pv-card {
+  position: relative;
+  border-radius: 22px;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  overflow: hidden;
+}
+
+/* Hero — inset with padding, smaller radius than card */
+.pv-card .card-hero {
+  width: 100%;
+  margin-left: 0;
+  margin-top: 6px;
+  border-radius: 12px;
+}
+
+/* Status badge — same position/style as .card-type-pill in Tasks */
+.pv-card__status-pill {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  padding: 5px 11px;
+  border-radius: 20px;
+  pointer-events: none;
+  z-index: 15;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.pv-card__address-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.pv-card__address {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  flex: 1;
+  min-width: 0;
+}
+
+.pv-card__date {
+  font-size: 11px;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}

@@ -447,31 +447,21 @@ export default function Pulse() {
   const navigate = useNavigate()
   const { setCephAIPulseCount, setChatOpen, setCephAICardContext } = useMode()
   const [period, setPeriod] = useState('apr-2026')
-  const [open, setOpen] = useState(false)
+  const [filterOpen, setFilterOpen] = useState(false)
+  const [filterRange, setFilterRange] = useState({ period: 'apr-2026', timeFrame: 'all', dateFrom: '', dateTo: '' })
+  const [exportOpen, setExportOpen] = useState(false)
   const [violTab, setViolTab] = useState('month')
   const [showTour, setShowTour] = useState(
     () => localStorage.getItem('pulseTourDismissed') !== 'true'
   )
   const [bankTab, setBankTab] = useState('balance')
   const [holdingCard, setHoldingCard] = useState(null)
-  const dropdownRef = useRef(null)
   const holdTimerRef = useRef(null)
 
   const data = PERIOD_DATA[period]
   const currentPeriod = PERIODS.find(p => p.key === period)
   const periodLabel = currentPeriod?.label
   const projMult = currentPeriod?.projMult ?? 1
-
-  useEffect(() => {
-    if (!open) return
-    function handleOutside(e) {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
-        setOpen(false)
-      }
-    }
-    document.addEventListener('mousedown', handleOutside)
-    return () => document.removeEventListener('mousedown', handleOutside)
-  }, [open])
 
   // Long-press to trigger CephAI
   const startHold = useCallback((cardId) => {
@@ -515,6 +505,17 @@ export default function Pulse() {
   const violCurrent  = VIOL_MONTHLY[VIOL_MONTHLY.length - 1].total
   const violVsPeak   = Math.round(((violCurrent - violPeak) / violPeak) * 100)
 
+  const hasActiveFilter = filterRange.period !== 'apr-2026' || filterRange.timeFrame === 'custom'
+
+  function applyPulseFilter(f) {
+    if (f.period) setPeriod(f.period)
+    setFilterRange(f)
+  }
+
+  function handleExport() {
+    setExportOpen(true)
+  }
+
   function getTrend(c) {
     const annualBudget = ANNUAL_BUDGETS[c.name]
     if (!annualBudget) return { status: 'ok' }
@@ -528,40 +529,34 @@ export default function Pulse() {
   return (
     <div className="screen">
       {showTour && <PulseTourModal onClose={() => setShowTour(false)} />}
+      {filterOpen && (
+        <PulseFilter
+          filter={filterRange}
+          onChange={applyPulseFilter}
+          onClose={() => setFilterOpen(false)}
+        />
+      )}
+      {exportOpen && (
+        <ExportSheet periodLabel={periodLabel} onClose={() => setExportOpen(false)} />
+      )}
       <div className="screen-inner">
 
         {/* Title + period selector */}
         <div className="pulse-title-row">
           <div>
             <h1 className="pulse-title">Community Pulse</h1>
-            <p className="pulse-sub">Live snapshot, updated continuously</p>
+            <p className="pulse-sub">{periodLabel} · Live snapshot</p>
           </div>
-          <div className="period-dropdown" ref={dropdownRef}>
+          <div className="pulse-title-actions">
             <button
-              className={`period-trigger${open ? ' period-trigger--open' : ''}`}
-              onClick={() => setOpen(o => !o)}
+              className={`engage-filter-btn${hasActiveFilter ? ' engage-filter-btn--active' : ''}`}
+              onClick={() => setFilterOpen(true)}
             >
-              <span>{periodLabel}</span>
-              <ChevronDownIcon open={open} />
+              <PulseSlidersIcon />
             </button>
-            {open && (
-              <div className="period-menu">
-                {GROUPS.map(group => (
-                  <div key={group}>
-                    <p className="period-menu__group">{group}</p>
-                    {PERIODS.filter(p => p.group === group).map(p => (
-                      <button
-                        key={p.key}
-                        className={`period-menu__item${p.key === period ? ' period-menu__item--active' : ''}`}
-                        onClick={() => { setPeriod(p.key); setOpen(false) }}
-                      >
-                        {p.label}
-                      </button>
-                    ))}
-                  </div>
-                ))}
-              </div>
-            )}
+            <button className="engage-filter-btn" onClick={handleExport} title="Export PDF">
+              <PulseDownloadIcon />
+            </button>
           </div>
         </div>
 
@@ -893,6 +888,251 @@ function TrendSparkline({ data, width = 64, height = 24 }) {
   )
 }
 
+/* ── Pulse Filter ─────────────────────────────────── */
+const PULSE_MONTH_LABELS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
+function pulseFmtDate(ds) {
+  if (!ds) return null
+  const [,m,d] = ds.split('-')
+  return `${PULSE_MONTH_LABELS[parseInt(m)-1]} ${parseInt(d)}`
+}
+const PULSE_CAL_MONTHS = ['January','February','March','April']
+const PULSE_CAL_MIN = '2025-01-01'
+const PULSE_CAL_MAX = '2026-04-26'
+
+function PulseCalendar({ selecting, dateFrom, dateTo, onSelect }) {
+  const initMonth = dateFrom ? parseInt(dateFrom.slice(5, 7)) - 1
+                  : dateTo   ? parseInt(dateTo.slice(5, 7)) - 1
+                  : 3
+  const [viewYear, setViewYear]   = useState(dateFrom ? parseInt(dateFrom.slice(0,4)) : 2026)
+  const [viewMonth, setViewMonth] = useState(Math.min(Math.max(initMonth, 0), 3))
+
+  const minDate = PULSE_CAL_MIN
+  const maxDate = PULSE_CAL_MAX
+
+  function prevMonth() {
+    if (viewMonth === 0) { setViewYear(y => y - 1); setViewMonth(11) }
+    else setViewMonth(m => m - 1)
+  }
+  function nextMonth() {
+    if (viewMonth === 11) { setViewYear(y => y + 1); setViewMonth(0) }
+    else setViewMonth(m => m + 1)
+  }
+
+  const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate()
+  const firstDow    = new Date(viewYear, viewMonth, 1).getDay()
+
+  function fmt(d) {
+    return `${viewYear}-${String(viewMonth + 1).padStart(2,'0')}-${String(d).padStart(2,'0')}`
+  }
+
+  const cells = []
+  for (let i = 0; i < firstDow; i++) cells.push(null)
+  for (let d = 1; d <= daysInMonth; d++) cells.push(fmt(d))
+
+  const monthLabel = new Date(viewYear, viewMonth, 1).toLocaleString('en-US', { month: 'long', year: 'numeric' })
+  const atMin = viewMonth === 0 && viewYear <= parseInt(minDate.slice(0,4))
+  const atMax = fmt(daysInMonth) >= maxDate
+
+  return (
+    <div className="mini-cal">
+      <div className="mini-cal__nav">
+        <button className="mini-cal__nav-btn" disabled={atMin} onClick={prevMonth}>‹</button>
+        <span className="mini-cal__month">{monthLabel}</span>
+        <button className="mini-cal__nav-btn" disabled={atMax} onClick={nextMonth}>›</button>
+      </div>
+      <div className="mini-cal__weekdays">
+        {['Su','Mo','Tu','We','Th','Fr','Sa'].map(d => <div key={d} className="mini-cal__wd">{d}</div>)}
+      </div>
+      <div className="mini-cal__grid">
+        {cells.map((ds, i) => {
+          if (!ds) return <div key={`e${i}`} className="mini-cal__cell mini-cal__cell--empty" />
+          const disabled  = ds < minDate || ds > maxDate
+          const isFrom    = ds === dateFrom
+          const isTo      = ds === dateTo
+          const inRange   = dateFrom && dateTo && ds > dateFrom && ds < dateTo
+          const cls = ['mini-cal__cell',
+            disabled  ? 'mini-cal__cell--disabled' : '',
+            isFrom    ? 'mini-cal__cell--from'     : '',
+            isTo      ? 'mini-cal__cell--to'       : '',
+            inRange   ? 'mini-cal__cell--range'    : '',
+          ].filter(Boolean).join(' ')
+          return (
+            <button key={ds} className={cls} disabled={disabled} onClick={() => onSelect(ds)}>
+              {parseInt(ds.slice(8))}
+            </button>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
+function PulseFilter({ filter, onChange, onClose }) {
+  const [draft, setDraft] = useState({ ...filter })
+  const [view, setView]   = useState('main')
+  const [selecting, setSelecting] = useState('from')
+
+  function handleCalSelect(ds) {
+    if (selecting === 'from') {
+      setDraft(d => ({ ...d, dateFrom: ds, dateTo: d.dateTo && ds > d.dateTo ? '' : d.dateTo }))
+      setSelecting('to')
+    } else {
+      setDraft(d => ({ ...d, dateTo: ds, dateFrom: d.dateFrom && ds < d.dateFrom ? '' : d.dateFrom }))
+    }
+  }
+
+  function applyCustomRange() {
+    setDraft(d => ({ ...d, timeFrame: 'custom' }))
+    setView('main')
+  }
+
+  function handleApply() { onChange(draft); onClose() }
+
+  function handleClear() {
+    const cleared = { period: 'apr-2026', timeFrame: 'all', dateFrom: '', dateTo: '' }
+    onChange(cleared)
+    onClose()
+  }
+
+  const customLabel = draft.timeFrame === 'custom' && draft.dateFrom
+    ? `${pulseFmtDate(draft.dateFrom)} – ${pulseFmtDate(draft.dateTo) || '?'}`
+    : 'Custom Range'
+
+  const mainView = (
+    <>
+      <div className="filter-sheet__handle" />
+      <div className="filter-sheet__header">
+        <span className="filter-sheet__title">Filter Report</span>
+        <button className="filter-sheet__close" onClick={onClose}><PulseCloseIcon /></button>
+      </div>
+
+      {GROUPS.map(group => (
+        <div className="filter-section" key={group}>
+          <p className="filter-section__label">{group}</p>
+          <div className="filter-chips">
+            {PERIODS.filter(p => p.group === group).map(p => (
+              <button
+                key={p.key}
+                className={`filter-chip${draft.period === p.key && draft.timeFrame !== 'custom' ? ' filter-chip--active' : ''}`}
+                onClick={() => setDraft(d => ({ ...d, period: p.key, timeFrame: 'all', dateFrom: '', dateTo: '' }))}
+              >{p.label}</button>
+            ))}
+          </div>
+        </div>
+      ))}
+
+      <div className="filter-section">
+        <p className="filter-section__label">Custom Date Range</p>
+        <div className="filter-chips">
+          <button
+            className={`filter-chip filter-chip--nav${draft.timeFrame === 'custom' ? ' filter-chip--active' : ''}`}
+            onClick={() => { setDraft(d => ({ ...d, timeFrame: 'custom' })); setView('custom') }}
+          >
+            {customLabel}
+            <PulseChevronRightSmallIcon />
+          </button>
+        </div>
+      </div>
+
+      <button className="filter-apply" onClick={handleApply}>Apply Filter</button>
+      <button className="filter-clear" onClick={handleClear}>Reset to Default</button>
+    </>
+  )
+
+  const customView = (
+    <>
+      <div className="filter-sheet__handle" />
+      <div className="filter-sheet__header">
+        <button className="filter-sheet__back" onClick={() => setView('main')}>
+          <PulseBackIcon />
+          <span>Back</span>
+        </button>
+        <span className="filter-sheet__title">Custom Range</span>
+        <div style={{ width: 60 }} />
+      </div>
+      <div className="filter-date-selectors">
+        <button
+          className={`filter-date-btn${selecting === 'from' ? ' filter-date-btn--active' : ''}`}
+          onClick={() => setSelecting('from')}
+        >
+          <span className="filter-date-btn__label">From</span>
+          {pulseFmtDate(draft.dateFrom)
+            ? <span className="filter-date-btn__value">{pulseFmtDate(draft.dateFrom)}</span>
+            : <span className="filter-date-btn__value filter-date-btn__value--placeholder">Select</span>}
+        </button>
+        <span className="filter-date-arrow">→</span>
+        <button
+          className={`filter-date-btn${selecting === 'to' ? ' filter-date-btn--active' : ''}`}
+          onClick={() => setSelecting('to')}
+        >
+          <span className="filter-date-btn__label">To</span>
+          {pulseFmtDate(draft.dateTo)
+            ? <span className="filter-date-btn__value">{pulseFmtDate(draft.dateTo)}</span>
+            : <span className="filter-date-btn__value filter-date-btn__value--placeholder">Select</span>}
+        </button>
+      </div>
+      <PulseCalendar
+        selecting={selecting}
+        dateFrom={draft.dateFrom}
+        dateTo={draft.dateTo}
+        onSelect={handleCalSelect}
+      />
+      <button className="filter-apply" onClick={applyCustomRange}>Apply Date Range</button>
+      <button className="filter-clear" onClick={() => setDraft(d => ({ ...d, dateFrom: '', dateTo: '' }))}>Clear Dates</button>
+    </>
+  )
+
+  return (
+    <>
+      <div className="filter-scrim" onClick={onClose} />
+      <div className="filter-sheet">
+        {view === 'main' ? mainView : customView}
+      </div>
+    </>
+  )
+}
+
+/* ── Pulse Icons ──────────────────────────────────── */
+function PulseSlidersIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+      <line x1="4" y1="6" x2="20" y2="6"/><circle cx="8" cy="6" r="2" fill="currentColor" stroke="none"/>
+      <line x1="4" y1="12" x2="20" y2="12"/><circle cx="16" cy="12" r="2" fill="currentColor" stroke="none"/>
+      <line x1="4" y1="18" x2="20" y2="18"/><circle cx="10" cy="18" r="2" fill="currentColor" stroke="none"/>
+    </svg>
+  )
+}
+function PulseDownloadIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+      <polyline points="7 10 12 15 17 10"/>
+      <line x1="12" y1="15" x2="12" y2="3"/>
+    </svg>
+  )
+}
+function PulseCloseIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+      <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+    </svg>
+  )
+}
+function PulseBackIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M19 12H5M12 5l-7 7 7 7"/>
+    </svg>
+  )
+}
+function PulseChevronRightSmallIcon() {
+  return (
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" style={{flexShrink:0}}>
+      <path d="M9 18l6-6-6-6"/>
+    </svg>
+  )
+}
+
 function ChevronDownIcon({ open }) {
   return (
     <svg
@@ -910,5 +1150,96 @@ function ChevronRightIcon() {
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" style={{ flexShrink: 0 }}>
       <path d="M9 18l6-6-6-6"/>
     </svg>
+  )
+}
+
+const EXPORT_OPTIONS = [
+  {
+    id: 'pdf',
+    label: 'Download PDF',
+    sub: 'Formatted report ready to print or share',
+    icon: (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+        <polyline points="14 2 14 8 20 8"/>
+        <line x1="12" y1="18" x2="12" y2="12"/><polyline points="9 15 12 18 15 15"/>
+      </svg>
+    ),
+    action: () => window.print(),
+  },
+  {
+    id: 'csv',
+    label: 'Download CSV',
+    sub: 'Raw data for spreadsheet analysis',
+    icon: (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="3" y="3" width="18" height="18" rx="2"/>
+        <line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/>
+        <line x1="9" y1="9" x2="9" y2="21"/><line x1="15" y1="9" x2="15" y2="21"/>
+      </svg>
+    ),
+    action: () => alert('CSV export coming soon'),
+  },
+  {
+    id: 'word',
+    label: 'Download Word',
+    sub: 'Editable .docx document',
+    icon: (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+        <polyline points="14 2 14 8 20 8"/>
+        <line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/>
+        <polyline points="10 9 9 9 8 9"/>
+      </svg>
+    ),
+    action: () => alert('Word export coming soon'),
+  },
+  {
+    id: 'email',
+    label: 'Send by Email',
+    sub: 'Share report with board members',
+    icon: (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+        <polyline points="22,6 12,13 2,6"/>
+      </svg>
+    ),
+    action: () => alert('Email share coming soon'),
+  },
+]
+
+function ExportSheet({ periodLabel, onClose }) {
+  useEffect(() => {
+    document.body.style.overflow = 'hidden'
+    return () => { document.body.style.overflow = '' }
+  }, [])
+
+  return (
+    <div className="filter-sheet-wrap">
+      <div className="filter-scrim" onClick={onClose} />
+      <div className="filter-sheet export-sheet">
+        <div className="filter-sheet__header">
+          <span className="filter-sheet__title">Export Report</span>
+          <button className="filter-sheet__close" onClick={onClose}><PulseCloseIcon /></button>
+        </div>
+        <p className="export-sheet__sub">{periodLabel} · Community Pulse</p>
+        <div className="export-options">
+          {EXPORT_OPTIONS.map(opt => (
+            <button
+              key={opt.id}
+              className="export-option"
+              onClick={() => { opt.action(); onClose() }}
+            >
+              <span className="export-option__icon">{opt.icon}</span>
+              <span className="export-option__text">
+                <span className="export-option__label">{opt.label}</span>
+                <span className="export-option__sub">{opt.sub}</span>
+              </span>
+              <PulseChevronRightSmallIcon />
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
   )
 }
